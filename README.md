@@ -1,4 +1,4 @@
-# HOTScript
+# Higher-Order TypeScript (HOTScript)
 
 A lodash-like library for types, with support for type-level lambda functions.
 
