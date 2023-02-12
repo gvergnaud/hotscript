@@ -146,7 +146,7 @@ type result = Pipe<
   //  ^?
   [1, 2, 3, 4, 3, 4],
   [
-    MapAdd<3>,
+    TupleMap<Add<3>>,
     Join<'.'>,
     Split<'.'>,
     TupleMap<ToNumber>,
