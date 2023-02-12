@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "declaration": true,
+    "target": "ESNext",
+    "strict": true,
+    "outDir": "dist/"
+  },
+  "include": ["src/"],
+  "exclude": ["tests/", "dist/", "examples/"]
+}

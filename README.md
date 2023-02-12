@@ -21,22 +21,24 @@ type result = Pipe<
 ## TODO
 
 - [ ] Composition
-  - [ ] Pipe
-  - [ ] Compose
+  - [x] Pipe
+  - [x] PipeRight
+  - [x] Call
+  - [x] Apply
 - [ ] Tuples
   - [ ] Head
   - [ ] Tail
-  - [ ] Map
   - [ ] FlatMap
-  - [ ] Filter
-  - [ ] Reduce
   - [ ] Find
   - [ ] Zip
   - [ ] Partition
   - [ ] Drop n
   - [ ] Take n
   - [ ] TakeWhile
-  - [ ] Join separator
+  - [x] Join separator
+  - [x] Map
+  - [x] Filter
+  - [x] Reduce
 - [ ] Object
   - [ ] Assign
   - [ ] FromEntries

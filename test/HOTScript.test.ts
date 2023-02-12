@@ -1,9 +1,9 @@
-import { HOT, Numbers, Strings, Tuples } from "../HOTScript";
+import { HOT, Numbers, Strings, Tuples } from "../src";
 import { Equal, Expect } from "./helpers";
 
 describe("HOTScript", () => {
   describe("Composition", () => {
-    describe("Pipe", () => {
+    it("Pipe", () => {
       type res1 = HOT.Pipe<
         //  ^?
         [1, 2, 3, 4, 3, 4],
@@ -20,7 +20,7 @@ describe("HOTScript", () => {
       type tes1 = Expect<Equal<res1, 78>>;
     });
 
-    describe("PipeRight", () => {
+    it("PipeRight", () => {
       type res1 = HOT.PipeRight<
         //  ^?
         [
@@ -39,7 +39,7 @@ describe("HOTScript", () => {
   });
 
   describe("Tuples", () => {
-    describe("Map", () => {
+    it("Map", () => {
       interface ToPhrase extends HOT.Fn {
         output: `number is ${Extract<
           this["args"][0],
@@ -52,6 +52,28 @@ describe("HOTScript", () => {
       type tes1 = Expect<
         Equal<res1, ["number is 1", "number is 2", "number is 3"]>
       >;
+    });
+
+    it("Filter", () => {
+      interface IsNumber extends HOT.Fn {
+        output: this["args"][0] extends number ? true : false;
+      }
+
+      type res1 = HOT.Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
+    });
+
+    it("Reduce", () => {
+      interface ToUnaryTupleArray extends HOT.Fn {
+        output: this["args"] extends [infer acc extends any[], infer item]
+          ? [...acc, [item]]
+          : never;
+      }
+
+      type res1 = HOT.Call<Tuples.Reduce<[], ToUnaryTupleArray>, [1, 2, 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
     });
   });
 });
