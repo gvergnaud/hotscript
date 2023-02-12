@@ -1,6 +1,8 @@
-# HOTScript!
+# HOTScript
 
-Type-level madness.
+A lodash-like library for types, with support for type-level lambda functions.
+
+🚧 work in progress 🚧
 
 ```ts
 // prettier-ignore
@@ -8,14 +10,22 @@ type result = Pipe<
   //  ^? 78
   [1, 2, 3, 4, 3, 4],
   [
-    TupleMap<Add<3>>,
-    Join<'.'>,
-    Split<'.'>,
-    TupleMap<ToNumber>,
-    TupleMap<Add<10>>,
-    Sum
+    T.Map<Add<3>>,
+    S.Join<'.'>,
+    S.Split<'.'>,
+    T.Map<S.ToNumber>,
+    T.Map<N.Add<10>>,
+    T.Sum
   ]
 >;
+
+// This is a type-level lambda!
+interface Duplicate extends Fn {
+  output: [this["args"][0], this["args"][0]];
+}
+
+type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
+//     ^? [1, 1, 2, 2, 3, 3, 4, 4]
 ```
 
 ## TODO

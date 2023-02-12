@@ -281,3 +281,5 @@ export namespace Iterator {
     ? tail
     : [];
 }
+
+export { Objects as O, Unions as U, Strings as S, Numbers as N, Tuples as T };
