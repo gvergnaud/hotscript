@@ -55,14 +55,14 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 - [ ] Object
   - [x] FromEntries
   - [x] Entries
-  - [x] MapValue
+  - [x] MapValues
   - [x] MapKeys
   - [ ] GroupBy
   - [ ] Assign
-  - [ ] Pick
-  - [ ] PickBy
-  - [ ] Omit
-  - [ ] OmitBy
+  - [x] Pick
+  - [x] PickBy
+  - [x] Omit
+  - [x] OmitBy
 - [ ] Union
   - [ ] Assign
   - [ ] FromEntries

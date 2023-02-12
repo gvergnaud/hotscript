@@ -252,5 +252,41 @@ describe("HOTScript", () => {
       >;
       type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
     });
+
+    it("Pick", () => {
+      type res1 = Call<
+        //   ^?
+        O.PickKey<"a">,
+        { a: 1; b: true }
+      >;
+      type tes1 = Expect<Equal<res1, { a: 1 }>>;
+    });
+
+    it("Omit", () => {
+      type res1 = Call<
+        //   ^?
+        O.OmitKey<"a">,
+        { a: 1; b: true }
+      >;
+      type tes1 = Expect<Equal<res1, { b: true }>>;
+    });
+
+    it("PickBy", () => {
+      type res1 = Call<
+        //   ^?
+        O.PickBy<Extends<1>>,
+        { a: 1; b: true; c: 1 }
+      >;
+      type tes1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
+    });
+
+    it("OmitBy", () => {
+      type res1 = Call<
+        //   ^?
+        O.OmitBy<Extends<1>>,
+        { a: 1; b: true; c: 1 }
+      >;
+      type tes1 = Expect<Equal<res1, { b: true }>>;
+    });
   });
 });

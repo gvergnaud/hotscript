@@ -305,6 +305,48 @@ export namespace Objects {
   export interface MapKeys<fn extends Fn> extends Fn {
     output: MapKeysImpl<this["args"][0], fn>;
   }
+
+  export interface PickKey<key> extends Fn {
+    output: Pick<this["args"][0], Extract<key, keyof this["args"][0]>>;
+  }
+
+  export interface OmitKey<key> extends Fn {
+    output: Omit<this["args"][0], Extract<key, keyof this["args"][0]>>;
+  }
+
+  type PickEntriesImpl<
+    entries extends [PropertyKey, any],
+    fn extends Fn
+  > = entries extends any
+    ? Call2<fn, entries[1], entries[0]> extends true
+      ? entries
+      : never
+    : never;
+
+  type PickByImpl<T, fn extends Fn> = FromEntriesImpl<
+    PickEntriesImpl<EntriesImpl<T>, fn>
+  >;
+
+  export interface PickBy<fn extends Fn> extends Fn {
+    output: PickByImpl<this["args"][0], fn>;
+  }
+
+  type OmitEntriesImpl<
+    entries extends [PropertyKey, any],
+    fn extends Fn
+  > = entries extends any
+    ? Call2<fn, entries[1], entries[0]> extends true
+      ? never
+      : entries
+    : never;
+
+  type OmitByImpl<T, fn extends Fn> = FromEntriesImpl<
+    OmitEntriesImpl<EntriesImpl<T>, fn>
+  >;
+
+  export interface OmitBy<fn extends Fn> extends Fn {
+    output: OmitByImpl<this["args"][0], fn>;
+  }
 }
 
 /**
