@@ -92,6 +92,18 @@ export namespace Strings {
   export interface ToNumber extends Fn {
     output: this["args"][0] extends `${infer n extends number}` ? n : never;
   }
+
+  export interface ToString extends Fn {
+    output: `${Extract<this["args"][0], Strings.Stringifiable>}`;
+  }
+
+  export interface Prepend<str extends string> extends Fn {
+    output: `${str}${Extract<this["args"][0], Strings.Stringifiable>}`;
+  }
+
+  export interface Append<str extends string> extends Fn {
+    output: `${Extract<this["args"][0], Strings.Stringifiable>}${str}`;
+  }
 }
 
 /**
@@ -276,6 +288,22 @@ export namespace Objects {
 
   export interface Entries extends Fn {
     output: EntriesImpl<this["args"][0]>;
+  }
+
+  type MapValuesImpl<T, fn extends Fn> = {
+    [K in keyof T]: Call2<fn, T[K], K>;
+  };
+
+  export interface MapValues<fn extends Fn> extends Fn {
+    output: MapValuesImpl<this["args"][0], fn>;
+  }
+
+  type MapKeysImpl<T, fn extends Fn> = {
+    [K in keyof T as Extract<Call<fn, K>, PropertyKey>]: T[K];
+  };
+
+  export interface MapKeys<fn extends Fn> extends Fn {
+    output: MapKeysImpl<this["args"][0], fn>;
   }
 }
 

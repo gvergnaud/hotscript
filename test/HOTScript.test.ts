@@ -9,6 +9,9 @@ import {
   Tuples,
   T,
   O,
+  S,
+  N,
+  U,
 } from "../src";
 import { Equal, Expect } from "./helpers";
 
@@ -230,6 +233,24 @@ describe("HOTScript", () => {
       //   ^?
 
       type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+    });
+
+    it("MapValues", () => {
+      type res1 = Call<
+        //   ^?
+        O.MapValues<S.ToString>,
+        { a: 1; b: true }
+      >;
+      type tes1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
+    });
+
+    it("MapKeys", () => {
+      type res1 = Call<
+        //   ^?
+        O.MapKeys<S.Prepend<"get_">>,
+        { a: 1; b: true }
+      >;
+      type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
     });
   });
 });
