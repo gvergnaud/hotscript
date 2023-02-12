@@ -221,6 +221,23 @@ export namespace Tuples {
       Iterator.Iterator<n>
     >;
   }
+
+  type TakeImpl<
+    xs extends readonly any[],
+    it extends any[],
+    output extends any[] = []
+  > = Iterator.Get<it> extends 0
+    ? output
+    : xs extends readonly [infer head, ...infer tail]
+    ? TakeImpl<tail, Iterator.Prev<it>, [...output, head]>
+    : output;
+
+  export interface Take<n extends number> extends HOT.Fn {
+    output: TakeImpl<
+      Extract<this["args"][0], readonly any[]>,
+      Iterator.Iterator<n>
+    >;
+  }
 }
 
 /**
@@ -246,14 +263,4 @@ export namespace Iterator {
   export type Prev<it extends any[]> = it extends readonly [any, ...infer tail]
     ? tail
     : [];
-
-  export type Take<
-    xs extends readonly any[],
-    it extends any[],
-    output extends any[] = []
-  > = Iterator.Get<it> extends 0
-    ? output
-    : xs extends readonly [infer head, ...infer tail]
-    ? Take<tail, Prev<it>, [...output, head]>
-    : output;
 }

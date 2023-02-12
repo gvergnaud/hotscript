@@ -146,5 +146,15 @@ describe("HOTScript", () => {
       //   ^?
       type tes2 = Expect<Equal<res2, ["c", 2, "d"]>>;
     });
+
+    it("Take", () => {
+      type res1 = HOT.Call<Tuples.Take<1>, ["a", "b", "c", 2, "d"]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, ["a"]>>;
+
+      type res2 = HOT.Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
+      //   ^?
+      type tes2 = Expect<Equal<res2, ["a", "b"]>>;
+    });
   });
 });
