@@ -32,11 +32,11 @@ type result = Pipe<
   - [x] FlatMap
   - [x] Find
   - [x] Sum
-  - [ ] Zip
-  - [ ] Partition
-  - [ ] Drop n
+  - [x] Drop n
   - [ ] Take n
   - [ ] TakeWhile
+  - [ ] Zip
+  - [ ] Partition
   - [x] Join separator
   - [x] Map
   - [x] Filter

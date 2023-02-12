@@ -205,6 +205,22 @@ export namespace Tuples {
   export type Range<n, acc extends any[] = []> = acc["length"] extends n
     ? acc
     : Range<n, [...acc, acc["length"]]>;
+
+  type DropImpl<
+    xs extends readonly any[],
+    n extends any[]
+  > = Iterator.Get<n> extends 0
+    ? xs
+    : xs extends readonly [any, ...infer tail]
+    ? DropImpl<tail, Iterator.Prev<n>>
+    : [];
+
+  export interface Drop<n extends number> extends HOT.Fn {
+    output: DropImpl<
+      Extract<this["args"][0], readonly any[]>,
+      Iterator.Iterator<n>
+    >;
+  }
 }
 
 /**
@@ -217,3 +233,27 @@ export namespace Objects {}
  * Unions
  */
 export namespace Unions {}
+
+export namespace Iterator {
+  export type Get<it extends readonly any[]> = it["length"];
+
+  export type Iterator<
+    n extends number,
+    it extends any[] = []
+  > = it["length"] extends n ? it : Iterator<n, [any, ...it]>;
+
+  export type Next<it extends any[]> = [any, ...it];
+  export type Prev<it extends any[]> = it extends readonly [any, ...infer tail]
+    ? tail
+    : [];
+
+  export type Take<
+    xs extends readonly any[],
+    it extends any[],
+    output extends any[] = []
+  > = Iterator.Get<it> extends 0
+    ? output
+    : xs extends readonly [infer head, ...infer tail]
+    ? Take<tail, Prev<it>, [...output, head]>
+    : output;
+}
