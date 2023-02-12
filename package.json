@@ -1,0 +1,19 @@
+{
+  "name": "hotscript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gvergnaud/PipeScript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gvergnaud/PipeScript/issues"
+  },
+  "homepage": "https://github.com/gvergnaud/PipeScript#readme"
+}
