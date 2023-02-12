@@ -26,8 +26,9 @@ type result = Pipe<
   - [x] Call
   - [x] Apply
 - [ ] Tuples
-  - [ ] Head
-  - [ ] Tail
+  - [x] Head
+  - [x] Tail
+  - [x] Last
   - [ ] FlatMap
   - [ ] Find
   - [ ] Zip

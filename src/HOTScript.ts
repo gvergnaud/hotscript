@@ -137,6 +137,24 @@ export namespace Tuples {
       : never;
   }
 
+  type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
+
+  type TailImpl<xs> = xs extends readonly [any, ...infer tail] ? tail : never;
+
+  type LastImpl<xs> = xs extends readonly [...any, infer last] ? last : never;
+
+  export interface Head extends HOT.Fn {
+    output: HeadImpl<this["args"][0]>;
+  }
+
+  export interface Tail extends HOT.Fn {
+    output: TailImpl<this["args"][0]>;
+  }
+
+  export interface Last extends HOT.Fn {
+    output: LastImpl<this["args"][0]>;
+  }
+
   export interface Map<fn extends HOT.Fn> extends HOT.Fn {
     output: HOT.Reduce<this["args"][0], [], MapFn<fn>>;
   }

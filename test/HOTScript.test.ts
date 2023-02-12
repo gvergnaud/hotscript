@@ -39,6 +39,24 @@ describe("HOTScript", () => {
   });
 
   describe("Tuples", () => {
+    it("Head", () => {
+      type res1 = HOT.Call<Tuples.Head, [1, 2, 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, 1>>;
+    });
+
+    it("Tail", () => {
+      type res1 = HOT.Call<Tuples.Tail, [1, 2, 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, [2, 3]>>;
+    });
+
+    it("Last", () => {
+      type res1 = HOT.Call<Tuples.Last, [1, 2, 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, 3>>;
+    });
+
     it("Map", () => {
       interface ToPhrase extends HOT.Fn {
         output: `number is ${Extract<
