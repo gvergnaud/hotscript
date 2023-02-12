@@ -123,10 +123,46 @@ export namespace Numbers {
  * Tuples
  */
 export namespace Tuples {
+  type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
+
+  export interface Head extends HOT.Fn {
+    output: HeadImpl<this["args"][0]>;
+  }
+
+  type TailImpl<xs> = xs extends readonly [any, ...infer tail] ? tail : never;
+
+  export interface Tail extends HOT.Fn {
+    output: TailImpl<this["args"][0]>;
+  }
+
+  type LastImpl<xs> = xs extends readonly [...any, infer last] ? last : never;
+
+  export interface Last extends HOT.Fn {
+    output: LastImpl<this["args"][0]>;
+  }
+
   interface MapFn<fn extends HOT.Fn> extends HOT.Fn {
     output: this["args"] extends [infer acc extends any[], infer item]
       ? [...acc, HOT.Call<fn, item>]
       : never;
+  }
+
+  export interface Map<fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], [], MapFn<fn>>;
+  }
+
+  interface FlatMapFn<fn extends HOT.Fn> extends HOT.Fn {
+    output: this["args"] extends [infer acc extends any[], infer item]
+      ? [...acc, ...Extract<HOT.Call<fn, item>, readonly any[]>]
+      : never;
+  }
+
+  export interface FlatMap<fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], [], FlatMapFn<fn>>;
+  }
+
+  export interface Reduce<init, fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], init, fn>;
   }
 
   interface FilterFn<fn extends HOT.Fn> extends HOT.Fn {
@@ -135,32 +171,6 @@ export namespace Tuples {
         ? [...acc, item]
         : acc
       : never;
-  }
-
-  type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
-
-  type TailImpl<xs> = xs extends readonly [any, ...infer tail] ? tail : never;
-
-  type LastImpl<xs> = xs extends readonly [...any, infer last] ? last : never;
-
-  export interface Head extends HOT.Fn {
-    output: HeadImpl<this["args"][0]>;
-  }
-
-  export interface Tail extends HOT.Fn {
-    output: TailImpl<this["args"][0]>;
-  }
-
-  export interface Last extends HOT.Fn {
-    output: LastImpl<this["args"][0]>;
-  }
-
-  export interface Map<fn extends HOT.Fn> extends HOT.Fn {
-    output: HOT.Reduce<this["args"][0], [], MapFn<fn>>;
-  }
-
-  export interface Reduce<init, fn extends HOT.Fn> extends HOT.Fn {
-    output: HOT.Reduce<this["args"][0], init, fn>;
   }
 
   export interface Filter<fn extends HOT.Fn> extends HOT.Fn {

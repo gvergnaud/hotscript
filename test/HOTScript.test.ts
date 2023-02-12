@@ -93,5 +93,15 @@ describe("HOTScript", () => {
       //   ^?
       type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
     });
+
+    it("FlatMap", () => {
+      interface Duplicate extends HOT.Fn {
+        output: [this["args"][0], this["args"][0]];
+      }
+
+      type res1 = HOT.Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+    });
   });
 });

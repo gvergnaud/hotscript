@@ -29,7 +29,7 @@ type result = Pipe<
   - [x] Head
   - [x] Tail
   - [x] Last
-  - [ ] FlatMap
+  - [x] FlatMap
   - [ ] Find
   - [ ] Zip
   - [ ] Partition
