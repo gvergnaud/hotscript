@@ -94,6 +94,21 @@ describe("HOTScript", () => {
       type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
     });
 
+    it("ReduceRight", () => {
+      interface ToUnaryTupleArray extends HOT.Fn {
+        output: this["args"] extends [infer acc extends any[], infer item]
+          ? [...acc, [item]]
+          : never;
+      }
+
+      type res1 = HOT.Call<
+        //   ^?
+        Tuples.ReduceRight<[], ToUnaryTupleArray>,
+        [1, 2, 3]
+      >;
+      type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
+    });
+
     it("FlatMap", () => {
       interface Duplicate extends HOT.Fn {
         output: [this["args"][0], this["args"][0]];
@@ -102,6 +117,24 @@ describe("HOTScript", () => {
       type res1 = HOT.Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
       //   ^?
       type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+    });
+
+    it("Find", () => {
+      interface IsNumber extends HOT.Fn {
+        output: this["args"][0] extends number ? true : false;
+      }
+
+      type res1 = HOT.Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, 2>>;
+
+      interface IsSecond extends HOT.Fn {
+        output: this["args"][1] extends 1 ? true : false;
+      }
+
+      type res2 = HOT.Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
+      //   ^?
+      type tes2 = Expect<Equal<res2, "b">>;
     });
   });
 });

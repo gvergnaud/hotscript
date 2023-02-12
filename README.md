@@ -30,7 +30,8 @@ type result = Pipe<
   - [x] Tail
   - [x] Last
   - [x] FlatMap
-  - [ ] Find
+  - [x] Find
+  - [x] Sum
   - [ ] Zip
   - [ ] Partition
   - [ ] Drop n
@@ -40,6 +41,7 @@ type result = Pipe<
   - [x] Map
   - [x] Filter
   - [x] Reduce
+  - [x] ReduceRight
 - [ ] Object
   - [ ] Assign
   - [ ] FromEntries
