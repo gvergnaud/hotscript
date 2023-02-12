@@ -1,156 +1,170 @@
-/**
- * Generic helpers
- */
-
-interface Fn {
-  input: unknown;
-  output: unknown;
-}
-
-type Call<fn extends Fn, input> = (fn & { input: input })["output"];
-
-type Stringifiable = string | number | boolean | bigint | null | undefined;
-
-type SplitImpl<
-  str,
-  sep extends string,
-  output extends any[] = []
-> = str extends `${infer first}${sep}${infer rest}`
-  ? SplitImpl<rest, sep, [...output, first]>
-  : output;
-
-/**
- * Generic Array operations
- */
-
-/**
- * Reduce
- */
-type Reduce<xs, acc, fn extends Fn> = xs extends [infer first, ...infer rest]
-  ? Reduce<rest, Call<fn, { acc: acc; item: first }>, fn>
-  : acc;
-
-/**
- * Define Map in terms of Reduce
- */
-interface MapFn<fn extends Fn> extends Fn {
-  output: this["input"] extends {
-    acc: infer acc extends any[];
-    item: infer item;
+export namespace HOT {
+  export interface Fn {
+    args: unknown[];
+    output: unknown;
   }
-    ? [...acc, Call<fn, item>]
-    : never;
-}
 
-interface FilterFn<fn extends Fn> extends Fn {
-  output: this["input"] extends {
-    acc: infer acc extends any[];
-    item: infer item;
-  }
-    ? Call<fn, item> extends true
-      ? [...acc, item]
-      : acc
-    : never;
-}
+  export type Apply<fn extends HOT.Fn, args> = (fn & {
+    args: args;
+  })["output"];
 
-interface TupleMap<fn extends Fn> extends Fn {
-  output: Reduce<this["input"], [], MapFn<fn>>;
-}
+  export type Call<fn extends HOT.Fn, arg1> = (fn & {
+    args: [arg1];
+  })["output"];
 
-interface TupleReduce<init, fn extends Fn> extends Fn {
-  output: Reduce<this["input"], init, fn>;
-}
+  export type Call2<fn extends HOT.Fn, arg1, arg2> = (fn & {
+    args: [arg1, arg2];
+  })["output"];
 
-interface TupleFilter<fn extends Fn> extends Fn {
-  output: Reduce<this["input"], [], FilterFn<fn>>;
-}
+  export type Call3<fn extends HOT.Fn, arg1, arg2, arg3> = (fn & {
+    args: [arg1, arg2, arg3];
+  })["output"];
 
-/**
- * Lets use that!
- */
+  export type Call4<fn extends HOT.Fn, arg1, arg2, arg3, arg4> = (fn & {
+    args: [arg1, arg2, arg3, arg3];
+  })["output"];
 
-interface ToPhrase extends Fn {
-  output: `number is ${Extract<this["input"], string | number | boolean>}`;
-}
-
-type ys = Call<TupleMap<ToPhrase>, [1, 2, 3]>;
-//   ^?
-
-type MakeRange<n, acc extends any[] = []> = acc["length"] extends n
-  ? acc
-  : MakeRange<n, [...acc, acc["length"]]>;
-
-type AddNumbers<a, b> = [...MakeRange<a>, ...MakeRange<b>]["length"];
-
-type StringToNumber<str> = str extends `${infer n extends number}` ? n : never;
-
-interface Add2 extends Fn {
-  output: this["input"] extends {
-    acc: infer acc;
-    item: infer item;
-  }
-    ? AddNumbers<acc, item>
-    : never;
-}
-
-interface JoinReducer<sep extends string> extends Fn {
-  output: this["input"] extends {
-    acc: infer acc extends Stringifiable;
-    item: infer item extends Stringifiable;
-  }
-    ? `${acc extends "" ? "" : `${acc}${sep}`}${item}`
-    : never;
-}
-
-interface PipeFn extends Fn {
-  output: this["input"] extends {
-    acc: infer acc;
-    item: infer fn extends Fn;
-  }
-    ? Call<fn, acc>
-    : never;
-}
-
-type Pipe<init, xs extends Fn[]> = Reduce<xs, init, PipeFn>;
-
-interface Add<n> extends Fn {
-  output: AddNumbers<this["input"], n>;
-}
-
-interface MapAdd<n> extends Fn {
-  output: Call<TupleMap<Add<n>>, this["input"]>;
-}
-
-interface Join<sep extends string> extends Fn {
-  output: Reduce<this["input"], "", JoinReducer<sep>>;
-}
-
-interface Split<sep extends string> extends Fn {
-  output: SplitImpl<this["input"], sep>;
-}
-
-interface ToNumber extends Fn {
-  output: this["input"] extends `${infer n extends number}` ? n : never;
-}
-
-interface MapToNumber extends Fn {
-  output: Call<TupleMap<ToNumber>, this["input"]>;
-}
-
-interface Sum extends Fn {
-  output: Reduce<this["input"], 0, Add2>;
-}
-
-// prettier-ignore
-type result = Pipe<
-  //  ^?
-  [1, 2, 3, 4, 3, 4],
-  [
-    TupleMap<Add<3>>,
-    Join<'.'>,
-    Split<'.'>,
-    TupleMap<ToNumber>,
-    TupleMap<Add<10>>,
-    Sum
+  export type Reduce<xs, acc, fn extends HOT.Fn> = xs extends [
+    infer first,
+    ...infer rest
   ]
->;
+    ? Reduce<rest, HOT.Call2<fn, acc, first>, fn>
+    : acc;
+
+  export type ReduceRight<xs, acc, fn extends HOT.Fn> = xs extends [
+    ...infer rest,
+    infer last
+  ]
+    ? ReduceRight<rest, HOT.Call2<fn, acc, last>, fn>
+    : acc;
+
+  interface PipeFn extends HOT.Fn {
+    output: this["args"] extends [infer acc, infer fn extends HOT.Fn]
+      ? HOT.Call<fn, acc>
+      : never;
+  }
+
+  export type Pipe<init, xs extends HOT.Fn[]> = HOT.Reduce<xs, init, PipeFn>;
+
+  interface PipeRightFn extends HOT.Fn {
+    output: this["args"] extends [infer acc, infer fn extends HOT.Fn]
+      ? HOT.Call<fn, acc>
+      : never;
+  }
+
+  export type PipeRight<xs extends HOT.Fn[], init> = HOT.ReduceRight<
+    xs,
+    init,
+    PipeRightFn
+  >;
+}
+
+/**
+ * Strings
+ */
+
+export namespace Strings {
+  export type Stringifiable =
+    | string
+    | number
+    | boolean
+    | bigint
+    | null
+    | undefined;
+
+  type SplitImpl<
+    str,
+    sep extends string,
+    output extends any[] = []
+  > = str extends `${infer first}${sep}${infer rest}`
+    ? SplitImpl<rest, sep, [...output, first]>
+    : output;
+
+  interface JoinReducer<sep extends string> extends HOT.Fn {
+    output: this["args"] extends [
+      infer acc extends Strings.Stringifiable,
+      infer item extends Strings.Stringifiable
+    ]
+      ? `${acc extends "" ? "" : `${acc}${sep}`}${item}`
+      : never;
+  }
+
+  export interface Join<sep extends string> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], "", JoinReducer<sep>>;
+  }
+
+  export interface Split<sep extends string> extends HOT.Fn {
+    output: SplitImpl<this["args"][0], sep>;
+  }
+
+  export interface ToNumber extends HOT.Fn {
+    output: this["args"][0] extends `${infer n extends number}` ? n : never;
+  }
+}
+
+/**
+ * Numbers
+ */
+export namespace Numbers {
+  type Add2Impl<a, b> = [...Tuples.Range<a>, ...Tuples.Range<b>]["length"];
+
+  export interface Add<n> extends HOT.Fn {
+    output: Add2Impl<this["args"][0], n>;
+  }
+
+  export interface Add2 extends HOT.Fn {
+    output: this["args"] extends [infer acc, infer item]
+      ? Add2Impl<acc, item>
+      : never;
+  }
+}
+
+/**
+ * Tuples
+ */
+export namespace Tuples {
+  interface MapFn<fn extends HOT.Fn> extends HOT.Fn {
+    output: this["args"] extends [infer acc extends any[], infer item]
+      ? [...acc, HOT.Call<fn, item>]
+      : never;
+  }
+
+  interface FilterFn<fn extends HOT.Fn> extends HOT.Fn {
+    output: this["args"] extends [infer acc extends any[], infer item]
+      ? HOT.Call<fn, item> extends true
+        ? [...acc, item]
+        : acc
+      : never;
+  }
+
+  export interface Map<fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], [], MapFn<fn>>;
+  }
+
+  export interface Reduce<init, fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], init, fn>;
+  }
+
+  export interface Filter<fn extends HOT.Fn> extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], [], FilterFn<fn>>;
+  }
+
+  export interface Sum extends HOT.Fn {
+    output: HOT.Reduce<this["args"][0], 0, Numbers.Add2>;
+  }
+
+  export type Range<n, acc extends any[] = []> = acc["length"] extends n
+    ? acc
+    : Range<n, [...acc, acc["length"]]>;
+}
+
+/**
+ * Objects
+ */
+
+export namespace Objects {}
+
+/**
+ * Unions
+ */
+export namespace Unions {}

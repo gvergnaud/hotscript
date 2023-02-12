@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/gvergnaud/PipeScript/issues"
   },
-  "homepage": "https://github.com/gvergnaud/PipeScript#readme"
+  "homepage": "https://github.com/gvergnaud/PipeScript#readme",
+  "devDependencies": {
+    "@types/jest": "^29.4.0",
+    "jest": "^29.4.2",
+    "typescript": "^4.9.5"
+  }
 }

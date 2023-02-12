@@ -17,3 +17,48 @@ type result = Pipe<
   ]
 >;
 ```
+
+## TODO
+
+- [ ] Composition
+  - [ ] Pipe
+  - [ ] Compose
+- [ ] Tuples
+  - [ ] Head
+  - [ ] Tail
+  - [ ] Map
+  - [ ] FlatMap
+  - [ ] Filter
+  - [ ] Reduce
+  - [ ] Find
+  - [ ] Zip
+  - [ ] Partition
+  - [ ] Drop n
+  - [ ] Take n
+  - [ ] TakeWhile
+  - [ ] Join separator
+- [ ] Object
+  - [ ] Assign
+  - [ ] FromEntries
+  - [ ] Entries
+  - [ ] Pick
+  - [ ] PickBy
+  - [ ] Omit
+  - [ ] OmitBy
+- [ ] Union
+  - [ ] Assign
+  - [ ] FromEntries
+  - [ ] Entries
+  - [ ] Extract
+  - [ ] ExtractBy
+  - [ ] Exclude
+  - [ ] ExcludeBy
+- [ ] String
+  - [ ] Concat
+  - [ ] Uppercase
+  - [ ] Lowercase
+  - [ ] Capitalize
+  - [ ] Uncapitalize
+  - [ ] Split separator
+  - [ ] Words
+  - [ ] Reduce
