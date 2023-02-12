@@ -261,7 +261,23 @@ export namespace Tuples {
  * Objects
  */
 
-export namespace Objects {}
+export namespace Objects {
+  type FromEntriesImpl<entries extends [PropertyKey, any]> = {
+    [entry in entries as entry[0]]: entry[1];
+  };
+
+  export interface FromEntries extends Fn {
+    output: FromEntriesImpl<Extract<this["args"][0], [PropertyKey, any]>>;
+  }
+
+  type EntriesImpl<T> = {
+    [K in keyof T]: [K, T[K]];
+  }[keyof T];
+
+  export interface Entries extends Fn {
+    output: EntriesImpl<this["args"][0]>;
+  }
+}
 
 /**
  * Unions

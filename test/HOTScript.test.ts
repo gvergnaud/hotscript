@@ -7,8 +7,9 @@ import {
   Numbers,
   Strings,
   Tuples,
+  T,
+  O,
 } from "../src";
-import { Tuples as T } from "../src";
 import { Equal, Expect } from "./helpers";
 
 describe("HOTScript", () => {
@@ -202,6 +203,33 @@ describe("HOTScript", () => {
       >;
 
       type test = Expect<Equal<res, 39>>;
+    });
+  });
+
+  describe("Objects", () => {
+    it("FromEntries", () => {
+      type res1 = Call<
+        //   ^?
+        O.FromEntries,
+        ["a", string] | ["b", number]
+      >;
+      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+    });
+
+    it("Entries", () => {
+      type res1 = Call<
+        //   ^?
+        O.Entries,
+        { a: string; b: number }
+      >;
+      type tes1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+    });
+
+    it("Entries >> FromEntries identity", () => {
+      type res1 = Pipe<{ a: string; b: number }, [O.Entries, O.FromEntries]>;
+      //   ^?
+
+      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
     });
   });
 });

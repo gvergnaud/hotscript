@@ -53,8 +53,8 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] Reduce
   - [x] ReduceRight
 - [ ] Object
-  - [ ] FromEntries
-  - [ ] Entries
+  - [x] FromEntries
+  - [x] Entries
   - [ ] Assign
   - [ ] Pick
   - [ ] PickBy
