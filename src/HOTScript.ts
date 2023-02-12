@@ -47,6 +47,14 @@ export namespace HOT {
     init,
     PipeRightFn
   >;
+
+  /**
+   * Misc
+   */
+
+  export interface Extends<T> extends HOT.Fn {
+    output: this["args"][0] extends T ? true : false;
+  }
 }
 
 /**
@@ -237,6 +245,21 @@ export namespace Tuples {
       Extract<this["args"][0], readonly any[]>,
       Iterator.Iterator<n>
     >;
+  }
+
+  type TakeWhileImpl<
+    xs extends readonly any[],
+    fn extends HOT.Fn,
+    index extends any[] = [],
+    output extends any[] = []
+  > = xs extends readonly [infer head, ...infer tail]
+    ? HOT.Call2<fn, head, index["length"]> extends true
+      ? TakeWhileImpl<tail, fn, [...index, any], [...output, head]>
+      : output
+    : output;
+
+  export interface TakeWhile<fn extends HOT.Fn> extends HOT.Fn {
+    output: TakeWhileImpl<Extract<this["args"][0], readonly any[]>, fn>;
   }
 }
 

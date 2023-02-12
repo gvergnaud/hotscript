@@ -33,8 +33,8 @@ type result = Pipe<
   - [x] Find
   - [x] Sum
   - [x] Drop n
-  - [ ] Take n
-  - [ ] TakeWhile
+  - [x] Take n
+  - [x] TakeWhile
   - [ ] Zip
   - [ ] Partition
   - [x] Join separator
