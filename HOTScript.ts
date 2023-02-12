@@ -42,11 +42,6 @@ interface MapFn<fn extends Fn> extends Fn {
     : never;
 }
 
-type ListMap<xs, fn extends Fn> = Reduce<xs, [], MapFn<fn>>;
-
-/**
- * Define Filter in terms of Reduce
- */
 interface FilterFn<fn extends Fn> extends Fn {
   output: this["input"] extends {
     acc: infer acc extends any[];
@@ -58,7 +53,17 @@ interface FilterFn<fn extends Fn> extends Fn {
     : never;
 }
 
-type Filter<xs, fn extends Fn> = Reduce<xs, [], FilterFn<fn>>;
+interface TupleMap<fn extends Fn> extends Fn {
+  output: Reduce<this["input"], [], MapFn<fn>>;
+}
+
+interface TupleReduce<init, fn extends Fn> extends Fn {
+  output: Reduce<this["input"], init, fn>;
+}
+
+interface TupleFilter<fn extends Fn> extends Fn {
+  output: Reduce<this["input"], [], FilterFn<fn>>;
+}
 
 /**
  * Lets use that!
@@ -68,7 +73,7 @@ interface ToPhrase extends Fn {
   output: `number is ${Extract<this["input"], string | number | boolean>}`;
 }
 
-type ys = ListMap<[1, 2, 3], ToPhrase>;
+type ys = Call<TupleMap<ToPhrase>, [1, 2, 3]>;
 //   ^?
 
 type MakeRange<n, acc extends any[] = []> = acc["length"] extends n
@@ -113,7 +118,7 @@ interface Add<n> extends Fn {
 }
 
 interface MapAdd<n> extends Fn {
-  output: ListMap<this["input"], Add<n>>;
+  output: Call<TupleMap<Add<n>>, this["input"]>;
 }
 
 interface Join<sep extends string> extends Fn {
@@ -129,7 +134,7 @@ interface ToNumber extends Fn {
 }
 
 interface MapToNumber extends Fn {
-  output: ListMap<this["input"], ToNumber>;
+  output: Call<TupleMap<ToNumber>, this["input"]>;
 }
 
 interface Sum extends Fn {
@@ -144,8 +149,8 @@ type result = Pipe<
     MapAdd<3>,
     Join<'.'>,
     Split<'.'>,
-    MapToNumber,
-    MapAdd<10>,
+    TupleMap<ToNumber>,
+    TupleMap<Add<10>>,
     Sum
   ]
 >;
