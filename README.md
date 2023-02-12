@@ -1,4 +1,4 @@
-# HOTScript
+# HOT (Higher Order Types) Script!
 
 Type-level madness.
 
