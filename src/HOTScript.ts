@@ -1,60 +1,54 @@
-export namespace HOT {
-  export interface Fn {
-    args: unknown[];
-    output: unknown;
-  }
+export interface Fn {
+  args: unknown[];
+  output: unknown;
+}
 
-  export type Apply<fn extends HOT.Fn, args> = (fn & {
-    args: args;
-  })["output"];
+export type Apply<fn extends Fn, args> = (fn & {
+  args: args;
+})["output"];
 
-  export type Call<fn extends HOT.Fn, arg1> = (fn & {
-    args: [arg1];
-  })["output"];
+export type Call<fn extends Fn, arg1> = (fn & {
+  args: [arg1];
+})["output"];
 
-  export type Call2<fn extends HOT.Fn, arg1, arg2> = (fn & {
-    args: [arg1, arg2];
-  })["output"];
+export type Call2<fn extends Fn, arg1, arg2> = (fn & {
+  args: [arg1, arg2];
+})["output"];
 
-  export type Call3<fn extends HOT.Fn, arg1, arg2, arg3> = (fn & {
-    args: [arg1, arg2, arg3];
-  })["output"];
+export type Call3<fn extends Fn, arg1, arg2, arg3> = (fn & {
+  args: [arg1, arg2, arg3];
+})["output"];
 
-  export type Call4<fn extends HOT.Fn, arg1, arg2, arg3, arg4> = (fn & {
-    args: [arg1, arg2, arg3, arg3];
-  })["output"];
+export type Call4<fn extends Fn, arg1, arg2, arg3, arg4> = (fn & {
+  args: [arg1, arg2, arg3, arg3];
+})["output"];
 
-  interface PipeFn extends HOT.Fn {
-    output: this["args"] extends [infer acc, infer fn extends HOT.Fn]
-      ? HOT.Call<fn, acc>
-      : never;
-  }
+interface PipeFn extends Fn {
+  output: this["args"] extends [infer acc, infer fn extends Fn]
+    ? Call<fn, acc>
+    : never;
+}
 
-  export type Pipe<init, xs extends HOT.Fn[]> = Tuples.ReduceImpl<
-    xs,
-    init,
-    PipeFn
-  >;
+export type Pipe<init, xs extends Fn[]> = Tuples.ReduceImpl<xs, init, PipeFn>;
 
-  interface PipeRightFn extends HOT.Fn {
-    output: this["args"] extends [infer acc, infer fn extends HOT.Fn]
-      ? HOT.Call<fn, acc>
-      : never;
-  }
+interface PipeRightFn extends Fn {
+  output: this["args"] extends [infer acc, infer fn extends Fn]
+    ? Call<fn, acc>
+    : never;
+}
 
-  export type PipeRight<xs extends HOT.Fn[], init> = Tuples.ReduceRightImpl<
-    xs,
-    init,
-    PipeRightFn
-  >;
+export type PipeRight<xs extends Fn[], init> = Tuples.ReduceRightImpl<
+  xs,
+  init,
+  PipeRightFn
+>;
 
-  /**
-   * Misc
-   */
+/**
+ * Misc
+ */
 
-  export interface Extends<T> extends HOT.Fn {
-    output: this["args"][0] extends T ? true : false;
-  }
+export interface Extends<T> extends Fn {
+  output: this["args"][0] extends T ? true : false;
 }
 
 /**
@@ -78,7 +72,7 @@ export namespace Strings {
     ? SplitImpl<rest, sep, [...output, first]>
     : output;
 
-  interface JoinReducer<sep extends string> extends HOT.Fn {
+  interface JoinReducer<sep extends string> extends Fn {
     output: this["args"] extends [
       infer acc extends Strings.Stringifiable,
       infer item extends Strings.Stringifiable
@@ -87,15 +81,15 @@ export namespace Strings {
       : never;
   }
 
-  export interface Join<sep extends string> extends HOT.Fn {
+  export interface Join<sep extends string> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], "", JoinReducer<sep>>;
   }
 
-  export interface Split<sep extends string> extends HOT.Fn {
+  export interface Split<sep extends string> extends Fn {
     output: SplitImpl<this["args"][0], sep>;
   }
 
-  export interface ToNumber extends HOT.Fn {
+  export interface ToNumber extends Fn {
     output: this["args"][0] extends `${infer n extends number}` ? n : never;
   }
 }
@@ -106,11 +100,11 @@ export namespace Strings {
 export namespace Numbers {
   type Add2Impl<a, b> = [...Tuples.Range<a>, ...Tuples.Range<b>]["length"];
 
-  export interface Add<n> extends HOT.Fn {
+  export interface Add<n> extends Fn {
     output: Add2Impl<this["args"][0], n>;
   }
 
-  export interface Add2 extends HOT.Fn {
+  export interface Add2 extends Fn {
     output: this["args"] extends [infer acc, infer item]
       ? Add2Impl<acc, item>
       : never;
@@ -123,90 +117,90 @@ export namespace Numbers {
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
 
-  export interface Head extends HOT.Fn {
+  export interface Head extends Fn {
     output: HeadImpl<this["args"][0]>;
   }
 
   type TailImpl<xs> = xs extends readonly [any, ...infer tail] ? tail : never;
 
-  export interface Tail extends HOT.Fn {
+  export interface Tail extends Fn {
     output: TailImpl<this["args"][0]>;
   }
 
   type LastImpl<xs> = xs extends readonly [...any, infer last] ? last : never;
 
-  export interface Last extends HOT.Fn {
+  export interface Last extends Fn {
     output: LastImpl<this["args"][0]>;
   }
 
-  interface MapFn<fn extends HOT.Fn> extends HOT.Fn {
+  interface MapFn<fn extends Fn> extends Fn {
     output: this["args"] extends [infer acc extends any[], infer item]
-      ? [...acc, HOT.Call<fn, item>]
+      ? [...acc, Call<fn, item>]
       : never;
   }
 
-  export interface Map<fn extends HOT.Fn> extends HOT.Fn {
+  export interface Map<fn extends Fn> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], [], MapFn<fn>>;
   }
 
-  interface FlatMapFn<fn extends HOT.Fn> extends HOT.Fn {
+  interface FlatMapFn<fn extends Fn> extends Fn {
     output: this["args"] extends [infer acc extends any[], infer item]
-      ? [...acc, ...Extract<HOT.Call<fn, item>, readonly any[]>]
+      ? [...acc, ...Extract<Call<fn, item>, readonly any[]>]
       : never;
   }
 
-  export interface FlatMap<fn extends HOT.Fn> extends HOT.Fn {
+  export interface FlatMap<fn extends Fn> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], [], FlatMapFn<fn>>;
   }
 
-  export type ReduceImpl<xs, acc, fn extends HOT.Fn> = xs extends [
+  export type ReduceImpl<xs, acc, fn extends Fn> = xs extends [
     infer first,
     ...infer rest
   ]
-    ? ReduceImpl<rest, HOT.Call2<fn, acc, first>, fn>
+    ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
     : acc;
 
-  export interface Reduce<init, fn extends HOT.Fn> extends HOT.Fn {
+  export interface Reduce<init, fn extends Fn> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], init, fn>;
   }
 
-  export type ReduceRightImpl<xs, acc, fn extends HOT.Fn> = xs extends [
+  export type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
     ...infer rest,
     infer last
   ]
-    ? ReduceRightImpl<rest, HOT.Call2<fn, acc, last>, fn>
+    ? ReduceRightImpl<rest, Call2<fn, acc, last>, fn>
     : acc;
 
-  export interface ReduceRight<init, fn extends HOT.Fn> extends HOT.Fn {
+  export interface ReduceRight<init, fn extends Fn> extends Fn {
     output: Tuples.ReduceRightImpl<this["args"][0], init, fn>;
   }
 
-  interface FilterFn<fn extends HOT.Fn> extends HOT.Fn {
+  interface FilterFn<fn extends Fn> extends Fn {
     output: this["args"] extends [infer acc extends any[], infer item]
-      ? HOT.Call<fn, item> extends true
+      ? Call<fn, item> extends true
         ? [...acc, item]
         : acc
       : never;
   }
 
-  export interface Filter<fn extends HOT.Fn> extends HOT.Fn {
+  export interface Filter<fn extends Fn> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], [], FilterFn<fn>>;
   }
 
-  type FindImpl<xs, fn extends HOT.Fn, index extends any[] = []> = xs extends [
+  type FindImpl<xs, fn extends Fn, index extends any[] = []> = xs extends [
     infer first,
     ...infer rest
   ]
-    ? HOT.Call2<fn, first, index["length"]> extends true
+    ? Call2<fn, first, index["length"]> extends true
       ? first
       : FindImpl<rest, fn, [...index, any]>
     : never;
 
-  export interface Find<fn extends HOT.Fn> extends HOT.Fn {
+  export interface Find<fn extends Fn> extends Fn {
     output: FindImpl<this["args"][0], fn>;
   }
 
-  export interface Sum extends HOT.Fn {
+  export interface Sum extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], 0, Numbers.Add2>;
   }
 
@@ -223,7 +217,7 @@ export namespace Tuples {
     ? DropImpl<tail, Iterator.Prev<n>>
     : [];
 
-  export interface Drop<n extends number> extends HOT.Fn {
+  export interface Drop<n extends number> extends Fn {
     output: DropImpl<
       Extract<this["args"][0], readonly any[]>,
       Iterator.Iterator<n>
@@ -240,7 +234,7 @@ export namespace Tuples {
     ? TakeImpl<tail, Iterator.Prev<it>, [...output, head]>
     : output;
 
-  export interface Take<n extends number> extends HOT.Fn {
+  export interface Take<n extends number> extends Fn {
     output: TakeImpl<
       Extract<this["args"][0], readonly any[]>,
       Iterator.Iterator<n>
@@ -249,16 +243,16 @@ export namespace Tuples {
 
   type TakeWhileImpl<
     xs extends readonly any[],
-    fn extends HOT.Fn,
+    fn extends Fn,
     index extends any[] = [],
     output extends any[] = []
   > = xs extends readonly [infer head, ...infer tail]
-    ? HOT.Call2<fn, head, index["length"]> extends true
+    ? Call2<fn, head, index["length"]> extends true
       ? TakeWhileImpl<tail, fn, [...index, any], [...output, head]>
       : output
     : output;
 
-  export interface TakeWhile<fn extends HOT.Fn> extends HOT.Fn {
+  export interface TakeWhile<fn extends Fn> extends Fn {
     output: TakeWhileImpl<Extract<this["args"][0], readonly any[]>, fn>;
   }
 }

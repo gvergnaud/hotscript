@@ -26,6 +26,8 @@ type result = Pipe<
   - [x] Call
   - [x] Apply
 - [ ] Tuples
+  - [ ] Zip
+  - [ ] Partition
   - [x] Head
   - [x] Tail
   - [x] Last
@@ -35,17 +37,15 @@ type result = Pipe<
   - [x] Drop n
   - [x] Take n
   - [x] TakeWhile
-  - [ ] Zip
-  - [ ] Partition
   - [x] Join separator
   - [x] Map
   - [x] Filter
   - [x] Reduce
   - [x] ReduceRight
 - [ ] Object
-  - [ ] Assign
   - [ ] FromEntries
   - [ ] Entries
+  - [ ] Assign
   - [ ] Pick
   - [ ] PickBy
   - [ ] Omit
