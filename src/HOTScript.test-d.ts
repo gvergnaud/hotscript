@@ -1,25 +1,11 @@
-import {
-  Pipe,
-  PipeRight,
-  Call,
-  Fn,
-  Extends,
-  Numbers,
-  Strings,
-  Tuples,
-  T,
-  O,
-  S,
-  N,
-  U,
-} from "../src";
-import { Equal, Expect } from "./helpers";
+import { describe, assertType, it, expectTypeOf } from 'vitest'
+import { Pipe, Numbers, Tuples, Strings, PipeRight, Call, Fn, Extends, T, O, S } from './HOTScript';
 
 describe("HOTScript", () => {
   describe("Composition", () => {
     it("Pipe", () => {
-      type res1 = Pipe<
-        //  ^?
+      type Result = Pipe<
+        // ^?
         [1, 2, 3, 4, 3, 4],
         [
           Tuples.Map<Numbers.Add<3>>,
@@ -31,11 +17,11 @@ describe("HOTScript", () => {
         ]
       >;
 
-      type tes1 = Expect<Equal<res1, 78>>;
+      assertType<Result>(78)
     });
 
     it("PipeRight", () => {
-      type res1 = PipeRight<
+      type Result = PipeRight<
         //  ^?
         [
           Tuples.Sum,
@@ -48,27 +34,27 @@ describe("HOTScript", () => {
         [1, 2, 3, 4, 3, 4]
       >;
 
-      type tes1 = Expect<Equal<res1, 78>>;
+      assertType<Result>(78)
     });
   });
 
   describe("Tuples", () => {
     it("Head", () => {
-      type res1 = Call<Tuples.Head, [1, 2, 3]>;
+      type Result = Call<Tuples.Head, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 1>>;
+      assertType<Result>(1)
     });
 
     it("Tail", () => {
-      type res1 = Call<Tuples.Tail, [1, 2, 3]>;
+      type Result = Call<Tuples.Tail, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [2, 3]>>;
+      assertType<Result>([2, 3])
     });
 
     it("Last", () => {
-      type res1 = Call<Tuples.Last, [1, 2, 3]>;
+      type Result = Call<Tuples.Last, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 3>>;
+      assertType<Result>(3)
     });
 
     it("Map", () => {
@@ -79,11 +65,9 @@ describe("HOTScript", () => {
         >}`;
       }
 
-      type res1 = Call<Tuples.Map<ToPhrase>, [1, 2, 3]>;
+      type Result = Call<Tuples.Map<ToPhrase>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<
-        Equal<res1, ["number is 1", "number is 2", "number is 3"]>
-      >;
+      assertType<Result>(["number is 1", "number is 2", "number is 3"])
     });
 
     it("Filter", () => {
@@ -91,9 +75,9 @@ describe("HOTScript", () => {
         output: this["args"][0] extends number ? true : false;
       }
 
-      type res1 = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
+      type Result = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
+      assertType<Result>([1, 2, 3])
     });
 
     it("Reduce", () => {
@@ -103,9 +87,9 @@ describe("HOTScript", () => {
           : never;
       }
 
-      type res1 = Call<Tuples.Reduce<[], ToUnaryTupleArray>, [1, 2, 3]>;
+      type Result = Call<Tuples.Reduce<[], ToUnaryTupleArray>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
+      assertType<Result>([[1], [2], [3]])
     });
 
     it("ReduceRight", () => {
@@ -115,12 +99,12 @@ describe("HOTScript", () => {
           : never;
       }
 
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         Tuples.ReduceRight<[], ToUnaryTupleArray>,
         [1, 2, 3]
       >;
-      type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
+      assertType<Result>([[3], [2], [1]]);
     });
 
     it("FlatMap", () => {
@@ -128,9 +112,9 @@ describe("HOTScript", () => {
         output: [this["args"][0], this["args"][0]];
       }
 
-      type res1 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
+      type Result = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+      assertType<Result>([1, 1, 2, 2, 3, 3])
     });
 
     it("Find", () => {
@@ -138,53 +122,53 @@ describe("HOTScript", () => {
         output: this["args"][0] extends number ? true : false;
       }
 
-      type res1 = Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
+      type Result = Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 2>>;
+      assertType<Result>(2)
 
       interface IsSecond extends Fn {
         output: this["args"][1] extends 1 ? true : false;
       }
 
-      type res2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
+      type Result2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, "b">>;
+      assertType<Result2>("b")
     });
 
     it("Drop", () => {
-      type res1 = Call<Tuples.Drop<1>, ["a", "b", "c", 2, "d"]>;
+      type Result = Call<Tuples.Drop<1>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, ["b", "c", 2, "d"]>>;
+      assertType<Result>(["b", "c", 2, "d"])
 
-      type res2 = Call<Tuples.Drop<2>, ["a", "b", "c", 2, "d"]>;
+      type Result2 = Call<Tuples.Drop<2>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, ["c", 2, "d"]>>;
+      assertType<Result2>(["c", 2, "d"])
     });
 
     it("Take", () => {
-      type res1 = Call<Tuples.Take<1>, ["a", "b", "c", 2, "d"]>;
+      type Result = Call<Tuples.Take<1>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, ["a"]>>;
+      assertType<Result>(["a"])
 
-      type res2 = Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
+      type Result2 = Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, ["a", "b"]>>;
+      assertType<Result2>(["a", "b"])
     });
 
     it("TakeWhile", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         Tuples.TakeWhile<Extends<string>>,
         ["a", "b", "c", 2, "d"]
       >;
-      type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
+      assertType<Result>(["a", "b", "c"]);
 
-      type res2 = Call<
+      type Result2 = Call<
         //   ^?
         Tuples.TakeWhile<Extends<number>>,
         [1, 2, "a", "b", "c", 2, "d"]
       >;
-      type tes2 = Expect<Equal<res2, [1, 2]>>;
+      assertType<Result2>([1, 2]);
     });
 
     it("Composition", () => {
@@ -193,7 +177,7 @@ describe("HOTScript", () => {
       }
 
       // prettier-ignore
-      type res = Pipe<
+      type Result = Pipe<
       //    ^?
         [1, 2, 3, 4, 5, 5, 6],
         [
@@ -205,88 +189,87 @@ describe("HOTScript", () => {
         ]
       >;
 
-      type test = Expect<Equal<res, 39>>;
+      assertType<Result>(39);
     });
   });
 
   describe("Objects", () => {
     it("FromEntries", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.FromEntries,
         ["a", string] | ["b", number]
       >;
-      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+      expectTypeOf<Result>().toEqualTypeOf<{ a: string; b: number }>();
     });
 
     it("Entries", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.Entries,
         { a: string; b: number }
       >;
-      type tes1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+      expectTypeOf<Result>().toEqualTypeOf<["a", string] | ["b", number]>();
     });
 
     it("Entries >> FromEntries identity", () => {
-      type res1 = Pipe<{ a: string; b: number }, [O.Entries, O.FromEntries]>;
+      type Result = Pipe<{ a: string; b: number }, [O.Entries, O.FromEntries]>;
       //   ^?
-
-      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+      expectTypeOf<Result>().toEqualTypeOf<{ a: string; b: number }>();
     });
 
     it("MapValues", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.MapValues<S.ToString>,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
+      assertType<Result>({ a: "1", b: "true" });
     });
 
     it("MapKeys", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.MapKeys<S.Prepend<"get_">>,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
+      assertType<Result>({ get_a: 1, get_b: true });
     });
 
     it("Pick", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.PickKey<"a">,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { a: 1 }>>;
+      assertType<Result>({ a: 1 })
     });
 
     it("Omit", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.OmitKey<"a">,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { b: true }>>;
+      assertType<Result>({ b: true })
     });
 
     it("PickBy", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.PickBy<Extends<1>>,
         { a: 1; b: true; c: 1 }
       >;
-      type tes1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
+      assertType<Result>({ a: 1, c: 1 });
     });
 
     it("OmitBy", () => {
-      type res1 = Call<
+      type Result = Call<
         //   ^?
         O.OmitBy<Extends<1>>,
         { a: 1; b: true; c: 1 }
       >;
-      type tes1 = Expect<Equal<res1, { b: true }>>;
+      assertType<Result>({ b: true });
     });
   });
 });
