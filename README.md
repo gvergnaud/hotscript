@@ -6,16 +6,16 @@ A lodash-like library for types, with support for type-level lambda functions.
 
 ```ts
 // prettier-ignore
-type result = Pipe<
-  //  ^? 78
+type res1 = Pipe<
+  //  ^? 95
   [1, 2, 3, 4, 3, 4],
   [
-    T.Map<Add<3>>,
-    S.Join<'.'>,
-    S.Split<'.'>,
-    T.Map<S.ToNumber>,
-    T.Map<N.Add<10>>,
-    T.Sum
+    Tuples.Map<Numbers.Add<3>>,
+    Strings.Join<".">,
+    Strings.Split<".">,
+    Tuples.Map<Strings.ToNumber>,
+    Tuples.Map<Numbers.Add<10>>,
+    Tuples.Sum
   ]
 >;
 
@@ -24,8 +24,27 @@ interface Duplicate extends Fn {
   output: [this["args"][0], this["args"][0]];
 }
 
-type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
+type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;
+//     ^? [[1, 1], [2, 2], [3, 3], [4, 4]]
+type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 //     ^? [1, 1, 2, 2, 3, 3, 4, 4]
+
+type APIUser = Pipe<
+  User,
+  [
+    Objects.OmitBy<Booleans.Equals<symbol>>,
+    Objects.Assign<{ metadata: { newUser: true } }>,
+    Objects.SnakeCaseDeep,
+    Objects.Assign<{ id: string }>
+  ]
+>;
+// turns user into:
+type T = {
+  id: string;
+  metadata: { new_user: true };
+  first_name: string;
+  last_name: string;
+};
 ```
 
 ## TODO
