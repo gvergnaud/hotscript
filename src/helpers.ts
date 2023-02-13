@@ -6,6 +6,10 @@ export type Equal<a, b> = (<T>() => T extends a ? 1 : 2) extends <
 
 export type Expect<a extends true> = a;
 
+// if types are not equal, error "Expected 1 arguments, but got 0"
+export const IsEqual=<T,U>(...args: Equal<T,U> extends true ? [] : [1])=>{
+  //
+}
 export type Some<bools extends boolean[]> = true extends bools[number]
   ? true
   : false;

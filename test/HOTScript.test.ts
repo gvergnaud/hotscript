@@ -18,7 +18,7 @@ import {
   Booleans,
   Args,
 } from "../src/index";
-import { Equal, Expect } from "../src/helpers";
+import { IsEqual } from "../src/helpers";
 
 describe("HOTScript", () => {
   describe("Functions", () => {
@@ -26,32 +26,33 @@ describe("HOTScript", () => {
       // check primitives
       type res1 = Call<F.Identity, string>;
       //   ^?
-      type tes1 = Expect<Equal<res1, string>>;
+      IsEqual<res1, string>()
       type res2 = Call<F.Identity, undefined>;
       //   ^?
-      type tes2 = Expect<Equal<res2, undefined>>;
+      IsEqual<res2, undefined>()
       // check unions
       type res3 = Call<F.Identity, string | number>;
       //   ^?
-      type tes3 = Expect<Equal<res3, string | number>>;
+
+      IsEqual<res3, string | number>()
     });
 
     it("Parameters", () => {
       type res1 = Call<F.Parameters, (a: string, b: number) => void>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [string, number]>>;
+      IsEqual<res1, [string, number]>();
     });
 
     it("Parameter", () => {
       type res1 = Call<F.Parameter<0>, (a: string, b: number) => void>;
       //   ^?
-      type tes1 = Expect<Equal<res1, string>>;
+      IsEqual<res1, string>();
     });
 
     it("Return", () => {
       type res1 = Call<F.Return, (a: string, b: number) => boolean>;
       //   ^?
-      type tes1 = Expect<Equal<res1, boolean>>;
+      IsEqual<res1, boolean>();
     });
   });
 
@@ -70,7 +71,7 @@ describe("HOTScript", () => {
           Tuples.Sum
         ]
       >;
-      type tes1 = Expect<Equal<res1, 124678765435897587654478964568677n>>;
+      IsEqual<res1, 124678765435897587654478964568677n>();
     });
 
     it("PipeRight", () => {
@@ -87,7 +88,7 @@ describe("HOTScript", () => {
         [1, 2, 3, 4, 3, 4]
       >;
 
-      type tes1 = Expect<Equal<res1, 95>>;
+      IsEqual<res1, 95>();
     });
   });
 
@@ -95,19 +96,19 @@ describe("HOTScript", () => {
     it("Head", () => {
       type res1 = Call<Tuples.Head, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 1>>;
+      IsEqual<res1, 1>();
     });
 
     it("Tail", () => {
       type res1 = Call<Tuples.Tail, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [2, 3]>>;
+      IsEqual<res1, [2, 3]>();
     });
 
     it("Last", () => {
       type res1 = Call<Tuples.Last, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 3>>;
+      IsEqual<res1, 3>();
     });
 
     it("Map", () => {
@@ -120,9 +121,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<Tuples.Map<ToPhrase>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<
-        Equal<res1, ["number is 1", "number is 2", "number is 3"]>
-      >;
+      IsEqual<res1, ["number is 1", "number is 2", "number is 3"]>();
     });
 
     it("Filter", () => {
@@ -132,7 +131,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
+      IsEqual<res1, [1, 2, 3]>();
     });
 
     it("Reduce", () => {
@@ -144,7 +143,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<Tuples.Reduce<ToUnaryTupleArray, []>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
+      IsEqual<res1, [[1], [2], [3]]>();
     });
 
     it("ReduceRight", () => {
@@ -159,7 +158,7 @@ describe("HOTScript", () => {
         Tuples.ReduceRight<ToUnaryTupleArray, []>,
         [1, 2, 3]
       >;
-      type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
+      IsEqual<res1, [[3], [2], [1]]>();
     });
 
     it("FlatMap", () => {
@@ -169,7 +168,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+      IsEqual<res1, [1, 1, 2, 2, 3, 3]>();
     });
 
     it("Find", () => {
@@ -179,7 +178,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, 2>>;
+      IsEqual<res1, 2>();
 
       interface IsSecond extends Fn {
         output: this["args"][1] extends 1 ? true : false;
@@ -187,27 +186,27 @@ describe("HOTScript", () => {
 
       type res2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, "b">>;
+      IsEqual<res2, "b">();
     });
 
     it("Drop", () => {
       type res1 = Call<Tuples.Drop<1>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, ["b", "c", 2, "d"]>>;
+      IsEqual<res1, ["b", "c", 2, "d"]>();
 
       type res2 = Call<Tuples.Drop<2>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, ["c", 2, "d"]>>;
+      IsEqual<res2, ["c", 2, "d"]>();
     });
 
     it("Take", () => {
       type res1 = Call<Tuples.Take<1>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, ["a"]>>;
+      IsEqual<res1, ["a"]>();
 
       type res2 = Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
       //   ^?
-      type tes2 = Expect<Equal<res2, ["a", "b"]>>;
+      IsEqual<res2, ["a", "b"]>();
     });
 
     it("TakeWhile", () => {
@@ -216,14 +215,14 @@ describe("HOTScript", () => {
         Tuples.TakeWhile<B.Extends<Args._, string>>,
         ["a", "b", "c", 2, "d"]
       >;
-      type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
+      IsEqual<res1, ["a", "b", "c"]>();
 
       type res2 = Call<
         //   ^?
         Tuples.TakeWhile<B.Extends<Args._, number>>,
         [1, 2, "a", "b", "c", 2, "d"]
       >;
-      type tes2 = Expect<Equal<res2, [1, 2]>>;
+      IsEqual<res2, [1, 2]>();
     });
 
     it("Every", () => {
@@ -232,14 +231,14 @@ describe("HOTScript", () => {
         Tuples.Every<B.Extends<Args._, string>>,
         ["a", "b", "c", "d"]
       >;
-      type tes1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
 
       type res2 = Call<
         //   ^?
         Tuples.Every<B.Extends<Args._, number>>,
         [1, 2, "a", "b", "c", 2, "d"]
       >;
-      type tes2 = Expect<Equal<res2, false>>;
+      IsEqual<res2, false>();
     });
 
     it("Some", () => {
@@ -248,14 +247,14 @@ describe("HOTScript", () => {
         Tuples.Some<B.Extends<Args._, number>>,
         ["a", "b", "c", "d"]
       >;
-      type tes1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
       type res2 = Call<
         //   ^?
         Tuples.Some<B.Extends<Args._, number>>,
         [1, 2, "a", "b", "c", 2, "d"]
       >;
-      type tes2 = Expect<Equal<res2, true>>;
+      IsEqual<res2, true>();
     });
 
     it("Sort", () => {
@@ -264,7 +263,7 @@ describe("HOTScript", () => {
         Tuples.Sort,
         [1, 3, 2, 6, 5, 4]
       >;
-      type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6]>>;
+      IsEqual<res1, [1, 2, 3, 4, 5, 6]>();
     });
 
     it("Composition", () => {
@@ -285,7 +284,7 @@ describe("HOTScript", () => {
         ]
       >;
 
-      type test = Expect<Equal<res, 39>>;
+      IsEqual<res, 39>();
     });
   });
 
@@ -296,7 +295,7 @@ describe("HOTScript", () => {
         O.FromEntries,
         ["a", string] | ["b", number]
       >;
-      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+      IsEqual<res1, { a: string; b: number }>();
     });
 
     it("Entries", () => {
@@ -305,14 +304,14 @@ describe("HOTScript", () => {
         O.Entries,
         { a: string; b: number }
       >;
-      type tes1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+      IsEqual<res1, ["a", string] | ["b", number]>();
     });
 
     it("Entries >> FromEntries identity", () => {
       type res1 = Pipe<{ a: string; b: number }, [O.Entries, O.FromEntries]>;
       //   ^?
 
-      type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+      IsEqual<res1, { a: string; b: number }>();
     });
 
     it("MapValues", () => {
@@ -321,7 +320,7 @@ describe("HOTScript", () => {
         O.MapValues<S.ToString>,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
+      IsEqual<res1, { a: "1"; b: "true" }>();
     });
 
     it("MapKeys", () => {
@@ -330,7 +329,7 @@ describe("HOTScript", () => {
         O.MapKeys<S.Prepend<"get_">>,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
+      IsEqual<res1, { get_a: 1; get_b: true }>();
     });
 
     it("Pick", () => {
@@ -339,7 +338,7 @@ describe("HOTScript", () => {
         O.Pick<"a">,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { a: 1 }>>;
+      IsEqual<res1, { a: 1 }>();
     });
 
     it("Omit", () => {
@@ -348,7 +347,7 @@ describe("HOTScript", () => {
         O.Omit<"a">,
         { a: 1; b: true }
       >;
-      type tes1 = Expect<Equal<res1, { b: true }>>;
+      IsEqual<res1, { b: true }>();
     });
 
     it("PickBy", () => {
@@ -357,7 +356,7 @@ describe("HOTScript", () => {
         O.PickBy<B.Extends<1>>,
         { a: 1; b: true; c: 1 }
       >;
-      type tes1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
+      IsEqual<res1, { a: 1; c: 1 }>();
     });
 
     it("OmitBy", () => {
@@ -366,7 +365,7 @@ describe("HOTScript", () => {
         O.OmitBy<B.Extends<1>>,
         { a: 1; b: true; c: 1 }
       >;
-      type tes1 = Expect<Equal<res1, { b: true }>>;
+      IsEqual<res1, { b: true }>();
     });
 
     describe("Assign", () => {
@@ -376,14 +375,14 @@ describe("HOTScript", () => {
           T.Reduce<O.Assign, {}>,
           [{ a: 1 }, { b: true }, { c: 1 }]
         >;
-        type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
+      IsEqual<res1, { a: 1; b: true; c: 1 }>();
 
         type res2 = Call<
           //   ^?
           T.Reduce<O.Assign, {}>,
           [{ a: 2 }, { b: true }, { c: 2 }]
         >;
-        type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
+      IsEqual<res2, { a: 2; b: true; c: 2 }>();
       });
 
       it("can be called with one pre-filled argument", () => {
@@ -393,22 +392,21 @@ describe("HOTScript", () => {
           [{ a: 2 }, { b: true }, { c: 2 }]
         >;
 
-        type test1 = Expect<
-          Equal<
+       IsEqual<
             res1,
             [
               { new: "new"; a: 2 },
               { new: "new"; b: true },
               { new: "new"; c: 2 }
             ]
-          >
-        >;
+          >()
+        
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<O.Assign<{ a: string }, { b: number }>>;
         //    ^?
-        type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+      IsEqual<res1, { a: string; b: number }>();
       });
     });
 
@@ -418,10 +416,8 @@ describe("HOTScript", () => {
         O.KebabCase,
         { helloWorld: string; userName: string }
       >;
-
-      type test1 = Expect<
-        Equal<res1, { "hello-world": string; "user-name": string }>
-      >;
+      
+      IsEqual<res1, { "hello-world": string; "user-name": string }>();
     });
 
     it("SnakeCase", () => {
@@ -431,9 +427,7 @@ describe("HOTScript", () => {
         { helloWorld: string; userName: string }
       >;
 
-      type test1 = Expect<
-        Equal<res1, { hello_world: string; user_name: string }>
-      >;
+      IsEqual<res1, { hello_world: string; user_name: string }>();
     });
 
     it("CamelCase", () => {
@@ -443,9 +437,7 @@ describe("HOTScript", () => {
         { hello_world: string; user_name: string }
       >;
 
-      type test1 = Expect<
-        Equal<res1, { helloWorld: string; userName: string }>
-      >;
+      IsEqual<res1, { helloWorld: string; userName: string }>();
     });
 
     it("KebabCaseDeep", () => {
@@ -459,9 +451,7 @@ describe("HOTScript", () => {
         }
       >;
 
-      type test1 = Expect<
-        Equal<
-          res1,
+      IsEqual<res1,
           {
             "hello-world": string;
             "current-user": {
@@ -471,8 +461,7 @@ describe("HOTScript", () => {
               "user-name": string;
             }[];
           }
-        >
-      >;
+        >();
     });
 
     it("SnakeCaseDeep", () => {
@@ -486,8 +475,7 @@ describe("HOTScript", () => {
         }
       >;
 
-      type test1 = Expect<
-        Equal<
+      IsEqual<
           res1,
           {
             hello_world: string;
@@ -498,8 +486,7 @@ describe("HOTScript", () => {
               user_name: string;
             }[];
           }
-        >
-      >;
+        >();
     });
 
     it("CamelCaseDeep", () => {
@@ -517,8 +504,7 @@ describe("HOTScript", () => {
         }
       >;
 
-      type test1 = Expect<
-        Equal<
+      IsEqual<
           res1,
           {
             helloWorld: string;
@@ -529,22 +515,21 @@ describe("HOTScript", () => {
               userName: string;
             }[];
           }
-        >
-      >;
+        >();
     });
 
     describe("Get", () => {
       it("should retrieve a deep property", () => {
         type res1 = Eval<O.Get<"a.b.c.d", { a: { b: { c: { d: string } } } }>>;
         //   ^?
-        type test1 = Expect<Equal<res1, string>>;
+      IsEqual<res1, string>();
 
         type res2 = Pipe<
           //  ^?
           { a: { b: { c: { d: string } } } },
           [O.Get<"a.b.c.d">]
         >;
-        type test2 = Expect<Equal<res2, string>>;
+      IsEqual<res2, string>();
       });
 
       it("should support union of objects", () => {
@@ -554,17 +539,17 @@ describe("HOTScript", () => {
 
         type res1 = Eval<O.Get<"a.b.c.d", input>>;
         //    ^?
-        type test1 = Expect<Equal<res1, string | number | undefined>>;
+      IsEqual<res1, string | number | undefined>();
 
         type res2 = Pipe<input, [O.Get<"a.b.c.d">]>;
         //    ^?
-        type test2 = Expect<Equal<res2, string | number | undefined>>;
+      IsEqual<res2, string | number | undefined>();
       });
 
       it("should support arrays", () => {
         type res1 = Eval<O.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
         //   ^?
-        type test1 = Expect<Equal<res1, string>>;
+      IsEqual<res1, string>();
       });
 
       it("should support tuples", () => {
@@ -572,11 +557,11 @@ describe("HOTScript", () => {
         type res1 = Eval<O.Get<"a.b[0].d", input>>;
         //   ^?
 
-        type test1 = Expect<Equal<res1, string>>;
+      IsEqual<res1, string>();
 
         type res2 = Eval<O.Get<"a.b[1]", input>>;
         //   ^?
-        type test2 = Expect<Equal<res2, "hello">>;
+      IsEqual<res2, "hello">();
       });
     });
 
@@ -598,8 +583,7 @@ describe("HOTScript", () => {
         ]
       >;
 
-      type test1 = Expect<
-        Equal<
+      IsEqual<
           APIUser,
           {
             id: string;
@@ -609,8 +593,7 @@ describe("HOTScript", () => {
             first_name: string;
             last_name: string;
           }
-        >
-      >;
+        >();
     });
   });
 
@@ -623,21 +606,21 @@ describe("HOTScript", () => {
         { b: number }
       >;
 
-      type test1 = Expect<Equal<res1, { c: boolean; a: string; b: number }>>;
+      IsEqual<res1, { c: boolean; a: string; b: number }>();
 
       type res2 = Call<
         //   ^?
         F.ApplyPartial<N.Add, [2]>,
         2
       >;
-      type test2 = Expect<Equal<res2, 4>>;
+      IsEqual<res2, 4>();
 
       type res3 = Pipe<
         //   ^?
         3,
         [N.Add<3>, N.Add<3>, N.Add<3>, N.Add<3>]
       >;
-      type test3 = Expect<Equal<res3, 15>>;
+      IsEqual<res3, 15>();
 
       type res4 = Pipe<
         //   ^?
@@ -649,8 +632,7 @@ describe("HOTScript", () => {
           F.ApplyPartial<O.Assign, [{ d: bigint }]>
         ]
       >;
-      type test4 = Expect<
-        Equal<
+      IsEqual<
           res4,
           {
             d: bigint;
@@ -658,8 +640,7 @@ describe("HOTScript", () => {
             b: number;
             a: string;
           }
-        >
-      >;
+        >();
     });
 
     describe("GroupBy", () => {
@@ -675,8 +656,7 @@ describe("HOTScript", () => {
           { type: "video"; src: 2 }
         ]
       >;
-      type tes1 = Expect<
-        Equal<
+      IsEqual<
           res1,
           {
             img: [
@@ -696,8 +676,7 @@ describe("HOTScript", () => {
               }
             ];
           }
-        >
-      >;
+        >();
     });
   });
 
@@ -707,21 +686,21 @@ describe("HOTScript", () => {
         type res1 = Call<Tuples.Reduce<Numbers.Add, 0>, [1, 2, 3]>;
         //    ^?
 
-        type test1 = Expect<Equal<res1, 6>>;
+      IsEqual<res1, 6>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Numbers.Add<1>>, [1, 2, 3]>;
         //    ^?
 
-        type test1 = Expect<Equal<res1, [2, 3, 4]>>;
+      IsEqual<res1, [2, 3, 4]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Add<1, 2>>;
         //    ^?
 
-        type test1 = Expect<Equal<res1, 3>>;
+      IsEqual<res1, 3>();
       });
     });
 
@@ -729,23 +708,23 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Reduce<Numbers.Sub, 0>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, -6>>;
+      IsEqual<res1, -6>();
 
         type res2 = Call2<Numbers.Sub, 0, 1>;
         //    ^?
-        type test2 = Expect<Equal<res2, -1>>;
+      IsEqual<res2, -1>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Numbers.Sub<Args._, 1>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [0, 1, 2]>>;
+      IsEqual<res1, [0, 1, 2]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Sub<1, 2>>;
         //    ^?
-        type test1 = Expect<Equal<res1, -1>>;
+      IsEqual<res1, -1>();
       });
     });
 
@@ -753,27 +732,27 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Reduce<Numbers.Mul, 2>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, 12>>;
+      IsEqual<res1, 12>();
 
         type res2 = Call2<Numbers.Mul, 3, 2>;
         //    ^?
-        type test2 = Expect<Equal<res2, 6>>;
+      IsEqual<res2, 6>();
 
         type res3 = Call2<Numbers.Mul, 3, -2>;
         //    ^?
-        type test3 = Expect<Equal<res3, -6>>;
+      IsEqual<res3, -6>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Numbers.Mul<Args._, 2>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [2, 4, 6]>>;
+      IsEqual<res1, [2, 4, 6]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Mul<3, 2>>;
         //    ^?
-        type test1 = Expect<Equal<res1, 6>>;
+      IsEqual<res1, 6>();
       });
     });
 
@@ -781,23 +760,23 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Reduce<Numbers.Div, 20>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, 3>>;
+      IsEqual<res1, 3>();
 
         type res2 = Call2<Numbers.Div, 6, 2>;
         //    ^?
-        type test2 = Expect<Equal<res2, 3>>;
+      IsEqual<res2, 3>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Numbers.Div<Args._, 2>>, [2, 4, 6]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [1, 2, 3]>>;
+      IsEqual<res1, [1, 2, 3]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Div<6, 2>>;
         //    ^?
-        type test1 = Expect<Equal<res1, 3>>;
+      IsEqual<res1, 3>();
       });
     });
 
@@ -805,19 +784,19 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res2 = Call2<Numbers.Mod, 5, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, 2>>;
+      IsEqual<res2, 2>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Numbers.Mod<Args._, 5>>, [2, 4, 6]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [2, 4, 1]>>;
+      IsEqual<res1, [2, 4, 1]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Mod<5, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, 2>>;
+      IsEqual<res1, 2>();
       });
     });
 
@@ -825,13 +804,13 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.Negate>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [-1, -2, -3]>>;
+      IsEqual<res1, [-1, -2, -3]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Negate<100>>;
         //    ^?
-        type test1 = Expect<Equal<res1, -100>>;
+      IsEqual<res1, -100>();
       });
     });
 
@@ -839,13 +818,13 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.Abs>, [-1, 2, -3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [1, 2, 3]>>;
+      IsEqual<res1, [1, 2, 3]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Abs<-100>>;
         //    ^?
-        type test1 = Expect<Equal<res1, 100>>;
+      IsEqual<res1, 100>();
       });
     });
 
@@ -853,27 +832,27 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call<Tuples.Reduce<Numbers.Power, 2>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, 64>>;
+      IsEqual<res1, 64>();
 
         type res2 = Call2<Numbers.Power, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, 8>>;
+      IsEqual<res2, 8>();
 
         type res3 = Call2<Numbers.Power, 2, -3>;
         //    ^?
-        type test3 = Expect<Equal<res3, 0>>;
+      IsEqual<res3, 0>();
       });
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.Power<Args._, 2>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [1, 4, 9]>>;
+      IsEqual<res1, [1, 4, 9]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Power<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, 8>>;
+      IsEqual<res1, 8>();
       });
     });
 
@@ -881,27 +860,27 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call2<Numbers.Compare, 3, 2>;
         //    ^?
-        type test1 = Expect<Equal<res1, 1>>;
+      IsEqual<res1, 1>();
 
         type res2 = Call2<Numbers.Compare, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, -1>>;
+      IsEqual<res2, -1>();
 
         type res3 = Call2<Numbers.Compare, 2, 2>;
         //    ^?
-        type test3 = Expect<Equal<res3, 0>>;
+      IsEqual<res3, 0>();
       });
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.Compare<Args._, 2>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [-1, 0, 1]>>;
+      IsEqual<res1, [-1, 0, 1]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.Compare<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, -1>>;
+      IsEqual<res1, -1>();
       });
     });
 
@@ -909,27 +888,27 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call2<Numbers.LessThan, 3, 2>;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
         type res2 = Call2<Numbers.LessThan, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, true>>;
+      IsEqual<res2, true>();
 
         type res3 = Call2<Numbers.LessThan, 2, 2>;
         //    ^?
-        type test3 = Expect<Equal<res3, false>>;
+      IsEqual<res3, false>();
       });
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.LessThan<Args._, 2>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [true, false, false]>>;
+      IsEqual<res1, [true, false, false]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.LessThan<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
       });
     });
 
@@ -937,15 +916,15 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call2<Numbers.LessThanOrEqual, 3, 2>;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
         type res2 = Call2<Numbers.LessThanOrEqual, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, true>>;
+      IsEqual<res2, true>();
 
         type res3 = Call2<Numbers.LessThanOrEqual, 2, 2>;
         //    ^?
-        type test3 = Expect<Equal<res3, true>>;
+      IsEqual<res3, true>();
       });
 
       it("can be called with one pre-filled arguments", () => {
@@ -954,13 +933,13 @@ describe("HOTScript", () => {
           [1, 2, 3]
         >;
         //    ^?
-        type test1 = Expect<Equal<res1, [true, true, false]>>;
+      IsEqual<res1, [true, true, false]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.LessThanOrEqual<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
       });
     });
 
@@ -968,27 +947,27 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call2<Numbers.GreaterThan, 3, 2>;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
 
         type res2 = Call2<Numbers.GreaterThan, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, false>>;
+      IsEqual<res2, false>();
 
         type res3 = Call2<Numbers.GreaterThan, 2, 2>;
         //    ^?
-        type test3 = Expect<Equal<res3, false>>;
+      IsEqual<res3, false>();
       });
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<Tuples.Map<Numbers.GreaterThan<Args._, 2>>, [1, 2, 3]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [false, false, true]>>;
+      IsEqual<res1, [false, false, true]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.GreaterThan<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
       });
     });
 
@@ -996,15 +975,15 @@ describe("HOTScript", () => {
       it("can be called without any pre-filled arguments", () => {
         type res1 = Call2<Numbers.GreaterThanOrEqual, 3, 2>;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
 
         type res2 = Call2<Numbers.GreaterThanOrEqual, 2, 3>;
         //    ^?
-        type test2 = Expect<Equal<res2, false>>;
+      IsEqual<res2, false>();
 
         type res3 = Call2<Numbers.GreaterThanOrEqual, 2, 2>;
         //    ^?
-        type test3 = Expect<Equal<res3, true>>;
+      IsEqual<res3, true>();
       });
 
       it("can be called with one pre-filled arguments", () => {
@@ -1013,13 +992,13 @@ describe("HOTScript", () => {
           [1, 2, 3]
         >;
         //    ^?
-        type test1 = Expect<Equal<res1, [false, true, true]>>;
+      IsEqual<res1, [false, true, true]>();
       });
 
       it("can be called with 1 pre-filled arguments", () => {
         type res1 = Eval<Numbers.GreaterThanOrEqual<2, 3>>;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
       });
     });
   });
@@ -1028,79 +1007,79 @@ describe("HOTScript", () => {
     it("Join", () => {
       type res1 = Call<Strings.Join<".">, [1, 2, 3]>;
       //    ^?
-      type test1 = Expect<Equal<res1, "1.2.3">>;
+      IsEqual<res1, "1.2.3">();
     });
 
     it("Split", () => {
       type res1 = Call<Strings.Split<".">, "1.2.3">;
       //    ^?
-      type test1 = Expect<Equal<res1, ["1", "2", "3"]>>;
+      IsEqual<res1, ["1", "2", "3"]>();
     });
 
     it("ToNumber", () => {
       type res1 = Call<Strings.ToNumber, "11">;
       //    ^?
-      type test1 = Expect<Equal<res1, 11>>;
+      IsEqual<res1, 11>();
     });
 
     it("ToString", () => {
       type res1 = Call<Strings.ToString, 11>;
       //    ^?
-      type test1 = Expect<Equal<res1, "11">>;
+      IsEqual<res1, "11">();
     });
 
     it("Prepend", () => {
       type res1 = Call<Strings.Prepend<"1 ">, "abc">;
       //    ^?
-      type test1 = Expect<Equal<res1, "1 abc">>;
+      IsEqual<res1, "1 abc">();
     });
 
     it("Append", () => {
       type res1 = Call<Strings.Append<" 1">, "abc">;
       //    ^?
-      type test1 = Expect<Equal<res1, "abc 1">>;
+      IsEqual<res1, "abc 1">();
     });
 
     it("Uppercase", () => {
       type res1 = Call<Strings.Uppercase, "abc">;
       //    ^?
-      type test1 = Expect<Equal<res1, "ABC">>;
+      IsEqual<res1, "ABC">();
     });
 
     it("Lowercase", () => {
       type res1 = Call<Strings.Lowercase, "ABC">;
       //    ^?
-      type test1 = Expect<Equal<res1, "abc">>;
+      IsEqual<res1, "abc">();
     });
 
     it("Capitalize", () => {
       type res1 = Call<Strings.Capitalize, "abc">;
       //    ^?
-      type test1 = Expect<Equal<res1, "Abc">>;
+      IsEqual<res1, "Abc">();
     });
 
     it("Uncapitalize", () => {
       type res1 = Call<Strings.Uncapitalize, "ABC">;
       //    ^?
-      type test1 = Expect<Equal<res1, "aBC">>;
+      IsEqual<res1, "aBC">();
     });
 
     it("SnakeCase", () => {
       type res1 = Call<Strings.SnakeCase, "helloWorldYo">;
       //    ^?
-      type test1 = Expect<Equal<res1, "hello_world_yo">>;
+      IsEqual<res1, "hello_world_yo">();
     });
 
     it("KebabCase", () => {
       type res1 = Call<Strings.KebabCase, "helloWorldYo">;
       //    ^?
-      type test1 = Expect<Equal<res1, "hello-world-yo">>;
+      IsEqual<res1, "hello-world-yo">();
     });
 
     it("CamelCase", () => {
       type res1 = Call<Strings.CamelCase, "hello_world_yo">;
       //    ^?
-      type test1 = Expect<Equal<res1, "helloWorldYo">>;
+      IsEqual<res1, "helloWorldYo">();
     });
   });
 
@@ -1112,31 +1091,31 @@ describe("HOTScript", () => {
           [true, true, false]
         >;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Booleans.And<true>>, [true, false, true]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [true, false, true]>>;
+      IsEqual<res1, [true, false, true]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Booleans.And<true, true>>;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
 
         type res2 = Eval<Booleans.And<false, false>>;
         //    ^?
-        type test2 = Expect<Equal<res2, false>>;
+      IsEqual<res2, false>();
 
         type res3 = Eval<Booleans.And<true, false>>;
         //    ^?
-        type test3 = Expect<Equal<res3, false>>;
+      IsEqual<res3, false>();
 
         type res4 = Eval<Booleans.And<false, true>>;
         //    ^?
-        type test4 = Expect<Equal<res4, false>>;
+      IsEqual<res4, false>();
       });
     });
 
@@ -1147,68 +1126,68 @@ describe("HOTScript", () => {
           [false, true, false]
         >;
         //    ^?
-        type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
       });
 
       it("can be called with one pre-filled argument", () => {
         type res1 = Call<Tuples.Map<Booleans.Or<true>>, [true, false, true]>;
         //    ^?
-        type test1 = Expect<Equal<res1, [true, true, true]>>;
+      IsEqual<res1, [true, true, true]>();
       });
 
       it("can be called with 2 pre-filled arguments", () => {
         type res1 = Eval<Booleans.Or<false, false>>;
         //    ^?
-        type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
         type res2 = Eval<Booleans.Or<true, false>>;
         //    ^?
-        type test2 = Expect<Equal<res2, true>>;
+      IsEqual<res2, true>();
 
         type res3 = Eval<Booleans.Or<false, true>>;
         //    ^?
-        type test3 = Expect<Equal<res3, true>>;
+      IsEqual<res3, true>();
 
         type res4 = Eval<Booleans.Or<true, true>>;
         //    ^?
-        type test4 = Expect<Equal<res4, true>>;
+      IsEqual<res4, true>();
       });
     });
 
     it("Not", () => {
       type res1 = Call<Booleans.Not, true>;
       //    ^?
-      type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
       type res2 = Eval<Booleans.Not<true>>;
       //    ^?
-      type test2 = Expect<Equal<res2, false>>;
+      IsEqual<res2, false>();
     });
 
     it("Extends", () => {
       type res1 = Call<Booleans.Extends<".">, [1, 2, 3]>;
       //    ^?
-      type test1 = Expect<Equal<res1, false>>;
+      IsEqual<res1, false>();
 
       type res2 = Eval<Booleans.Extends<"a", string>>;
       //    ^?
-      type test2 = Expect<Equal<res2, true>>;
+      IsEqual<res2, true>();
 
       type res3 = Eval<Booleans.Extends<string, "a">>;
       //    ^?
-      type test3 = Expect<Equal<res3, false>>;
+      IsEqual<res3, false>();
     });
 
     it("Equals", () => {
       type res1 = Call<Booleans.Equals<".">, ".">;
       //    ^?
-      type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
     });
 
     it("DoesNotExtends", () => {
       type res1 = Call<Booleans.DoesNotExtends<"a">, "b">;
       //    ^?
-      type test1 = Expect<Equal<res1, true>>;
+      IsEqual<res1, true>();
     });
   });
 
@@ -1216,18 +1195,18 @@ describe("HOTScript", () => {
     describe("Exclude", () => {
       type res1 = Pipe<"a" | "b" | "c", [U.Exclude<"a">]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, "b" | "c">>;
+      IsEqual<res1, "b" | "c">();
     });
 
     describe("Extract", () => {
       type res1 = Pipe<"a" | "b" | "c", [U.Extract<"a" | "b">]>;
-      type tes1 = Expect<Equal<res1, "a" | "b">>;
+      IsEqual<res1, "a" | "b">();
     });
 
     describe("ExcludeBy", () => {
       type res1 = Pipe<"a" | "b" | "c", [U.ExcludeBy<B.Extends<"a">>]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, "b" | "c">>;
+      IsEqual<res1, "b" | "c">();
     });
 
     describe("ExtractBy", () => {
@@ -1236,7 +1215,7 @@ describe("HOTScript", () => {
         "a" | "b" | "c",
         [U.ExtractBy<F.Compose<[B.Not, B.Extends<"a">]>>]
       >;
-      type tes1 = Expect<Equal<res1, "b" | "c">>;
+      IsEqual<res1, "b" | "c">();
     });
 
     describe("Map", () => {
@@ -1246,7 +1225,7 @@ describe("HOTScript", () => {
 
       type res1 = Pipe<"a" | "b" | "c", [U.Map<ToTuple>]>;
       //   ^?
-      type tes1 = Expect<Equal<res1, ["a"] | ["b"] | ["c"]>>;
+      IsEqual<res1, ["a"] | ["b"] | ["c"]>();
     });
   });
 });
