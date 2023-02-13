@@ -44,7 +44,7 @@ export namespace Objects {
     output: Call<MapKeys<Strings.SnakeCase>, this["args"][0]>;
   }
 
-  export interface CamelizeKeys extends Fn {
+  export interface CamelCase extends Fn {
     output: Call<MapKeys<Strings.CamelCase>, this["args"][0]>;
   }
 
@@ -70,7 +70,7 @@ export namespace Objects {
     output: Call<MapKeysDeep<Strings.SnakeCase>, this["args"][0]>;
   }
 
-  export interface CamelizeKeysDeep extends Fn {
+  export interface CamelCaseDeep extends Fn {
     output: Call<MapKeysDeep<Strings.CamelCase>, this["args"][0]>;
   }
 

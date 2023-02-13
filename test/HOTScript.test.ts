@@ -394,10 +394,10 @@ describe("HOTScript", () => {
       >;
     });
 
-    it("CamelizeKeys", () => {
+    it("CamelCase", () => {
       type res1 = Call<
         //   ^?
-        O.CamelizeKeys,
+        O.CamelCase,
         { hello_world: string; user_name: string }
       >;
 
@@ -460,10 +460,10 @@ describe("HOTScript", () => {
       >;
     });
 
-    it("CamelizeKeysDeep", () => {
+    it("CamelCaseDeep", () => {
       type res1 = Call<
         //   ^?
-        O.CamelizeKeysDeep,
+        O.CamelCaseDeep,
         {
           hello_world: string;
           current_user: {

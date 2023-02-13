@@ -137,64 +137,6 @@ export type KebabCase<
   ? str
   : output;
 
-/**
- * Converts object keys to camelCase.
- */
-export type CamelizeKeys<obj> = {
-  [key in keyof obj as CamelCase<key>]: obj[key];
-};
-
-/**
- * Converts object keys to snake_case.
- */
-export type SnakeCase<obj> = {
-  [key in keyof obj as SnakeCase<key>]: obj[key];
-};
-
-/**
- * Converts object keys to kebab-case.
- */
-export type KebabCase<obj> = {
-  [key in keyof obj as KebabCase<key>]: obj[key];
-};
-
-type CaseType = "camel" | "snake" | "kebab";
-
-// Type-Level TypeScript being a lazy language,
-// Only the correct key will be evaluated:
-type UpdateCase<str, type extends CaseType> = {
-  camel: CamelCase<str>;
-  snake: SnakeCase<str>;
-  kebab: KebabCase<str>;
-}[type];
-
-type UpdateCaseDeep<obj, type extends CaseType> = Prettify<{
-  [key in keyof obj as UpdateCase<key, type>]: obj[key] extends infer value
-    ? value extends any[]
-      ? // special case if the current value is an array to only convert
-        // keys of members of this array but not the array itself:
-        { [index in keyof value]: UpdateCaseDeep<value[index], type> }
-      : value extends {}
-      ? UpdateCaseDeep<value, type>
-      : value
-    : never;
-}>;
-
-/**
- * Recursively converts all keys within an object to snake_case.
- */
-export type CamelizeKeysDeep<obj> = UpdateCaseDeep<obj, "camel">;
-
-/**
- * Recursively converts all keys within an object to snake_case.
- */
-export type SnakeCaseDeep<obj> = UpdateCaseDeep<obj, "snake">;
-
-/**
- * Recursively converts all keys within an object to kebab-case.
- */
-export type KebabCaseDeep<obj> = UpdateCaseDeep<obj, "kebab">;
-
 export type IsTuple<a extends readonly any[]> = a extends
   | readonly []
   | readonly [any, ...any]
