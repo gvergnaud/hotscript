@@ -3,7 +3,6 @@ import {
   PipeRight,
   Call,
   Fn,
-  IdentityFn,
   Extends,
   Call2,
   Eval,
@@ -23,14 +22,14 @@ describe("HOTScript", () => {
   describe("Functions", () => {
     it("Identity", () => {
       // check primitives
-      type res1 = Call<IdentityFn, string>;
+      type res1 = Call<F.Identity, string>;
       //   ^?
       type tes1 = Expect<Equal<res1, string>>;
-      type res2 = Call<IdentityFn, undefined>;
+      type res2 = Call<F.Identity, undefined>;
       //   ^?
       type tes2 = Expect<Equal<res2, undefined>>;
       // check unions
-      type res3 = Call<IdentityFn, string | number>;
+      type res3 = Call<F.Identity, string | number>;
       //   ^?
       type tes3 = Expect<Equal<res3, string | number>>;
     });
