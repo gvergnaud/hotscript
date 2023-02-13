@@ -1,3 +1,10 @@
+import {
+  AnyTuple,
+  Prettify,
+  RemoveUnknownArrayConstraint,
+  UnionToIntersection,
+} from "./helpers";
+
 export interface Fn {
   args: unknown[];
   output: unknown;
@@ -49,6 +56,42 @@ export type PipeRight<xs extends Fn[], init> = Tuples.ReduceRightImpl<
 
 export interface Extends<T> extends Fn {
   output: this["args"][0] extends T ? true : false;
+}
+
+export interface DoesNotExtends<T> extends Fn {
+  output: this["args"][0] extends T ? false : true;
+}
+
+/**
+ * Functions
+ */
+export namespace Functions {
+  export type _ = "@hotscript/placeholder";
+
+  type MergePartialArgs<
+    inputArgs extends any[],
+    partialArgs extends any[],
+    output extends any[] = []
+  > = partialArgs extends [infer partialFirst, ...infer partialRest]
+    ? partialFirst extends _
+      ? inputArgs extends [infer inputFirst, ...infer inputRest]
+        ? MergePartialArgs<inputRest, partialRest, [...output, inputFirst]>
+        : [...output, ...Call<Tuples.Filter<DoesNotExtends<_>>, partialRest>]
+      : MergePartialArgs<inputArgs, partialRest, [...output, partialFirst]>
+    : [...output, ...inputArgs];
+
+  interface PipeableApplyPartial<fn extends Fn, partialArgs extends any[]>
+    extends Fn {
+    output: Apply<
+      fn,
+      MergePartialArgs<RemoveUnknownArrayConstraint<this["args"]>, partialArgs>
+    >;
+  }
+
+  export type ApplyPartial<
+    fn extends Fn,
+    args extends any[]
+  > = PipeableApplyPartial<fn, args>;
 }
 
 /**
@@ -172,7 +215,7 @@ export namespace Tuples {
     ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
     : acc;
 
-  export interface Reduce<init, fn extends Fn> extends Fn {
+  export interface Reduce<fn extends Fn, init> extends Fn {
     output: Tuples.ReduceImpl<this["args"][0], init, fn>;
   }
 
@@ -183,7 +226,7 @@ export namespace Tuples {
     ? ReduceRightImpl<rest, Call2<fn, acc, last>, fn>
     : acc;
 
-  export interface ReduceRight<init, fn extends Fn> extends Fn {
+  export interface ReduceRight<fn extends Fn, init> extends Fn {
     output: Tuples.ReduceRightImpl<this["args"][0], init, fn>;
   }
 
@@ -347,6 +390,14 @@ export namespace Objects {
   export interface OmitBy<fn extends Fn> extends Fn {
     output: OmitByImpl<this["args"][0], fn>;
   }
+
+  type AssignImpl<xs extends readonly any[]> = Prettify<
+    UnionToIntersection<xs[number]>
+  >;
+
+  export interface Assign extends Fn {
+    output: AssignImpl<this["args"]>;
+  }
 }
 
 /**
@@ -368,4 +419,11 @@ export namespace Iterator {
     : [];
 }
 
-export { Objects as O, Unions as U, Strings as S, Numbers as N, Tuples as T };
+export {
+  Objects as O,
+  Unions as U,
+  Strings as S,
+  Numbers as N,
+  Tuples as T,
+  Functions as F,
+};

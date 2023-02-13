@@ -30,11 +30,12 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 
 ## TODO
 
-- [ ] Composition
+- [ ] Function
   - [x] Pipe
   - [x] PipeRight
   - [x] Call
   - [x] Apply
+  - [x] ApplyPartial
 - [ ] Tuples
   - [ ] Zip
   - [ ] Partition
@@ -58,25 +59,22 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] MapValues
   - [x] MapKeys
   - [ ] GroupBy
-  - [ ] Assign
+  - [x] Assign
   - [x] Pick
   - [x] PickBy
   - [x] Omit
   - [x] OmitBy
 - [ ] Union
-  - [ ] Assign
-  - [ ] FromEntries
-  - [ ] Entries
   - [ ] Extract
   - [ ] ExtractBy
   - [ ] Exclude
   - [ ] ExcludeBy
 - [ ] String
-  - [ ] Concat
+  - [x] ToString
+  - [x] ToNumber
   - [ ] Uppercase
   - [ ] Lowercase
   - [ ] Capitalize
   - [ ] Uncapitalize
-  - [ ] Split separator
+  - [x] Split separator
   - [ ] Words
-  - [ ] Reduce

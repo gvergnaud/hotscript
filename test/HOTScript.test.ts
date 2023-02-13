@@ -12,8 +12,10 @@ import {
   S,
   N,
   U,
+  F,
+  Call2,
 } from "../src";
-import { Equal, Expect } from "./helpers";
+import { Equal, Expect } from "../src/helpers";
 
 describe("HOTScript", () => {
   describe("Composition", () => {
@@ -103,7 +105,7 @@ describe("HOTScript", () => {
           : never;
       }
 
-      type res1 = Call<Tuples.Reduce<[], ToUnaryTupleArray>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Reduce<ToUnaryTupleArray, []>, [1, 2, 3]>;
       //   ^?
       type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
     });
@@ -117,7 +119,7 @@ describe("HOTScript", () => {
 
       type res1 = Call<
         //   ^?
-        Tuples.ReduceRight<[], ToUnaryTupleArray>,
+        Tuples.ReduceRight<ToUnaryTupleArray, []>,
         [1, 2, 3]
       >;
       type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
@@ -287,6 +289,76 @@ describe("HOTScript", () => {
         { a: 1; b: true; c: 1 }
       >;
       type tes1 = Expect<Equal<res1, { b: true }>>;
+    });
+
+    it("Assign", () => {
+      type res1 = Call<
+        //   ^?
+        T.Reduce<O.Assign, {}>,
+        [{ a: 1 }, { b: true }, { c: 1 }]
+      >;
+      type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
+
+      type res2 = Call<
+        //   ^?
+        T.Reduce<O.Assign, {}>,
+        [{ a: 2 }, { b: true }, { c: 2 }]
+      >;
+      type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
+    });
+  });
+
+  describe("Function", () => {
+    it("ApplyPartial", () => {
+      type res1 = Call2<
+        //   ^?
+        F.ApplyPartial<O.Assign, [F._, F._, { c: boolean }]>,
+        { a: string },
+        { b: number }
+      >;
+
+      type test1 = Expect<Equal<res1, { c: boolean; a: string; b: number }>>;
+
+      type res2 = Call<
+        //   ^?
+        F.ApplyPartial<N.Add2, [2]>,
+        2
+      >;
+      type test2 = Expect<Equal<res2, 4>>;
+
+      type res3 = Pipe<
+        //   ^?
+        3,
+        [
+          F.ApplyPartial<N.Add2, [3]>,
+          F.ApplyPartial<N.Add2, [3]>,
+          F.ApplyPartial<N.Add2, [3]>,
+          F.ApplyPartial<N.Add2, [3]>
+        ]
+      >;
+      type test3 = Expect<Equal<res3, 15>>;
+
+      type res4 = Pipe<
+        //   ^?
+        {},
+        [
+          F.ApplyPartial<O.Assign, [{ a: string }]>,
+          F.ApplyPartial<O.Assign, [{ b: number }]>,
+          F.ApplyPartial<O.Assign, [{ c: boolean }]>,
+          F.ApplyPartial<O.Assign, [{ d: bigint }]>
+        ]
+      >;
+      type test4 = Expect<
+        Equal<
+          res4,
+          {
+            d: bigint;
+            c: boolean;
+            b: number;
+            a: string;
+          }
+        >
+      >;
     });
   });
 });
