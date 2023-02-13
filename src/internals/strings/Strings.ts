@@ -36,7 +36,9 @@ export namespace Strings {
   }
 
   export interface ToNumber extends Fn {
-    output: this["args"][0] extends `${infer n extends number}` ? n : never;
+    output: this["args"][0] extends `${infer n extends number | bigint}`
+      ? n
+      : never;
   }
 
   export interface ToString extends Fn {
