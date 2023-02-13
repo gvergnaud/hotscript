@@ -36,11 +36,11 @@ export namespace Objects {
     output: MapKeysImpl<this["args"][0], fn>;
   }
 
-  export interface KebabizeKeys extends Fn {
+  export interface KebabCase extends Fn {
     output: Call<MapKeys<Strings.KebabCase>, this["args"][0]>;
   }
 
-  export interface SnakizeKeys extends Fn {
+  export interface SnakeCase extends Fn {
     output: Call<MapKeys<Strings.SnakeCase>, this["args"][0]>;
   }
 
@@ -62,11 +62,11 @@ export namespace Objects {
     output: MapKeysDeepImpl<this["args"][0], fn>;
   }
 
-  export interface KebabizeKeysDeep extends Fn {
+  export interface KebabCaseDeep extends Fn {
     output: Call<MapKeysDeep<Strings.KebabCase>, this["args"][0]>;
   }
 
-  export interface SnakizeKeysDeep extends Fn {
+  export interface SnakeCaseDeep extends Fn {
     output: Call<MapKeysDeep<Strings.SnakeCase>, this["args"][0]>;
   }
 

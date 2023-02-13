@@ -370,10 +370,10 @@ describe("HOTScript", () => {
       });
     });
 
-    it("KebabizeKeys", () => {
+    it("KebabCase", () => {
       type res1 = Call<
         //   ^?
-        O.KebabizeKeys,
+        O.KebabCase,
         { helloWorld: string; userName: string }
       >;
 
@@ -382,10 +382,10 @@ describe("HOTScript", () => {
       >;
     });
 
-    it("SnakizeKeys", () => {
+    it("SnakeCase", () => {
       type res1 = Call<
         //   ^?
-        O.SnakizeKeys,
+        O.SnakeCase,
         { helloWorld: string; userName: string }
       >;
 
@@ -406,10 +406,10 @@ describe("HOTScript", () => {
       >;
     });
 
-    it("KebabizeKeysDeep", () => {
+    it("KebabCaseDeep", () => {
       type res1 = Call<
         //   ^?
-        O.KebabizeKeysDeep,
+        O.KebabCaseDeep,
         {
           helloWorld: string;
           currentUser: { userName: string };
@@ -433,10 +433,10 @@ describe("HOTScript", () => {
       >;
     });
 
-    it("SnakizeKeysDeep", () => {
+    it("SnakeCaseDeep", () => {
       type res1 = Call<
         //   ^?
-        O.SnakizeKeysDeep,
+        O.SnakeCaseDeep,
         {
           helloWorld: string;
           currentUser: { userName: string };
@@ -504,7 +504,7 @@ describe("HOTScript", () => {
         [
           O.OmitBy<Booleans.Equals<symbol>>,
           O.Assign<{ metadata: { newUser: true } }>,
-          O.SnakizeKeysDeep,
+          O.SnakeCaseDeep,
           O.Assign<{ id: string }>
         ]
       >;

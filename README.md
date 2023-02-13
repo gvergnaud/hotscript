@@ -66,12 +66,12 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] PickBy
   - [x] Omit
   - [x] OmitBy
-  - [x] CamelizeKeys
-  - [x] CamelizeKeysDeep
-  - [x] SnakizeKeys
-  - [x] SnakizeKeysDeep
-  - [x] KebabizeKeys
-  - [x] KebabizeKeysDeep
+  - [x] CamelCase
+  - [x] CamelCaseDeep
+  - [x] SnakeCase
+  - [x] SnakeCaseDeep
+  - [x] KebabCase
+  - [x] KebabCaseDeep
 - [ ] Union
   - [x] Map
   - [x] Extract

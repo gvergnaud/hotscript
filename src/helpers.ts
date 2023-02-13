@@ -147,14 +147,14 @@ export type CamelizeKeys<obj> = {
 /**
  * Converts object keys to snake_case.
  */
-export type SnakizeKeys<obj> = {
+export type SnakeCase<obj> = {
   [key in keyof obj as SnakeCase<key>]: obj[key];
 };
 
 /**
  * Converts object keys to kebab-case.
  */
-export type KebabizeKeys<obj> = {
+export type KebabCase<obj> = {
   [key in keyof obj as KebabCase<key>]: obj[key];
 };
 
@@ -188,12 +188,12 @@ export type CamelizeKeysDeep<obj> = UpdateCaseDeep<obj, "camel">;
 /**
  * Recursively converts all keys within an object to snake_case.
  */
-export type SnakizeKeysDeep<obj> = UpdateCaseDeep<obj, "snake">;
+export type SnakeCaseDeep<obj> = UpdateCaseDeep<obj, "snake">;
 
 /**
  * Recursively converts all keys within an object to kebab-case.
  */
-export type KebabizeKeysDeep<obj> = UpdateCaseDeep<obj, "kebab">;
+export type KebabCaseDeep<obj> = UpdateCaseDeep<obj, "kebab">;
 
 export type IsTuple<a extends readonly any[]> = a extends
   | readonly []
