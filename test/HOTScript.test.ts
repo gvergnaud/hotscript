@@ -17,6 +17,7 @@ import {
   F,
 } from "../src/index";
 import { Equal, Expect } from "../src/helpers";
+import { DoesNotExtends } from "../src/internals/core/Core";
 
 describe("HOTScript", () => {
   describe("Composition", () => {
@@ -454,9 +455,22 @@ describe("HOTScript", () => {
       //   ^?
       type tes1 = Expect<Equal<res1, "b" | "c">>;
     });
+
     describe("Extract", () => {
       type res1 = Pipe<"a" | "b" | "c", [U.Extract<"a" | "b">]>;
       type tes1 = Expect<Equal<res1, "a" | "b">>;
+    });
+
+    describe("ExcludeBy", () => {
+      type res1 = Pipe<"a" | "b" | "c", [U.ExcludeBy<Extends<"a">>]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, "b" | "c">>;
+    });
+
+    describe("ExtractBy", () => {
+      type res1 = Pipe<"a" | "b" | "c", [U.ExtractBy<DoesNotExtends<"a">>]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, "b" | "c">>;
     });
   });
 });
