@@ -481,6 +481,60 @@ describe("HOTScript", () => {
     });
   });
 
+  describe("Strings", () => {
+    it("Join", () => {
+      type res1 = Call<Strings.Join<".">, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, "1.2.3">>;
+    });
+    it("Split", () => {
+      type res1 = Call<Strings.Split<".">, "1.2.3">;
+      //    ^?
+      type test1 = Expect<Equal<res1, ["1", "2", "3"]>>;
+    });
+    it("ToNumber", () => {
+      type res1 = Call<Strings.ToNumber, "11">;
+      //    ^?
+      type test1 = Expect<Equal<res1, 11>>;
+    });
+    it("ToString", () => {
+      type res1 = Call<Strings.ToString, 11>;
+      //    ^?
+      type test1 = Expect<Equal<res1, "11">>;
+    });
+    it("Prepend", () => {
+      type res1 = Call<Strings.Prepend<"1 ">, "abc">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "1 abc">>;
+    });
+
+    it("Append", () => {
+      type res1 = Call<Strings.Append<" 1">, "abc">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "abc 1">>;
+    });
+    it("Uppercase", () => {
+      type res1 = Call<Strings.Uppercase, "abc">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "ABC">>;
+    });
+    it("Lowercase", () => {
+      type res1 = Call<Strings.Lowercase, "ABC">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "abc">>;
+    });
+    it("Capitalize", () => {
+      type res1 = Call<Strings.Capitalize, "abc">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "Abc">>;
+    });
+    it("Uncapitalize", () => {
+      type res1 = Call<Strings.Uncapitalize, "ABC">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "aBC">>;
+    });
+  });
+
   describe("Unions", () => {
     describe("Exclude", () => {
       type res1 = Pipe<"a" | "b" | "c", [U.Exclude<"a">]>;

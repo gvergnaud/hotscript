@@ -1,4 +1,5 @@
 import { Fn } from "../core/Core";
+import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 
 export namespace Strings {
@@ -49,5 +50,21 @@ export namespace Strings {
 
   export interface Append<str extends string> extends Fn {
     output: `${Extract<this["args"][0], Strings.Stringifiable>}${str}`;
+  }
+
+  export interface Uppercase extends Fn {
+    output: Std._Uppercase<Extract<this["args"][0], string>>;
+  }
+
+  export interface Lowercase extends Fn {
+    output: Std._Lowercase<Extract<this["args"][0], string>>;
+  }
+
+  export interface Capitalize extends Fn {
+    output: Std._Capitalize<Extract<this["args"][0], string>>;
+  }
+
+  export interface Uncapitalize extends Fn {
+    output: Std._Uncapitalize<Extract<this["args"][0], string>>;
   }
 }

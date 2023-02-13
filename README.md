@@ -73,10 +73,12 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 - [ ] String
   - [x] ToString
   - [x] ToNumber
-  - [ ] Uppercase
-  - [ ] Lowercase
-  - [ ] Capitalize
-  - [ ] Uncapitalize
+  - [x] Append
+  - [x] Prepend
+  - [x] Uppercase
+  - [x] Lowercase
+  - [x] Capitalize
+  - [x] Uncapitalize
   - [x] Split separator
   - [ ] Words
 - [ ] Number

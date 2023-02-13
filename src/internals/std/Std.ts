@@ -3,4 +3,8 @@ export namespace Std {
   export type _Omit<a, k extends PropertyKey> = Omit<a, k>;
   export type _Extract<a, b> = Extract<a, b>;
   export type _Exclude<a, b> = Exclude<a, b>;
+  export type _Uppercase<a extends string> = Uppercase<a>;
+  export type _Lowercase<a extends string> = Lowercase<a>;
+  export type _Capitalize<a extends string> = Capitalize<a>;
+  export type _Uncapitalize<a extends string> = Uncapitalize<a>;
 }
