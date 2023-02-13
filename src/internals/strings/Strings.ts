@@ -12,14 +12,6 @@ export namespace Strings {
     | null
     | undefined;
 
-  type SplitImpl<
-    str,
-    sep extends string,
-    output extends any[] = []
-  > = str extends `${infer first}${sep}${infer rest}`
-    ? SplitImpl<rest, sep, [...output, first]>
-    : [...output, str];
-
   interface JoinReducer<sep extends string> extends Fn {
     output: this["args"] extends [
       infer acc extends Strings.Stringifiable,
@@ -34,7 +26,7 @@ export namespace Strings {
   }
 
   export interface Split<sep extends string> extends Fn {
-    output: SplitImpl<this["args"][0], sep>;
+    output: H.Split<this["args"][0], sep>;
   }
 
   export interface ToNumber extends Fn {

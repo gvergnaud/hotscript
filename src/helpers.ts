@@ -205,3 +205,26 @@ export type IsTuple<a extends readonly any[]> = a extends
 export type IsArrayStrict<a> = a extends readonly any[]
   ? Not<IsTuple<a>>
   : false;
+
+// This split function is a bit complex because it needs to support
+// a union type as a separator.
+export type Split<
+  Str,
+  Sep extends string,
+  Output extends string[] = [],
+  CurrentChunk extends string = ""
+> =
+  // Loop through each character:
+  Str extends `${infer First}${infer Rest}`
+    ? // If `First` is a separator:
+      First extends Sep
+      ? // Add the current chunk to our output:
+        Split<Rest, Sep, [...Output, CurrentChunk], "">
+      : // Otherwise, add it to the chunk:
+        Split<Rest, Sep, Output, `${CurrentChunk}${First}`>
+    : // If the string is empty and `CurrentChunk` as well:
+    CurrentChunk extends ""
+    ? // Return the output:
+      Output
+    : // Otherwise, append the CurrentChunk to our Output:
+      [...Output, CurrentChunk];
