@@ -26,11 +26,14 @@ interface Duplicate extends Fn {
 
 type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;
 //     ^? [[1, 1], [2, 2], [3, 3], [4, 4]]
+
 type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 //     ^? [1, 1, 2, 2, 3, 3, 4, 4]
 
-type APIUser = Pipe<
-  User,
+// Let's compose some functions to turn a type
+
+type ToAPIPayload<T> = Pipe<
+  T,
   [
     Objects.OmitBy<Booleans.Equals<symbol>>,
     Objects.Assign<{ metadata: { newUser: true } }>,
@@ -38,7 +41,12 @@ type APIUser = Pipe<
     Objects.Assign<{ id: string }>
   ]
 >;
-// turns user into:
+type T = ToAPIPayload<{
+  id: symbol;
+  firstName: string;
+  lastName: string;
+}>;
+// Returns:
 type T = {
   id: string;
   metadata: { new_user: true };
