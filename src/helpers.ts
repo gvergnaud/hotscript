@@ -49,3 +49,17 @@ export type RemoveUnknownArrayConstraint<xs extends any[]> = xs extends [
   : xs extends [infer x1]
   ? [x1]
   : [];
+
+export namespace Iterator {
+  export type Get<it extends readonly any[]> = it["length"];
+
+  export type Iterator<
+    n extends number,
+    it extends any[] = []
+  > = it["length"] extends n ? it : Iterator<n, [any, ...it]>;
+
+  export type Next<it extends any[]> = [any, ...it];
+  export type Prev<it extends any[]> = it extends readonly [any, ...infer tail]
+    ? tail
+    : [];
+}

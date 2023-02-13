@@ -4,6 +4,8 @@ import {
   Call,
   Fn,
   Extends,
+  Call2,
+  Eval,
   Numbers,
   Strings,
   Tuples,
@@ -13,10 +15,7 @@ import {
   N,
   U,
   F,
-  Call2,
-  Apply,
-  Eval,
-} from "../src";
+} from "../src/index";
 import { Equal, Expect } from "../src/helpers";
 
 describe("HOTScript", () => {
