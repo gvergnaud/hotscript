@@ -170,3 +170,29 @@ export type Split<
       Output
     : // Otherwise, append the CurrentChunk to our Output:
       [...Output, CurrentChunk];
+
+export type GetFromPath<Obj, Path> = RecursiveGet<Obj, ParsePath<Path>>;
+
+type ParsePath<
+  Path,
+  Output extends string[] = [],
+  CurrentChunk extends string = ""
+> = Path extends `${infer First}${infer Rest}`
+  ? First extends "." | "[" | "]"
+    ? ParsePath<
+        Rest,
+        [...Output, ...(CurrentChunk extends "" ? [] : [CurrentChunk])],
+        ""
+      >
+    : ParsePath<Rest, Output, `${CurrentChunk}${First}`>
+  : [...Output, ...(CurrentChunk extends "" ? [] : [CurrentChunk])];
+
+type RecursiveGet<Obj, PathList> = Obj extends any
+  ? PathList extends [infer First, ...infer Rest]
+    ? First extends keyof Obj
+      ? RecursiveGet<Obj[First], Rest>
+      : [First, Obj] extends [`${number}`, any[]]
+      ? RecursiveGet<Extract<Obj, any[]>[number], Rest>
+      : undefined
+    : Obj
+  : never;

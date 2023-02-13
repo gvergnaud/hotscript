@@ -533,6 +533,53 @@ describe("HOTScript", () => {
       >;
     });
 
+    describe("Get", () => {
+      it("should retrieve a deep property", () => {
+        type res1 = Eval<O.Get<"a.b.c.d", { a: { b: { c: { d: string } } } }>>;
+        //   ^?
+        type test1 = Expect<Equal<res1, string>>;
+
+        type res2 = Pipe<
+          //  ^?
+          { a: { b: { c: { d: string } } } },
+          [O.Get<"a.b.c.d">]
+        >;
+        type test2 = Expect<Equal<res2, string>>;
+      });
+
+      it("should support union of objects", () => {
+        type input =
+          | { a: { b: string | { c: { d: string } } } }
+          | { a: { b: { c: { d: number } } } };
+
+        type res1 = Eval<O.Get<"a.b.c.d", input>>;
+        //    ^?
+        type test1 = Expect<Equal<res1, string | number | undefined>>;
+
+        type res2 = Pipe<input, [O.Get<"a.b.c.d">]>;
+        //    ^?
+        type test2 = Expect<Equal<res2, string | number | undefined>>;
+      });
+
+      it("should support arrays", () => {
+        type res1 = Eval<O.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
+        //   ^?
+        type test1 = Expect<Equal<res1, string>>;
+      });
+
+      it("should support tuples", () => {
+        type input = { a: { b: [{ d: string }, "hello"] } };
+        type res1 = Eval<O.Get<"a.b[0].d", input>>;
+        //   ^?
+
+        type test1 = Expect<Equal<res1, string>>;
+
+        type res2 = Eval<O.Get<"a.b[1]", input>>;
+        //   ^?
+        type test2 = Expect<Equal<res2, "hello">>;
+      });
+    });
+
     describe("Composition", () => {
       type User = {
         id: symbol;

@@ -1,4 +1,9 @@
-import { IsArrayStrict, Prettify, UnionToIntersection } from "../../helpers";
+import {
+  GetFromPath,
+  IsArrayStrict,
+  Prettify,
+  UnionToIntersection,
+} from "../../helpers";
 import { Call, Call2, Fn, MergeArgs, placeholder } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
@@ -160,5 +165,18 @@ export namespace Objects {
 
   export interface GroupBy<fn extends Fn> extends Fn {
     output: GroupByImpl<this["args"][0], fn>;
+  }
+
+  export interface Get<
+    _path extends string | placeholder = placeholder,
+    _obj = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [_obj, _path]> extends [
+      infer obj,
+      infer path extends string,
+      ...any
+    ]
+      ? GetFromPath<obj, path>
+      : never;
   }
 }
