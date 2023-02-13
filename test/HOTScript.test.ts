@@ -293,20 +293,47 @@ describe("HOTScript", () => {
       type tes1 = Expect<Equal<res1, { b: true }>>;
     });
 
-    it("Assign", () => {
-      type res1 = Call<
-        //   ^?
-        T.Reduce<O.Assign, {}>,
-        [{ a: 1 }, { b: true }, { c: 1 }]
-      >;
-      type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
+    describe("Assign", () => {
+      it("can be called without any pre-filled arguments", () => {
+        type res1 = Call<
+          //   ^?
+          T.Reduce<O.Assign, {}>,
+          [{ a: 1 }, { b: true }, { c: 1 }]
+        >;
+        type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
 
-      type res2 = Call<
-        //   ^?
-        T.Reduce<O.Assign, {}>,
-        [{ a: 2 }, { b: true }, { c: 2 }]
-      >;
-      type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
+        type res2 = Call<
+          //   ^?
+          T.Reduce<O.Assign, {}>,
+          [{ a: 2 }, { b: true }, { c: 2 }]
+        >;
+        type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
+      });
+
+      it("can be called with one pre-filled argument", () => {
+        type res1 = Call<
+          //   ^?
+          Tuples.Map<O.Assign<{ new: "new" }>>,
+          [{ a: 2 }, { b: true }, { c: 2 }]
+        >;
+
+        type test1 = Expect<
+          Equal<
+            res1,
+            [
+              { new: "new"; a: 2 },
+              { new: "new"; b: true },
+              { new: "new"; c: 2 }
+            ]
+          >
+        >;
+      });
+
+      it("can be called with 2 pre-filled arguments", () => {
+        type res1 = Eval<O.Assign<{ a: string }, { b: number }>>;
+        //    ^?
+        type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+      });
     });
   });
 

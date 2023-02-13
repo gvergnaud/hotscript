@@ -405,8 +405,12 @@ export namespace Objects {
     UnionToIntersection<xs[number]>
   >;
 
-  export interface Assign extends Fn {
-    output: AssignImpl<this["args"]>;
+  export interface Assign<
+    arg1 extends object | placeholder = placeholder,
+    arg2 extends object | placeholder = placeholder,
+    arg3 extends object | placeholder = placeholder
+  > extends Fn {
+    output: AssignImpl<MergeArgs<this["args"], [arg1, arg2, arg3]>>;
   }
 }
 
