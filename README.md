@@ -36,6 +36,8 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] Call
   - [x] Apply
   - [x] ApplyPartial
+  - [x] Compose
+  - [x] ComposeLeft
 - [ ] Tuples
   - [ ] Zip
   - [ ] Partition
@@ -89,3 +91,10 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [ ] GreaterThanOrEqual
   - [ ] LessThan
   - [ ] LessThanOrEqual
+- [ ] Boolean
+  - [x] And
+  - [x] Or
+  - [x] Not
+  - [x] Extends
+  - [x] Equals
+  - [x] DoesNotExtends

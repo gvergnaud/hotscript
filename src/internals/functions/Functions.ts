@@ -1,4 +1,5 @@
-import { Apply, Fn, MergeArgs, placeholder } from "../core/Core";
+import { Apply, Call, Fn, MergeArgs, placeholder } from "../core/Core";
+import { Tuples } from "../tuples/Tuples";
 
 export namespace Functions {
   export type _ = placeholder;
@@ -33,5 +34,29 @@ export namespace Functions {
 
   export interface Return extends Fn {
     output: ReturnImpl<this["args"][0]>;
+  }
+
+  type Head<xs> = xs extends [infer first, ...any] ? first : never;
+
+  type ComposeImpl<fns extends Fn[], args> = fns extends [
+    ...infer rest extends Fn[],
+    infer last extends Fn
+  ]
+    ? ComposeImpl<rest, [Apply<last, args>]>
+    : Head<args>;
+
+  export interface Compose<fns extends Fn[]> extends Fn {
+    output: ComposeImpl<fns, this["args"]>;
+  }
+
+  type ComposeLeftImpl<fns extends Fn[], args> = fns extends [
+    infer first extends Fn,
+    ...infer rest extends Fn[]
+  ]
+    ? ComposeLeftImpl<rest, [Apply<first, args>]>
+    : Head<args>;
+
+  export interface ComposeLeft<fns extends Fn[]> extends Fn {
+    output: ComposeLeftImpl<fns, this["args"]>;
   }
 }

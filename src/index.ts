@@ -3,7 +3,6 @@ import {
   Call,
   Call2,
   Eval,
-  Extends,
   Fn,
   Pipe,
   PipeRight,
@@ -14,6 +13,7 @@ import { Objects } from "./internals/objects/Objects";
 import { Strings } from "./internals/strings/Strings";
 import { Tuples } from "./internals/tuples/Tuples";
 import { Unions } from "./internals/unions/Unions";
+import { Booleans } from "./internals/booleans/Booleans";
 
 export {
   Fn,
@@ -23,13 +23,14 @@ export {
   Call2,
   Apply,
   Eval,
-  Extends,
+  Booleans,
   Objects,
   Unions,
   Strings,
   Numbers,
   Tuples,
   Functions,
+  Booleans as B,
   Objects as O,
   Unions as U,
   Strings as S,

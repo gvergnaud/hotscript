@@ -1,4 +1,5 @@
 import { RemoveUnknownArrayConstraint } from "../../helpers";
+import { Booleans } from "../booleans/Booleans";
 import { Tuples } from "../tuples/Tuples";
 
 export interface Fn {
@@ -48,14 +49,6 @@ export type PipeRight<xs extends Fn[], acc> = xs extends [
  * Misc
  */
 
-export interface Extends<T> extends Fn {
-  output: this["args"][0] extends T ? true : false;
-}
-
-export interface DoesNotExtends<T> extends Fn {
-  output: this["args"][0] extends T ? false : true;
-}
-
 export type placeholder = "@hotscript/placeholder";
 
 type MergeArgsRec<
@@ -68,7 +61,10 @@ type MergeArgsRec<
       ? MergeArgsRec<inputRest, partialRest, [...output, inputFirst]>
       : [
           ...output,
-          ...Call<Tuples.Filter<DoesNotExtends<placeholder>>, partialRest>
+          ...Call<
+            Tuples.Filter<Booleans.Not<Booleans.Extends<placeholder>>>,
+            partialRest
+          >
         ]
     : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
   : [...output, ...inputArgs];
