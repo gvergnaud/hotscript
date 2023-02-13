@@ -79,3 +79,11 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [ ] Uncapitalize
   - [x] Split separator
   - [ ] Words
+- [ ] Number
+  - [x] Add
+  - [ ] Multiply
+  - [ ] Subtract
+  - [ ] GreaterThan
+  - [ ] GreaterThanOrEqual
+  - [ ] LessThan
+  - [ ] LessThanOrEqual
