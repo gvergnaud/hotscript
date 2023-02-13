@@ -16,6 +16,7 @@ import {
   U,
   F,
   Booleans,
+  Args,
 } from "../src/index";
 import { Equal, Expect } from "../src/helpers";
 
@@ -65,7 +66,7 @@ describe("HOTScript", () => {
           Strings.Split<".">,
           Tuples.Map<Strings.ToNumber>,
           Tuples.Map<Numbers.Add<10>>,
-          Tuples.Map<Numbers.Sub<F._, 1>>,
+          Tuples.Map<Numbers.Sub<Args._, 1>>,
           Tuples.Sum
         ]
       >;
@@ -212,17 +213,49 @@ describe("HOTScript", () => {
     it("TakeWhile", () => {
       type res1 = Call<
         //   ^?
-        Tuples.TakeWhile<B.Extends<F._, string>>,
+        Tuples.TakeWhile<B.Extends<Args._, string>>,
         ["a", "b", "c", 2, "d"]
       >;
       type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
 
       type res2 = Call<
         //   ^?
-        Tuples.TakeWhile<B.Extends<F._, number>>,
+        Tuples.TakeWhile<B.Extends<Args._, number>>,
         [1, 2, "a", "b", "c", 2, "d"]
       >;
       type tes2 = Expect<Equal<res2, [1, 2]>>;
+    });
+
+    it("Every", () => {
+      type res1 = Call<
+        //   ^?
+        Tuples.Every<B.Extends<Args._, string>>,
+        ["a", "b", "c", "d"]
+      >;
+      type tes1 = Expect<Equal<res1, true>>;
+
+      type res2 = Call<
+        //   ^?
+        Tuples.Every<B.Extends<Args._, number>>,
+        [1, 2, "a", "b", "c", 2, "d"]
+      >;
+      type tes2 = Expect<Equal<res2, false>>;
+    });
+
+    it("Some", () => {
+      type res1 = Call<
+        //   ^?
+        Tuples.Some<B.Extends<Args._, number>>,
+        ["a", "b", "c", "d"]
+      >;
+      type tes1 = Expect<Equal<res1, false>>;
+
+      type res2 = Call<
+        //   ^?
+        Tuples.Some<B.Extends<Args._, number>>,
+        [1, 2, "a", "b", "c", 2, "d"]
+      >;
+      type tes2 = Expect<Equal<res2, true>>;
     });
 
     it("Composition", () => {
@@ -529,7 +562,7 @@ describe("HOTScript", () => {
     it("ApplyPartial", () => {
       type res1 = Call2<
         //   ^?
-        F.ApplyPartial<O.Assign, [F._, F._, { c: boolean }]>,
+        F.ApplyPartial<O.Assign, [Args._, Args._, { c: boolean }]>,
         { a: string },
         { b: number }
       >;
@@ -648,7 +681,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled argument", () => {
-        type res1 = Call<Tuples.Map<Numbers.Sub<F._, 1>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.Sub<Args._, 1>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [0, 1, 2]>>;
       });
@@ -676,7 +709,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled argument", () => {
-        type res1 = Call<Tuples.Map<Numbers.Mul<F._, 2>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.Mul<Args._, 2>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [2, 4, 6]>>;
       });
@@ -700,7 +733,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled argument", () => {
-        type res1 = Call<Tuples.Map<Numbers.Div<F._, 2>>, [2, 4, 6]>;
+        type res1 = Call<Tuples.Map<Numbers.Div<Args._, 2>>, [2, 4, 6]>;
         //    ^?
         type test1 = Expect<Equal<res1, [1, 2, 3]>>;
       });
@@ -720,7 +753,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled argument", () => {
-        type res1 = Call<Tuples.Map<Numbers.Mod<F._, 5>>, [2, 4, 6]>;
+        type res1 = Call<Tuples.Map<Numbers.Mod<Args._, 5>>, [2, 4, 6]>;
         //    ^?
         type test1 = Expect<Equal<res1, [2, 4, 1]>>;
       });
@@ -776,7 +809,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled arguments", () => {
-        type res1 = Call<Tuples.Map<Numbers.Power<F._, 2>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.Power<Args._, 2>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [1, 4, 9]>>;
       });
@@ -804,7 +837,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled arguments", () => {
-        type res1 = Call<Tuples.Map<Numbers.Compare<F._, 2>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.Compare<Args._, 2>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [-1, 0, 1]>>;
       });
@@ -832,7 +865,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled arguments", () => {
-        type res1 = Call<Tuples.Map<Numbers.LessThan<F._, 2>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.LessThan<Args._, 2>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [true, false, false]>>;
       });
@@ -861,7 +894,7 @@ describe("HOTScript", () => {
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<
-          Tuples.Map<Numbers.LessThanOrEqual<F._, 2>>,
+          Tuples.Map<Numbers.LessThanOrEqual<Args._, 2>>,
           [1, 2, 3]
         >;
         //    ^?
@@ -891,7 +924,7 @@ describe("HOTScript", () => {
       });
 
       it("can be called with one pre-filled arguments", () => {
-        type res1 = Call<Tuples.Map<Numbers.GreaterThan<F._, 2>>, [1, 2, 3]>;
+        type res1 = Call<Tuples.Map<Numbers.GreaterThan<Args._, 2>>, [1, 2, 3]>;
         //    ^?
         type test1 = Expect<Equal<res1, [false, false, true]>>;
       });
@@ -920,7 +953,7 @@ describe("HOTScript", () => {
 
       it("can be called with one pre-filled arguments", () => {
         type res1 = Call<
-          Tuples.Map<Numbers.GreaterThanOrEqual<F._, 2>>,
+          Tuples.Map<Numbers.GreaterThanOrEqual<Args._, 2>>,
           [1, 2, 3]
         >;
         //    ^?

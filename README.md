@@ -82,6 +82,8 @@ type T = {
   - [x] Filter
   - [x] Reduce
   - [x] ReduceRight
+  - [x] Every
+  - [x] Some
 - [ ] Object
   - [x] FromEntries
   - [x] Entries
@@ -121,12 +123,18 @@ type T = {
   - [ ] Words
 - [ ] Number
   - [x] Add
-  - [ ] Multiply
-  - [ ] Subtract
-  - [ ] GreaterThan
-  - [ ] GreaterThanOrEqual
-  - [ ] LessThan
-  - [ ] LessThanOrEqual
+  - [x] Multiply
+  - [x] Subtract
+  - [x] Negate
+  - [x] Power
+  - [x] Div
+  - [x] Mod
+  - [x] Abs
+  - [x] Compare
+  - [x] GreaterThan
+  - [x] GreaterThanOrEqual
+  - [x] LessThan
+  - [x] LessThanOrEqual
 - [ ] Boolean
   - [x] And
   - [x] Or

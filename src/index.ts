@@ -14,6 +14,7 @@ import { Strings } from "./internals/strings/Strings";
 import { Tuples } from "./internals/tuples/Tuples";
 import { Unions } from "./internals/unions/Unions";
 import { Booleans } from "./internals/booleans/Booleans";
+import { Args } from "./internals/args/Args";
 
 export {
   Fn,
@@ -30,6 +31,7 @@ export {
   Numbers,
   Tuples,
   Functions,
+  Args,
   Booleans as B,
   Objects as O,
   Unions as U,

@@ -143,4 +143,16 @@ export namespace Tuples {
   export interface TakeWhile<fn extends Fn> extends Fn {
     output: TakeWhileImpl<Extract<this["args"][0], readonly any[]>, fn>;
   }
+
+  export interface Some<fn extends Fn> extends Fn {
+    output: true extends Call<Tuples.Map<fn>, this["args"][0]>[number]
+      ? true
+      : false;
+  }
+
+  export interface Every<fn extends Fn> extends Fn {
+    output: false extends Call<Tuples.Map<fn>, this["args"][0]>[number]
+      ? false
+      : true;
+  }
 }
