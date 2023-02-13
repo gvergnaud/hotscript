@@ -65,10 +65,11 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] Omit
   - [x] OmitBy
 - [ ] Union
-  - [ ] Extract
-  - [ ] ExtractBy
-  - [ ] Exclude
-  - [ ] ExcludeBy
+  - [x] Map
+  - [x] Extract
+  - [x] ExtractBy
+  - [x] Exclude
+  - [x] ExcludeBy
 - [ ] String
   - [x] ToString
   - [x] ToNumber

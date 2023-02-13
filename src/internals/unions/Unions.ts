@@ -29,4 +29,12 @@ export namespace Unions {
   export interface ExcludeBy<predicate extends Fn> extends Fn {
     output: ExcludeByImpl<this["args"][0], predicate>;
   }
+
+  type MapImpl<union, fn extends Fn> = union extends any
+    ? Call<fn, union>
+    : never;
+
+  export interface Map<fn extends Fn> extends Fn {
+    output: MapImpl<this["args"][0], fn>;
+  }
 }

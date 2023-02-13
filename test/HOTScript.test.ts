@@ -472,5 +472,15 @@ describe("HOTScript", () => {
       //   ^?
       type tes1 = Expect<Equal<res1, "b" | "c">>;
     });
+
+    describe("Map", () => {
+      interface ToTuple extends Fn {
+        output: [this["args"][0]];
+      }
+
+      type res1 = Pipe<"a" | "b" | "c", [U.Map<ToTuple>]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, ["a"] | ["b"] | ["c"]>>;
+    });
   });
 });
