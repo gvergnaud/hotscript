@@ -448,4 +448,16 @@ describe("HOTScript", () => {
       });
     });
   });
+
+  describe("Unions", () => {
+    describe("Exclude", () => {
+      type res1 = Pipe<"a" | "b" | "c", [U.Exclude<"a">]>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, "b" | "c">>;
+    });
+    describe("Extract", () => {
+      type res1 = Pipe<"a" | "b" | "c", [U.Extract<"a" | "b">]>;
+      type tes1 = Expect<Equal<res1, "a" | "b">>;
+    });
+  });
 });

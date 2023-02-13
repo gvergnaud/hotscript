@@ -8,6 +8,8 @@ import {
 namespace Base {
   export type _Pick<a, k extends keyof a> = Pick<a, k>;
   export type _Omit<a, k extends PropertyKey> = Omit<a, k>;
+  export type _Extract<a, b> = Extract<a, b>;
+  export type _Exclude<a, b> = Exclude<a, b>;
 }
 
 export interface Fn {
@@ -456,7 +458,15 @@ export namespace Objects {
 /**
  * Unions
  */
-export namespace Unions {}
+export namespace Unions {
+  export interface Extract<key> extends Fn {
+    output: Base._Extract<this["args"][0], key>;
+  }
+
+  export interface Exclude<key> extends Fn {
+    output: Base._Exclude<this["args"][0], key>;
+  }
+}
 
 export namespace Iterator {
   export type Get<it extends readonly any[]> = it["length"];
