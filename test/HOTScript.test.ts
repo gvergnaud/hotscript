@@ -40,8 +40,8 @@ describe("HOTScript", () => {
       //   ^?
       type tes1 = Expect<Equal<res1, [string, number]>>;
     });
-    it("ParametersN", () => {
-      type res1 = Call<F.ParametersN<0>, (a: string, b: number) => void>;
+    it("Parameter", () => {
+      type res1 = Call<F.Parameter<0>, (a: string, b: number) => void>;
       //   ^?
       type tes1 = Expect<Equal<res1, string>>;
     });
