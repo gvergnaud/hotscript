@@ -14,6 +14,8 @@ import {
   U,
   F,
   Call2,
+  Apply,
+  Eval,
 } from "../src";
 import { Equal, Expect } from "../src/helpers";
 
@@ -354,6 +356,31 @@ describe("HOTScript", () => {
           }
         >
       >;
+    });
+  });
+
+  describe("Numbers", () => {
+    describe("Add", () => {
+      it("can be called without any pre-filled arguments", () => {
+        type res1 = Call<Tuples.Reduce<Numbers.Add, 0>, [1, 2, 3]>;
+        //    ^?
+
+        type test1 = Expect<Equal<res1, 6>>;
+      });
+
+      it("can be called with one pre-filled argument", () => {
+        type res1 = Call<Tuples.Map<Numbers.Add<1>>, [1, 2, 3]>;
+        //    ^?
+
+        type test1 = Expect<Equal<res1, [2, 3, 4]>>;
+      });
+
+      it("can be called with 2 pre-filled arguments", () => {
+        type res1 = Eval<Numbers.Add<1, 2>>;
+        //    ^?
+
+        type test1 = Expect<Equal<res1, 3>>;
+      });
     });
   });
 });

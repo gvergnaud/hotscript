@@ -18,6 +18,10 @@ export type Call<fn extends Fn, arg1> = (fn & {
   args: [arg1];
 })["output"];
 
+export type Eval<fn extends Fn> = (fn & {
+  args: [];
+})["output"];
+
 export type Call2<fn extends Fn, arg1, arg2> = (fn & {
   args: [arg1, arg2];
 })["output"];
@@ -162,8 +166,11 @@ export namespace Strings {
 export namespace Numbers {
   type Add2Impl<a, b> = [...Tuples.Range<a>, ...Tuples.Range<b>]["length"];
 
-  export interface Add<n = placeholder> extends Fn {
-    output: MergeArgs<this["args"], [n]> extends [infer a, infer b, ...any]
+  export interface Add<
+    n1 extends number | placeholder = placeholder,
+    n2 extends number | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [infer a, infer b, ...any]
       ? Add2Impl<a, b>
       : never;
   }
