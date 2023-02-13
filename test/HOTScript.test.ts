@@ -20,6 +20,38 @@ import { Equal, Expect } from "../src/helpers";
 import { DoesNotExtends } from "../src/internals/core/Core";
 
 describe("HOTScript", () => {
+  describe("Functions", () => {
+    it("Identity", () => {
+      // check primitives
+      type res1 = Call<F.Identity, string>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, string>>;
+      type res2 = Call<F.Identity, undefined>;
+      //   ^?
+      type tes2 = Expect<Equal<res2, undefined>>;
+      // check unions
+      type res3 = Call<F.Identity, string | number>;
+      //   ^?
+      type tes3 = Expect<Equal<res3, string | number>>;
+    });
+
+    it("Parameters", () => {
+      type res1 = Call<F.Parameters, (a: string, b: number) => void>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, [string, number]>>;
+    });
+    it("Parameter", () => {
+      type res1 = Call<F.Parameter<0>, (a: string, b: number) => void>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, string>>;
+    });
+    it("Return", () => {
+      type res1 = Call<F.Return, (a: string, b: number) => boolean>;
+      //   ^?
+      type tes1 = Expect<Equal<res1, boolean>>;
+    });
+  });
+
   describe("Composition", () => {
     it("Pipe", () => {
       type res1 = Pipe<
