@@ -7,7 +7,7 @@ export interface Fn {
   output: unknown;
 }
 
-export type Apply<fn extends Fn, args> = (fn & {
+export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
   args: args;
 })["output"];
 
