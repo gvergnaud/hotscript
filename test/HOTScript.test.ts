@@ -260,7 +260,7 @@ describe("HOTScript", () => {
     it("Pick", () => {
       type res1 = Call<
         //   ^?
-        O.PickKey<"a">,
+        O.Pick<"a">,
         { a: 1; b: true }
       >;
       type tes1 = Expect<Equal<res1, { a: 1 }>>;
@@ -269,7 +269,7 @@ describe("HOTScript", () => {
     it("Omit", () => {
       type res1 = Call<
         //   ^?
-        O.OmitKey<"a">,
+        O.Omit<"a">,
         { a: 1; b: true }
       >;
       type tes1 = Expect<Equal<res1, { b: true }>>;

@@ -359,12 +359,20 @@ export namespace Objects {
     output: MapKeysImpl<this["args"][0], fn>;
   }
 
-  export interface PickKey<key> extends Fn {
-    output: Pick<this["args"][0], Extract<key, keyof this["args"][0]>>;
+  type PickImpl<obj, keys> = {
+    [key in Extract<keyof obj, keys>]: obj[key];
+  };
+
+  export interface Pick<key> extends Fn {
+    output: PickImpl<this["args"][0], key>;
   }
 
-  export interface OmitKey<key> extends Fn {
-    output: Omit<this["args"][0], Extract<key, keyof this["args"][0]>>;
+  type OmitImpl<obj, keys> = {
+    [key in Exclude<keyof obj, keys>]: obj[key];
+  };
+
+  export interface Omit<key> extends Fn {
+    output: OmitImpl<this["args"][0], key>;
   }
 
   type PickEntriesImpl<
