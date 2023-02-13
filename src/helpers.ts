@@ -63,3 +63,145 @@ export namespace Iterator {
     ? tail
     : [];
 }
+
+type UppercaseLetter =
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J"
+  | "K"
+  | "L"
+  | "M"
+  | "N"
+  | "O"
+  | "P"
+  | "Q"
+  | "R"
+  | "S"
+  | "T"
+  | "U"
+  | "V"
+  | "W"
+  | "X"
+  | "Y"
+  | "Z";
+
+type KebabToCamel<str> = str extends `${infer first}-${infer rest}`
+  ? `${first}${KebabToCamel<Capitalize<rest>>}`
+  : str;
+
+type SnakeToCamel<str> = str extends `${infer first}_${infer rest}`
+  ? `${first}${SnakeToCamel<Capitalize<rest>>}`
+  : str;
+
+/**
+ * Converts string casing from snake_case or kebab-case to camelCase.
+ */
+export type CamelCase<str> = KebabToCamel<SnakeToCamel<str>>;
+
+/**
+ * Converts string casing from camelCase or kebab-case to snake_case.
+ */
+export type SnakeCase<
+  str,
+  output extends string = ""
+> = str extends `${infer first}${infer rest}`
+  ? first extends UppercaseLetter
+    ? SnakeCase<rest, `${output}_${Lowercase<first>}`>
+    : first extends "-"
+    ? SnakeCase<rest, `${output}_`>
+    : SnakeCase<rest, `${output}${first}`>
+  : output extends ""
+  ? str
+  : output;
+
+/**
+ * Converts string casing from camelCase or snake_case to kebab-case.
+ */
+export type KebabCase<
+  str,
+  output extends string = ""
+> = str extends `${infer first}${infer rest}`
+  ? first extends UppercaseLetter
+    ? KebabCase<rest, `${output}-${Lowercase<first>}`>
+    : first extends "_"
+    ? KebabCase<rest, `${output}-`>
+    : KebabCase<rest, `${output}${first}`>
+  : output extends ""
+  ? str
+  : output;
+
+/**
+ * Converts object keys to camelCase.
+ */
+export type CamelizeKeys<obj> = {
+  [key in keyof obj as CamelCase<key>]: obj[key];
+};
+
+/**
+ * Converts object keys to snake_case.
+ */
+export type SnakizeKeys<obj> = {
+  [key in keyof obj as SnakeCase<key>]: obj[key];
+};
+
+/**
+ * Converts object keys to kebab-case.
+ */
+export type KebabizeKeys<obj> = {
+  [key in keyof obj as KebabCase<key>]: obj[key];
+};
+
+type CaseType = "camel" | "snake" | "kebab";
+
+// Type-Level TypeScript being a lazy language,
+// Only the correct key will be evaluated:
+type UpdateCase<str, type extends CaseType> = {
+  camel: CamelCase<str>;
+  snake: SnakeCase<str>;
+  kebab: KebabCase<str>;
+}[type];
+
+type UpdateCaseDeep<obj, type extends CaseType> = Prettify<{
+  [key in keyof obj as UpdateCase<key, type>]: obj[key] extends infer value
+    ? value extends any[]
+      ? // special case if the current value is an array to only convert
+        // keys of members of this array but not the array itself:
+        { [index in keyof value]: UpdateCaseDeep<value[index], type> }
+      : value extends {}
+      ? UpdateCaseDeep<value, type>
+      : value
+    : never;
+}>;
+
+/**
+ * Recursively converts all keys within an object to snake_case.
+ */
+export type CamelizeKeysDeep<obj> = UpdateCaseDeep<obj, "camel">;
+
+/**
+ * Recursively converts all keys within an object to snake_case.
+ */
+export type SnakizeKeysDeep<obj> = UpdateCaseDeep<obj, "snake">;
+
+/**
+ * Recursively converts all keys within an object to kebab-case.
+ */
+export type KebabizeKeysDeep<obj> = UpdateCaseDeep<obj, "kebab">;
+
+export type IsTuple<a extends readonly any[]> = a extends
+  | readonly []
+  | readonly [any, ...any]
+  | readonly [...any, any]
+  ? true
+  : false;
+
+export type IsArrayStrict<a> = a extends readonly any[]
+  ? Not<IsTuple<a>>
+  : false;

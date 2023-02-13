@@ -1,6 +1,7 @@
-import { Prettify, UnionToIntersection } from "../../helpers";
+import { IsArrayStrict, Prettify, UnionToIntersection } from "../../helpers";
 import { Call, Call2, Fn, MergeArgs, placeholder } from "../core/Core";
 import { Std } from "../std/Std";
+import { Strings } from "../strings/Strings";
 
 export namespace Objects {
   type FromEntriesImpl<entries extends [PropertyKey, any]> = {
@@ -33,6 +34,44 @@ export namespace Objects {
 
   export interface MapKeys<fn extends Fn> extends Fn {
     output: MapKeysImpl<this["args"][0], fn>;
+  }
+
+  export interface KebabizeKeys extends Fn {
+    output: Call<MapKeys<Strings.KebabCase>, this["args"][0]>;
+  }
+
+  export interface SnakizeKeys extends Fn {
+    output: Call<MapKeys<Strings.SnakeCase>, this["args"][0]>;
+  }
+
+  export interface CamelizeKeys extends Fn {
+    output: Call<MapKeys<Strings.CamelCase>, this["args"][0]>;
+  }
+
+  type MapKeysDeepImpl<T, fn extends Fn> = IsArrayStrict<T> extends true
+    ? MapKeysDeepImpl<Extract<T, readonly any[]>[number], fn>[]
+    : T extends object
+    ? {
+        [K in keyof T as Extract<Call<fn, K>, PropertyKey>]: Prettify<
+          MapKeysDeepImpl<T[K], fn>
+        >;
+      }
+    : T;
+
+  export interface MapKeysDeep<fn extends Fn> extends Fn {
+    output: MapKeysDeepImpl<this["args"][0], fn>;
+  }
+
+  export interface KebabizeKeysDeep extends Fn {
+    output: Call<MapKeysDeep<Strings.KebabCase>, this["args"][0]>;
+  }
+
+  export interface SnakizeKeysDeep extends Fn {
+    output: Call<MapKeysDeep<Strings.SnakeCase>, this["args"][0]>;
+  }
+
+  export interface CamelizeKeysDeep extends Fn {
+    output: Call<MapKeysDeep<Strings.CamelCase>, this["args"][0]>;
   }
 
   type PickImpl<obj, keys> = {

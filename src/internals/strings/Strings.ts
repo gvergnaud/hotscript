@@ -1,6 +1,7 @@
 import { Fn } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
+import * as H from "../../helpers";
 
 export namespace Strings {
   export type Stringifiable =
@@ -66,5 +67,17 @@ export namespace Strings {
 
   export interface Uncapitalize extends Fn {
     output: Std._Uncapitalize<Extract<this["args"][0], string>>;
+  }
+
+  export interface SnakeCase extends Fn {
+    output: H.SnakeCase<this["args"][0]>;
+  }
+
+  export interface CamelCase extends Fn {
+    output: H.CamelCase<this["args"][0]>;
+  }
+
+  export interface KebabCase extends Fn {
+    output: H.KebabCase<this["args"][0]>;
   }
 }

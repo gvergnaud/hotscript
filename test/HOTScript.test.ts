@@ -370,6 +370,127 @@ describe("HOTScript", () => {
       });
     });
 
+    it("KebabizeKeys", () => {
+      type res1 = Call<
+        //   ^?
+        O.KebabizeKeys,
+        { helloWorld: string; userName: string }
+      >;
+
+      type test1 = Expect<
+        Equal<res1, { "hello-world": string; "user-name": string }>
+      >;
+    });
+
+    it("SnakizeKeys", () => {
+      type res1 = Call<
+        //   ^?
+        O.SnakizeKeys,
+        { helloWorld: string; userName: string }
+      >;
+
+      type test1 = Expect<
+        Equal<res1, { hello_world: string; user_name: string }>
+      >;
+    });
+
+    it("CamelizeKeys", () => {
+      type res1 = Call<
+        //   ^?
+        O.CamelizeKeys,
+        { hello_world: string; user_name: string }
+      >;
+
+      type test1 = Expect<
+        Equal<res1, { helloWorld: string; userName: string }>
+      >;
+    });
+
+    it("KebabizeKeysDeep", () => {
+      type res1 = Call<
+        //   ^?
+        O.KebabizeKeysDeep,
+        {
+          helloWorld: string;
+          currentUser: { userName: string };
+          friends: { userName: string }[];
+        }
+      >;
+
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            "hello-world": string;
+            "current-user": {
+              "user-name": string;
+            };
+            friends: {
+              "user-name": string;
+            }[];
+          }
+        >
+      >;
+    });
+
+    it("SnakizeKeysDeep", () => {
+      type res1 = Call<
+        //   ^?
+        O.SnakizeKeysDeep,
+        {
+          helloWorld: string;
+          currentUser: { userName: string };
+          friends: { userName: string }[];
+        }
+      >;
+
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            hello_world: string;
+            current_user: {
+              user_name: string;
+            };
+            friends: {
+              user_name: string;
+            }[];
+          }
+        >
+      >;
+    });
+
+    it("CamelizeKeysDeep", () => {
+      type res1 = Call<
+        //   ^?
+        O.CamelizeKeysDeep,
+        {
+          hello_world: string;
+          current_user: {
+            user_name: string;
+          };
+          friends: {
+            user_name: string;
+          }[];
+        }
+      >;
+
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            helloWorld: string;
+            currentUser: {
+              userName: string;
+            };
+            friends: {
+              userName: string;
+            }[];
+          }
+        >
+      >;
+    });
+
     describe("Composition", () => {
       /**
        * todo
@@ -567,6 +688,24 @@ describe("HOTScript", () => {
       type res1 = Call<Strings.Uncapitalize, "ABC">;
       //    ^?
       type test1 = Expect<Equal<res1, "aBC">>;
+    });
+
+    it("SnakeCase", () => {
+      type res1 = Call<Strings.SnakeCase, "helloWorldYo">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "hello_world_yo">>;
+    });
+
+    it("KebabCase", () => {
+      type res1 = Call<Strings.KebabCase, "helloWorldYo">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "hello-world-yo">>;
+    });
+
+    it("CamelCase", () => {
+      type res1 = Call<Strings.CamelCase, "hello_world_yo">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "helloWorldYo">>;
     });
   });
 
