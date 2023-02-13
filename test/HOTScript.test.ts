@@ -33,7 +33,7 @@ describe("HOTScript", () => {
         ]
       >;
 
-      type tes1 = Expect<Equal<res1, 78>>;
+      type tes1 = Expect<Equal<res1, 95>>;
     });
 
     it("PipeRight", () => {
@@ -50,7 +50,7 @@ describe("HOTScript", () => {
         [1, 2, 3, 4, 3, 4]
       >;
 
-      type tes1 = Expect<Equal<res1, 78>>;
+      type tes1 = Expect<Equal<res1, 95>>;
     });
   });
 

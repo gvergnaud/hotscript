@@ -113,7 +113,7 @@ export namespace Strings {
     output extends any[] = []
   > = str extends `${infer first}${sep}${infer rest}`
     ? SplitImpl<rest, sep, [...output, first]>
-    : output;
+    : [...output, str];
 
   interface JoinReducer<sep extends string> extends Fn {
     output: this["args"] extends [
