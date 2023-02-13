@@ -66,6 +66,12 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] PickBy
   - [x] Omit
   - [x] OmitBy
+  - [x] CamelizeKeys
+  - [x] CamelizeKeysDeep
+  - [x] SnakizeKeys
+  - [x] SnakizeKeysDeep
+  - [x] KebabizeKeys
+  - [x] KebabizeKeysDeep
 - [ ] Union
   - [x] Map
   - [x] Extract
@@ -81,6 +87,9 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] Lowercase
   - [x] Capitalize
   - [x] Uncapitalize
+  - [x] SnakeCase
+  - [x] CamelCase
+  - [x] KebabCase
   - [x] Split separator
   - [ ] Words
 - [ ] Number
