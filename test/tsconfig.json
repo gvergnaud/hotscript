@@ -7,5 +7,5 @@
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "exclude": ["src/", "dist/", "example/"]
+  "exclude": ["dist/"]
 }
