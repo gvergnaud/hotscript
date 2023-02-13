@@ -5,6 +5,11 @@ import {
   UnionToIntersection,
 } from "./helpers";
 
+namespace Base {
+  export type _Pick<a, k extends keyof a> = Pick<a, k>;
+  export type _Omit<a, k extends PropertyKey> = Omit<a, k>;
+}
+
 export interface Fn {
   args: unknown[];
   output: unknown;
@@ -414,11 +419,37 @@ export namespace Objects {
   >;
 
   export interface Assign<
-    arg1 extends object | placeholder = placeholder,
-    arg2 extends object | placeholder = placeholder,
-    arg3 extends object | placeholder = placeholder
+    arg1 = placeholder,
+    arg2 = placeholder,
+    arg3 = placeholder
   > extends Fn {
     output: AssignImpl<MergeArgs<this["args"], [arg1, arg2, arg3]>>;
+  }
+
+  type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
+    infer first,
+    ...infer rest
+  ]
+    ? Call<fn, first> extends infer key extends PropertyKey
+      ? GroupByImplRec<
+          rest,
+          fn,
+          Base._Omit<acc, key> & {
+            [K in key]: [
+              ...(key extends keyof acc
+                ? Extract<acc[key], readonly any[]>
+                : []),
+              first
+            ];
+          }
+        >
+      : never
+    : acc;
+
+  type GroupByImpl<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
+
+  export interface GroupBy<fn extends Fn> extends Fn {
+    output: GroupByImpl<this["args"][0], fn>;
   }
 }
 

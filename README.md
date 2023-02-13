@@ -19,7 +19,7 @@ type result = Pipe<
   ]
 >;
 
-// This is a type-level lambda!
+// This is a type-level "lambda"!
 interface Duplicate extends Fn {
   output: [this["args"][0], this["args"][0]];
 }
@@ -58,7 +58,7 @@ type result = Call<T.FlatMap<Duplicate>, [1, 2, 3, 4]>;
   - [x] Entries
   - [x] MapValues
   - [x] MapKeys
-  - [ ] GroupBy
+  - [x] GroupBy
   - [x] Assign
   - [x] Pick
   - [x] PickBy
