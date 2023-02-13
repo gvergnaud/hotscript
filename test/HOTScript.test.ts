@@ -492,13 +492,6 @@ describe("HOTScript", () => {
     });
 
     describe("Composition", () => {
-      /**
-       * todo
-       * - omit objects
-       * - format keys to camel
-       * -
-       */
-
       type User = {
         id: symbol;
         firstName: string;
@@ -508,11 +501,26 @@ describe("HOTScript", () => {
       type APIUser = Pipe<
         //    ^?
         User,
-        [O.PickBy<F.Compose<[B.Not, B.Extends<F._, symbol>]>>]
+        [
+          O.OmitBy<Booleans.Equals<symbol>>,
+          O.Assign<{ metadata: { newUser: true } }>,
+          O.SnakizeKeysDeep,
+          O.Assign<{ id: string }>
+        ]
       >;
 
       type test1 = Expect<
-        Equal<APIUser, { firstName: string; lastName: string }>
+        Equal<
+          APIUser,
+          {
+            id: string;
+            metadata: {
+              new_user: true;
+            };
+            first_name: string;
+            last_name: string;
+          }
+        >
       >;
     });
   });
