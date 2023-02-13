@@ -68,6 +68,7 @@ type T = {
 - [ ] Tuples
   - [ ] Zip
   - [ ] Partition
+  - [x] Sort
   - [x] Head
   - [x] Tail
   - [x] Last

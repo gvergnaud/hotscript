@@ -258,6 +258,15 @@ describe("HOTScript", () => {
       type tes2 = Expect<Equal<res2, true>>;
     });
 
+    it("Sort", () => {
+      type res1 = Call<
+        //   ^?
+        Tuples.Sort,
+        [1, 3, 2, 6, 5, 4]
+      >;
+      type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6]>>;
+    });
+
     it("Composition", () => {
       interface Duplicate extends Fn {
         output: [this["args"][0], this["args"][0]];

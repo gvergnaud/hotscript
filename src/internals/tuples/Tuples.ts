@@ -155,4 +155,21 @@ export namespace Tuples {
       ? false
       : true;
   }
+
+  type SortImpl<xs extends any[]> = xs extends [
+    infer head extends number,
+    ...infer tail
+  ]
+    ? [
+        ...SortImpl<Call<Tuples.Filter<Numbers.GreaterThan<head>>, tail>>,
+        head,
+        ...SortImpl<Call<Tuples.Filter<Numbers.LessThanOrEqual<head>>, tail>>
+      ]
+    : [];
+
+  export interface Sort extends Fn {
+    output: this["args"] extends [infer xs extends any[]]
+      ? SortImpl<xs>
+      : never;
+  }
 }
