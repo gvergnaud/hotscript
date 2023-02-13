@@ -62,30 +62,37 @@ export interface DoesNotExtends<T> extends Fn {
   output: this["args"][0] extends T ? false : true;
 }
 
+type placeholder = "@hotscript/placeholder";
+
+type MergeArgsRec<
+  inputArgs extends any[],
+  partialArgs extends any[],
+  output extends any[] = []
+> = partialArgs extends [infer partialFirst, ...infer partialRest]
+  ? partialFirst extends placeholder
+    ? inputArgs extends [infer inputFirst, ...infer inputRest]
+      ? MergeArgsRec<inputRest, partialRest, [...output, inputFirst]>
+      : [
+          ...output,
+          ...Call<Tuples.Filter<DoesNotExtends<placeholder>>, partialRest>
+        ]
+    : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
+  : [...output, ...inputArgs];
+
+type MergeArgs<
+  inputArgs extends any[],
+  partialArgs extends any[]
+> = MergeArgsRec<RemoveUnknownArrayConstraint<inputArgs>, partialArgs>;
+
 /**
  * Functions
  */
 export namespace Functions {
-  export type _ = "@hotscript/placeholder";
-
-  type MergePartialArgs<
-    inputArgs extends any[],
-    partialArgs extends any[],
-    output extends any[] = []
-  > = partialArgs extends [infer partialFirst, ...infer partialRest]
-    ? partialFirst extends _
-      ? inputArgs extends [infer inputFirst, ...infer inputRest]
-        ? MergePartialArgs<inputRest, partialRest, [...output, inputFirst]>
-        : [...output, ...Call<Tuples.Filter<DoesNotExtends<_>>, partialRest>]
-      : MergePartialArgs<inputArgs, partialRest, [...output, partialFirst]>
-    : [...output, ...inputArgs];
+  export type _ = placeholder;
 
   interface PipeableApplyPartial<fn extends Fn, partialArgs extends any[]>
     extends Fn {
-    output: Apply<
-      fn,
-      MergePartialArgs<RemoveUnknownArrayConstraint<this["args"]>, partialArgs>
-    >;
+    output: Apply<fn, MergeArgs<this["args"], partialArgs>>;
   }
 
   export type ApplyPartial<
@@ -155,13 +162,9 @@ export namespace Strings {
 export namespace Numbers {
   type Add2Impl<a, b> = [...Tuples.Range<a>, ...Tuples.Range<b>]["length"];
 
-  export interface Add<n> extends Fn {
-    output: Add2Impl<this["args"][0], n>;
-  }
-
-  export interface Add2 extends Fn {
-    output: this["args"] extends [infer acc, infer item]
-      ? Add2Impl<acc, item>
+  export interface Add<n = placeholder> extends Fn {
+    output: MergeArgs<this["args"], [n]> extends [infer a, infer b, ...any]
+      ? Add2Impl<a, b>
       : never;
   }
 }
@@ -256,7 +259,7 @@ export namespace Tuples {
   }
 
   export interface Sum extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], 0, Numbers.Add2>;
+    output: Tuples.ReduceImpl<this["args"][0], 0, Numbers.Add>;
   }
 
   export type Range<n, acc extends any[] = []> = acc["length"] extends n

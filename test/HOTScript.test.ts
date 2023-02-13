@@ -321,7 +321,7 @@ describe("HOTScript", () => {
 
       type res2 = Call<
         //   ^?
-        F.ApplyPartial<N.Add2, [2]>,
+        F.ApplyPartial<N.Add, [2]>,
         2
       >;
       type test2 = Expect<Equal<res2, 4>>;
@@ -329,12 +329,7 @@ describe("HOTScript", () => {
       type res3 = Pipe<
         //   ^?
         3,
-        [
-          F.ApplyPartial<N.Add2, [3]>,
-          F.ApplyPartial<N.Add2, [3]>,
-          F.ApplyPartial<N.Add2, [3]>,
-          F.ApplyPartial<N.Add2, [3]>
-        ]
+        [N.Add<3>, N.Add<3>, N.Add<3>, N.Add<3>]
       >;
       type test3 = Expect<Equal<res3, 15>>;
 
