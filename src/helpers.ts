@@ -30,17 +30,6 @@ export type UnionToIntersection<union> = (
   ? intersection
   : never;
 
-/**
- * Trick to force union to intersection
- * It works even with primitives since we are creating a function with different results for each one
- * @param Union - Union converted to intersection of functions returning the each element of the union
- */
-export type UnionToIntersectionFn<Union> = (
-  Union extends unknown ? (k: () => Union) => void : never
-) extends (k: infer Intersection) => void
-  ? Intersection
-  : never;
-
 export type Prettify<T> = { [K in keyof T]: T[K] } | never;
 
 export type AnyTuple = readonly [any, ...any];
@@ -170,7 +159,9 @@ export type IsArrayStrict<a> = a extends readonly any[]
  * @param Union - Union of any types
  * @returns Last element of union
  */
-type GetUnionLast<Union> = UnionToIntersectionFn<Union> extends () => infer Last
+type GetUnionLast<Union> = UnionToIntersection<
+  Union extends any ? () => Union : never
+> extends () => infer Last
   ? Last
   : never;
 
