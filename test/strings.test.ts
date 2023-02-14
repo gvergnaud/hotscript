@@ -2,12 +2,6 @@ import { Call, Strings } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
-  it("Join", () => {
-    type res1 = Call<Strings.Join<".">, [1, 2, 3]>;
-    //    ^?
-    type test1 = Expect<Equal<res1, "1.2.3">>;
-  });
-
   it("Split", () => {
     type res1 = Call<Strings.Split<".">, "1.2.3">;
     //    ^?

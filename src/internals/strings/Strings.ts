@@ -13,15 +13,6 @@ export namespace Strings {
     | null
     | undefined;
 
-  interface JoinReducer<sep extends string> extends Fn {
-    output: this["args"] extends [
-      infer acc extends Strings.Stringifiable,
-      infer item extends Strings.Stringifiable
-    ]
-      ? `${acc extends "" ? "" : `${acc}${sep}`}${item}`
-      : never;
-  }
-
   /**
    * Get the length of a string.
    * @param args[0] - The string to get the length of.
@@ -78,20 +69,6 @@ export namespace Strings {
   }
 
   /**
-   * Join a tuple of strings into a single string.
-   * @param args[0] - The tuple of strings to join.
-   * @param sep - The separator to join the strings with.
-   * @returns The joined string.
-   * @example
-   * ```ts
-   * type T0 = Call<Strings.Join<",">,["a","b","c"]>; // "a,b,c"
-   * ```
-   */
-  export interface Join<sep extends string> extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], "", JoinReducer<sep>>;
-  }
-
-  /**
    * Replace all instances of a substring in a string.
    * @param args[0] - The string to replace.
    * @param from - The substring to replace.
@@ -118,7 +95,7 @@ export namespace Strings {
   export interface Slice<start extends number, end extends number> extends Fn {
     output: Pipe<
       Impl.StringToTuple<this["args"][0]>,
-      [Tuples.Take<end>, Tuples.Drop<start>, Join<"">]
+      [Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
     >;
   }
 

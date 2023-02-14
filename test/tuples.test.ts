@@ -183,6 +183,12 @@ describe("Tuples", () => {
     type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6]>>;
   });
 
+  it("Join", () => {
+    type res1 = Call<Tuples.Join<".">, [1, 2, 3]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, "1.2.3">>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
       output: [this["args"][0], this["args"][0]];

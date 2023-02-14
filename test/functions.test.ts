@@ -54,7 +54,7 @@ describe("Composition", () => {
       [1, 2, 3, 4, 3, 4, 124678765435897587654478964568576n],
       [
         Tuples.Map<Numbers.Add<3>>,
-        Strings.Join<".">,
+        Tuples.Join<".">,
         Strings.Split<".">,
         Tuples.Map<Strings.ToNumber>,
         Tuples.Map<Numbers.Add<10>>,
@@ -73,7 +73,7 @@ describe("Composition", () => {
         Tuples.Map<Numbers.Add<10>>,
         Tuples.Map<Strings.ToNumber>,
         Strings.Split<".">,
-        Strings.Join<".">,
+        Tuples.Join<".">,
         Tuples.Map<Numbers.Add<3>>
       ],
       [1, 2, 3, 4, 3, 4]

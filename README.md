@@ -11,7 +11,7 @@ type res1 = Pipe<
   [1, 2, 3, 4, 3, 4],
   [
     Tuples.Map<Numbers.Add<3>>,
-    Strings.Join<".">,
+    Tuples.Join<".">,
     Strings.Split<".">,
     Tuples.Map<Strings.ToNumber>,
     Tuples.Map<Numbers.Add<10>>,

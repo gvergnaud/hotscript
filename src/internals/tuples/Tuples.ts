@@ -1,6 +1,6 @@
 import { Call, Call2, Fn } from "../core/Core";
 import { Numbers } from "../numbers/Numbers";
-import { Iterator } from "../helpers";
+import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
@@ -28,7 +28,7 @@ export namespace Tuples {
   }
 
   export interface Map<fn extends Fn> extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], [], MapFn<fn>>;
+    output: ReduceImpl<this["args"][0], [], MapFn<fn>>;
   }
 
   interface FlatMapFn<fn extends Fn> extends Fn {
@@ -38,10 +38,10 @@ export namespace Tuples {
   }
 
   export interface FlatMap<fn extends Fn> extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], [], FlatMapFn<fn>>;
+    output: ReduceImpl<this["args"][0], [], FlatMapFn<fn>>;
   }
 
-  export type ReduceImpl<xs, acc, fn extends Fn> = xs extends [
+  type ReduceImpl<xs, acc, fn extends Fn> = xs extends [
     infer first,
     ...infer rest
   ]
@@ -49,10 +49,10 @@ export namespace Tuples {
     : acc;
 
   export interface Reduce<fn extends Fn, init> extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], init, fn>;
+    output: ReduceImpl<this["args"][0], init, fn>;
   }
 
-  export type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
+  type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
     ...infer rest,
     infer last
   ]
@@ -60,7 +60,7 @@ export namespace Tuples {
     : acc;
 
   export interface ReduceRight<fn extends Fn, init> extends Fn {
-    output: Tuples.ReduceRightImpl<this["args"][0], init, fn>;
+    output: ReduceRightImpl<this["args"][0], init, fn>;
   }
 
   interface FilterFn<fn extends Fn> extends Fn {
@@ -72,7 +72,7 @@ export namespace Tuples {
   }
 
   export interface Filter<fn extends Fn> extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], [], FilterFn<fn>>;
+    output: ReduceImpl<this["args"][0], [], FilterFn<fn>>;
   }
 
   type FindImpl<xs, fn extends Fn, index extends any[] = []> = xs extends [
@@ -89,7 +89,7 @@ export namespace Tuples {
   }
 
   export interface Sum extends Fn {
-    output: Tuples.ReduceImpl<this["args"][0], 0, Numbers.Add>;
+    output: ReduceImpl<this["args"][0], 0, Numbers.Add>;
   }
 
   export type Range<n, acc extends any[] = []> = acc["length"] extends n
@@ -171,5 +171,28 @@ export namespace Tuples {
     output: this["args"] extends [infer xs extends any[]]
       ? SortImpl<xs>
       : never;
+  }
+
+  interface JoinReducer<sep extends string> extends Fn {
+    output: this["args"] extends [
+      infer acc extends Stringifiable,
+      infer item extends Stringifiable
+    ]
+      ? `${acc extends "" ? "" : `${acc}${sep}`}${item}`
+      : never;
+  }
+
+  /**
+   * Join a tuple into a single string.
+   * @param args[0] - The tuple to join.
+   * @param sep - The separator to join the strings with.
+   * @returns The joined string.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Join<",">,["a","b","c"]>; // "a,b,c"
+   * ```
+   */
+  export interface Join<sep extends string> extends Fn {
+    output: ReduceImpl<this["args"][0], "", JoinReducer<sep>>;
   }
 }

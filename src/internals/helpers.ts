@@ -222,3 +222,11 @@ type RecursiveGet<Obj, PathList> = Obj extends any
       : undefined
     : Obj
   : never;
+
+export type Stringifiable =
+  | string
+  | number
+  | boolean
+  | bigint
+  | null
+  | undefined;
