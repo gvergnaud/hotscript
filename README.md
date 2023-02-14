@@ -108,10 +108,22 @@ type T = {
   - [x] Exclude
   - [x] ExcludeBy
 - [ ] String
-  - [x] ToString
+  - [x] Length
+  - [x] TrimLeft
+  - [x] TrimRight
+  - [x] Trim
+  - [x] Join
+  - [x] Replace
+  - [x] Slice
+  - [x] Split
+  - [x] Repeat
+  - [x] StartsWith
+  - [x] EndsWith
+  - [x] ToTuple
   - [x] ToNumber
-  - [x] Append
+  - [x] ToString
   - [x] Prepend
+  - [x] Append
   - [x] Uppercase
   - [x] Lowercase
   - [x] Capitalize
@@ -119,8 +131,13 @@ type T = {
   - [x] SnakeCase
   - [x] CamelCase
   - [x] KebabCase
-  - [x] Split separator
-  - [ ] Words
+  - [x] Compare
+  - [x] Equal
+  - [x] NotEqual
+  - [x] LessThan
+  - [x] LessThanOrEqual
+  - [x] GreaterThan
+  - [x] GreaterThanOrEqual
 - [ ] Number
   - [x] Add
   - [x] Multiply
