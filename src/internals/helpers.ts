@@ -119,7 +119,9 @@ export type SnakeCase<
   output extends string = ""
 > = str extends `${infer first}${infer rest}`
   ? first extends UppercaseLetter
-    ? SnakeCase<rest, `${output}_${Lowercase<first>}`>
+    ? output extends ""
+      ? SnakeCase<rest, Lowercase<first>>
+      : SnakeCase<rest, `${output}_${Lowercase<first>}`>
     : first extends "-"
     ? SnakeCase<rest, `${output}_`>
     : SnakeCase<rest, `${output}${first}`>
@@ -135,7 +137,9 @@ export type KebabCase<
   output extends string = ""
 > = str extends `${infer first}${infer rest}`
   ? first extends UppercaseLetter
-    ? KebabCase<rest, `${output}-${Lowercase<first>}`>
+    ? output extends ""
+      ? KebabCase<rest, Lowercase<first>>
+      : KebabCase<rest, `${output}-${Lowercase<first>}`>
     : first extends "_"
     ? KebabCase<rest, `${output}-`>
     : KebabCase<rest, `${output}${first}`>

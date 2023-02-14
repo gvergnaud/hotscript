@@ -15,6 +15,7 @@ export namespace Strings {
 
   /**
    * Get the length of a string.
+   * @warning - 🔥🔥🔥does not work with emojis since they are multiple characters🔥🔥🔥
    * @param args[0] - The string to get the length of.
    * @returns The length of the string.
    * @example
@@ -84,6 +85,7 @@ export namespace Strings {
 
   /**
    * Cut a slice of a string out from a start index to an end index.
+   * @warning - 🔥🔥🔥does not work with emojis since they are multiple characters🔥🔥🔥
    * @param args[0] - The string to slice.
    * @param start - The start index.
    * @param end - The end index.
@@ -101,6 +103,7 @@ export namespace Strings {
 
   /**
    * Split a string into a tuple of strings.
+   * @warning - 🔥🔥🔥using an empty sep with emojis in the string will destroy the emoji🔥🔥🔥
    * @param args[0] - The string to split.
    * @param sep - The separator to split the string with.
    * @returns The split string.
@@ -159,11 +162,13 @@ export namespace Strings {
 
   /**
    * Split a string into a tuple of each character.
+   * @warning - 🔥🔥🔥does not work with emojis since they are multiple characters🔥🔥🔥
    * @param args[0] - The string to split.
    * @returns The splited string.
    * @example
    * ```ts
    * type T0 = Call<Strings.ToTuple,"abc">; // ["a","b","c"]
+   * ```
    */
   export interface ToTuple extends Fn {
     output: Impl.StringToTuple<this["args"][0]>;
