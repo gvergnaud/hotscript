@@ -1,4 +1,4 @@
-import { Call, Call2, Eval, Numbers, Tuples, Args } from "../src/index";
+import { Call, Call2, Eval, Numbers, Tuples, Args, T } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Numbers", () => {
@@ -46,6 +46,11 @@ describe("Numbers", () => {
       type res1 = Eval<Numbers.Sub<1, 2>>;
       //    ^?
       type test1 = Expect<Equal<res1, -1>>;
+    });
+    it("should reverse it's function arguments when partial applied", () => {
+      type res1 = Call<Numbers.Sub<1>, 2>;
+      //    ^?
+      type test1 = Expect<Equal<res1, 1>>;
     });
   });
 
@@ -289,6 +294,23 @@ describe("Numbers", () => {
       type res1 = Eval<Numbers.GreaterThan<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, false>>;
+    });
+
+    it("should reverse it's function arguments when partial applied", () => {
+      type res4 = Eval<Numbers.GreaterThan<1, 2>>;
+      type test4 = Expect<Equal<res4, false>>;
+
+      type res5 = Call<Numbers.GreaterThan<Args._, 2>, 1>;
+      type test5 = Expect<Equal<res5, false>>;
+
+      type res6 = Call<T.Map<Numbers.GreaterThan<Args._, 2>>, [1, 2, 3]>;
+      type test6 = Expect<Equal<res6, [false, false, true]>>;
+
+      type res7 = Call<Numbers.GreaterThan<2>, 1>;
+      type test7 = Expect<Equal<res7, false>>;
+
+      type res8 = Call<T.Map<Numbers.GreaterThan<2>>, [1, 2, 3]>;
+      type test8 = Expect<Equal<res8, [false, false, true]>>;
     });
   });
 

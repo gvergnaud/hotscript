@@ -6,7 +6,7 @@ export namespace Numbers {
     n1 extends number | bigint | placeholder = placeholder,
     n2 extends number | bigint | placeholder = placeholder
   > extends Fn {
-    output: MergeArgs<this["args"], [n2, n1]> extends [
+    output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any

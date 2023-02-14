@@ -1,4 +1,4 @@
-import { Call, Eval, Tuples, Booleans } from "../src/index";
+import { Call, Eval, Tuples, Booleans, T, Args } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Booleans", () => {
@@ -88,6 +88,23 @@ describe("Booleans", () => {
     type res3 = Eval<Booleans.Extends<string, "a">>;
     //    ^?
     type test3 = Expect<Equal<res3, false>>;
+
+    it("should reverse it's function arguments when partial applied", () => {
+      type res4 = Eval<Booleans.Extends<1, number>>;
+      type test4 = Expect<Equal<res4, true>>;
+
+      type res5 = Call<Booleans.Extends<Args._, 2>, 1>;
+      type test5 = Expect<Equal<res5, false>>;
+
+      type res6 = Call<T.Map<Booleans.Extends<Args._, number>>, [1, "2", 3]>;
+      type test6 = Expect<Equal<res6, [true, false, true]>>;
+
+      type res7 = Call<Booleans.Extends<number>, 1>;
+      type test7 = Expect<Equal<res7, true>>;
+
+      type res8 = Call<T.Map<Booleans.Extends<number>>, [1, "2", 3]>;
+      type test8 = Expect<Equal<res8, [true, false, true]>>;
+    });
   });
 
   it("Equals", () => {

@@ -161,9 +161,9 @@ export namespace Tuples {
     ...infer tail
   ]
     ? [
-        ...SortImpl<Call<Tuples.Filter<Numbers.GreaterThan<head>>, tail>>,
+        ...SortImpl<Call<Tuples.Filter<Numbers.LessThanOrEqual<head>>, tail>>,
         head,
-        ...SortImpl<Call<Tuples.Filter<Numbers.LessThanOrEqual<head>>, tail>>
+        ...SortImpl<Call<Tuples.Filter<Numbers.GreaterThan<head>>, tail>>
       ]
     : [];
 

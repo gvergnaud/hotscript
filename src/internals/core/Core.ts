@@ -69,7 +69,26 @@ type MergeArgsRec<
     : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
   : [...output, ...inputArgs];
 
+/**
+ * Special case if the arity of the function is 2, we want the first
+ * partial argument to be position as the second one so that expressions
+ * like:
+ *  - Call<Booleans.Extends<string>, 2>
+ *  - Call<Number.GreaterThan<5>, 10>
+ *  - etc
+ * return `true` instead of false.
+ */
+type UpdatePartialArgs<partialArgs extends any[]> = partialArgs extends [
+  infer a,
+  placeholder
+]
+  ? [placeholder, a]
+  : partialArgs;
+
 export type MergeArgs<
   inputArgs extends any[],
   partialArgs extends any[]
-> = MergeArgsRec<RemoveUnknownArrayConstraint<inputArgs>, partialArgs>;
+> = MergeArgsRec<
+  RemoveUnknownArrayConstraint<inputArgs>,
+  UpdatePartialArgs<partialArgs>
+>;
