@@ -1,4 +1,4 @@
-import { Call, Fn } from "../core/Core";
+import { Call, Call2, Fn, MergeArgs, Pipe, placeholder } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 import * as H from "../../helpers";
@@ -92,6 +92,37 @@ export namespace Strings {
   }
 
   /**
+   * Replace all instances of a substring in a string.
+   * @param args[0] - The string to replace.
+   * @param from - The substring to replace.
+   * @param to - The substring to replace with.
+   * @returns The replaced string.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.Replace<".","/">,"a.b.c.d">; // "a/b/c/d"
+   */
+  export interface Replace<from extends string, to extends string> extends Fn {
+    output: Impl.Replace<this["args"][0], from, to>;
+  }
+
+  /**
+   * Cut a slice of a string out from a start index to an end index.
+   * @param args[0] - The string to slice.
+   * @param start - The start index.
+   * @param end - The end index.
+   * @returns The sliced string.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.Slice<1,9>,"1234567890">; // "23456789"
+   */
+  export interface Slice<start extends number, end extends number> extends Fn {
+    output: Pipe<
+      Impl.StringToTuple<this["args"][0]>,
+      [Tuples.Take<end>, Tuples.Drop<start>, Join<"">]
+    >;
+  }
+
+  /**
    * Split a string into a tuple of strings.
    * @param args[0] - The string to split.
    * @param sep - The separator to split the string with.
@@ -103,6 +134,50 @@ export namespace Strings {
    */
   export interface Split<sep extends string> extends Fn {
     output: Impl.Split<this["args"][0], sep>;
+  }
+
+  /**
+   * Repeat a string a number of times.
+   * @param args[0] - The string to repeat.
+   * @param times - The number of times to repeat the string.
+   * @returns The repeated string.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.Repeat<3>,"Hello! ">; // "Hello! Hello! Hello! "
+   * ```
+   */
+  export interface Repeat<times extends number> extends Fn {
+    output: Impl.Repeat<this["args"][0], H.Iterator.Iterator<times>>;
+  }
+
+  /**
+   * Check if a string starts with a substring.
+   * @param args[0] - The string to check.
+   * @param str - The substring to check for.
+   * @returns Whether the string starts with the substring.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.StartsWith<"abc">,"abcdef">; // true
+   * type T1 = Call<Strings.StartsWith<"abc">,"defabc">; // false
+   * ```
+   */
+  export interface StartsWith<str extends string> extends Fn {
+    output: this["args"][0] extends `${str}${string}` ? true : false;
+  }
+
+  /**
+   * Check if a string ends with a substring.
+   * @param args[0] - The string to check.
+   * @param str - The substring to check for.
+   * @returns Whether the string ends with the substring.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.EndsWith<"abc">,"abcdef">; // false
+   * type T1 = Call<Strings.EndsWith<"abc">,"defabc">; // true
+   * ```
+   */
+  export interface EndsWith<str extends string> extends Fn {
+    output: this["args"][0] extends `${string}${str}` ? true : false;
   }
 
   /**
@@ -267,5 +342,192 @@ export namespace Strings {
    */
   export interface KebabCase extends Fn {
     output: H.KebabCase<this["args"][0]>;
+  }
+
+  /**
+   * Compare two strings. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns The result of the comparison.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.Compare,"abc","def">; // -1
+   * type T1 = Call2<Strings.Compare,"def","abc">; // 1
+   * type T2 = Call2<Strings.Compare,"abc","abc">; // 0
+   * ```
+   */
+  export interface Compare<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.Compare<a, b>
+      : never;
+  }
+
+  /**
+   * Check if two strings are equal. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the strings are equal, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.Equal,"abc","def">; // false
+   * type T1 = Call2<Strings.Equal,"def","abc">; // false
+   * type T2 = Call2<Strings.Equal,"abc","abc">; // true
+   */
+  export interface Equal<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.Equal<a, b>
+      : never;
+  }
+
+  /**
+   * Check if two strings are not equal. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the strings are not equal, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.NotEqual,"abc","def">; // true
+   * type T1 = Call2<Strings.NotEqual,"def","abc">; // true
+   * type T2 = Call2<Strings.NotEqual,"abc","abc">; // false
+   * ```
+   */
+  export interface NotEqual<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.NotEqual<a, b>
+      : never;
+  }
+
+  /**
+   * Check if a string is lexically less than another string. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the first string is lexically less than the second string, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.LessThan,"abc","def">; // true
+   * type T1 = Call2<Strings.LessThan,"def","abc">; // false
+   * type T2 = Call2<Strings.LessThan,"abc","abc">; // false
+   * ```
+   */
+  export interface LessThan<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.LessThan<a, b>
+      : never;
+  }
+
+  /**
+   * Check if a string is lexically less than or equal to another string. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the first string is lexically less than or equal to the second string, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.LessThanOrEqual,"abc","def">; // true
+   * type T1 = Call2<Strings.LessThanOrEqual,"def","abc">; // false
+   * type T2 = Call2<Strings.LessThanOrEqual,"abc","abc">; // true
+   */
+  export interface LessThanOrEqual<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.LessThanOrEqual<a, b>
+      : never;
+  }
+
+  /**
+   * Check if a string is lexically greater than another string. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the first string is lexically greater than the second string, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.GreaterThan,"abc","def">; // false
+   * type T1 = Call2<Strings.GreaterThan,"def","abc">; // true
+   * type T2 = Call2<Strings.GreaterThan,"abc","abc">; // false
+   * ```
+   */
+  export interface GreaterThan<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.GreaterThan<a, b>
+      : never;
+  }
+
+  /**
+   * Check if a string is lexically greater than or equal to another string. (only works with ascii extended characters)
+   * @param args[0] - The first string to compare.
+   * @param args[1] - The second string to compare.
+   * @n1 - The first string to compare or placeholder.
+   * @n2 - The second string to compare or placeholder.
+   * @returns True if the first string is lexically greater than or equal to the second string, false otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call2<Strings.GreaterThanOrEqual,"abc","def">; // false
+   * type T1 = Call2<Strings.GreaterThanOrEqual,"def","abc">; // true
+   * type T2 = Call2<Strings.GreaterThanOrEqual,"abc","abc">; // true
+   * ```
+   */
+  export interface GreaterThanOrEqual<
+    n1 extends string | placeholder = placeholder,
+    n2 extends string | placeholder = placeholder
+  > extends Fn {
+    output: MergeArgs<this["args"], [n1, n2]> extends [
+      infer a extends string,
+      infer b extends string,
+      ...any
+    ]
+      ? Impl.GreaterThanOrEqual<a, b>
+      : never;
   }
 }
