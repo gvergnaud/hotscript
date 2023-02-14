@@ -115,8 +115,8 @@ describe("Booleans", () => {
     type test1 = Expect<Equal<res1, true>>;
   });
 
-  it("DoesNotExtends", () => {
-    type res1 = Call<Booleans.DoesNotExtends<"a">, "b">;
+  it("DoesNotExtend", () => {
+    type res1 = Call<Booleans.DoesNotExtend<"a">, "b">;
     //    ^?
     type test1 = Expect<Equal<res1, true>>;
   });

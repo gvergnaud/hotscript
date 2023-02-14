@@ -4,6 +4,14 @@ export type Equal<a, b> = (<T>() => T extends a ? 1 : 2) extends <
   ? true
   : false;
 
+/**
+ * HACK:
+ * Special function for never because `Equal<T, never>` doesn't
+ * work when called deep in the call stack (for a reason I don't understand
+ * probably a TS bug).
+ */
+export type IsNever<T> = [T] extends [never] ? true : false;
+
 export type Expect<a extends true> = a;
 
 export type Some<bools extends boolean[]> = true extends bools[number]

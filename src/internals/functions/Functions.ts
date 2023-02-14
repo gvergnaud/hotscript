@@ -5,6 +5,10 @@ export namespace Functions {
     output: this["args"][0];
   }
 
+  export interface Constant<T> extends Fn {
+    output: T;
+  }
+
   export interface PartialApply<fn extends Fn, partialArgs extends any[]>
     extends Fn {
     output: Apply<fn, MergeArgs<this["args"], partialArgs>>;

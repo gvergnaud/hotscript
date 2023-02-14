@@ -1,10 +1,10 @@
-import { Fn, MergeArgs, placeholder } from "../core/Core";
+import { Fn, MergeArgs, placeholder, unset } from "../core/Core";
 import * as Impl from "./impl/numbers";
 
 export namespace Numbers {
   export interface Add<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -16,8 +16,8 @@ export namespace Numbers {
   }
 
   export interface Sub<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -30,8 +30,8 @@ export namespace Numbers {
 
   // Multiply
   export interface Mul<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -44,8 +44,8 @@ export namespace Numbers {
 
   // Divide
   export interface Div<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -58,8 +58,8 @@ export namespace Numbers {
 
   // Modulo
   export interface Mod<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -71,8 +71,9 @@ export namespace Numbers {
   }
 
   // Negate
-  export interface Negate<n extends number | bigint | placeholder = never>
-    extends Fn {
+  export interface Negate<
+    n extends number | bigint | placeholder | unset = unset
+  > extends Fn {
     output: MergeArgs<this["args"], [n]> extends [
       infer a extends number | bigint,
       ...any
@@ -82,7 +83,7 @@ export namespace Numbers {
   }
 
   // Absolute
-  export interface Abs<n extends number | bigint | placeholder = never>
+  export interface Abs<n extends number | bigint | placeholder | unset = unset>
     extends Fn {
     output: MergeArgs<this["args"], [n]> extends [
       infer a extends number | bigint,
@@ -94,8 +95,8 @@ export namespace Numbers {
 
   // Power
   export interface Power<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -108,8 +109,8 @@ export namespace Numbers {
 
   // Compare
   export interface Compare<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -122,8 +123,8 @@ export namespace Numbers {
 
   // Equal
   export interface Equal<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -136,8 +137,8 @@ export namespace Numbers {
 
   // NotEqual
   export interface NotEqual<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -150,8 +151,8 @@ export namespace Numbers {
 
   // LessThan
   export interface LessThan<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -164,8 +165,8 @@ export namespace Numbers {
 
   // LessThanOrEqual
   export interface LessThanOrEqual<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -178,8 +179,8 @@ export namespace Numbers {
 
   // GreaterThan
   export interface GreaterThan<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,
@@ -192,8 +193,8 @@ export namespace Numbers {
 
   // GreaterThanOrEqual
   export interface GreaterThanOrEqual<
-    n1 extends number | bigint | placeholder = never,
-    n2 extends number | bigint | placeholder = never
+    n1 extends number | bigint | placeholder | unset = unset,
+    n2 extends number | bigint | placeholder | unset = unset
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends number | bigint,

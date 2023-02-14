@@ -1,4 +1,4 @@
-import { RemoveUnknownArrayConstraint } from "../helpers";
+import { IsNever, RemoveUnknownArrayConstraint } from "../helpers";
 
 export interface Fn {
   args: unknown[];
@@ -48,6 +48,7 @@ export type PipeRight<xs extends Fn[], acc> = xs extends [
  */
 
 export type placeholder = "@hotscript/placeholder";
+export type unset = "@hotscript/unset";
 
 type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
   infer first,
@@ -59,24 +60,30 @@ type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
   : output;
 
 type MergeArgsRec<
-  inputArgs extends any[],
+  pipedArgs extends any[],
   partialArgs extends any[],
   output extends any[] = []
 > = partialArgs extends [infer partialFirst, ...infer partialRest]
-  ? partialFirst extends placeholder
-    ? inputArgs extends [infer inputFirst, ...infer inputRest]
-      ? MergeArgsRec<inputRest, partialRest, [...output, inputFirst]>
+  ? [partialFirst] extends [never]
+    ? MergeArgsRec<pipedArgs, partialRest, [...output, partialFirst]>
+    : [partialFirst] extends [placeholder]
+    ? pipedArgs extends [infer pipedFirst, ...infer pipedRest]
+      ? MergeArgsRec<pipedRest, partialRest, [...output, pipedFirst]>
       : [...output, ...ExcludePlaceholders<partialRest>]
-    : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
-  : [...output, ...inputArgs];
+    : MergeArgsRec<pipedArgs, partialRest, [...output, partialFirst]>
+  : [...output, ...pipedArgs];
 
-type NeverIntoPlaceholder<x> = [x] extends [never] ? placeholder : x;
+type EmptyIntoPlaceholder<x> = IsNever<x> extends true
+  ? never
+  : [x] extends [unset]
+  ? placeholder
+  : x;
 
-type MapNeverIntoPlaceholder<xs, output extends any[] = []> = xs extends [
+type MapEmptyIntoPlaceholder<xs, output extends any[] = []> = xs extends [
   infer first,
   ...infer rest
 ]
-  ? MapNeverIntoPlaceholder<rest, [...output, NeverIntoPlaceholder<first>]>
+  ? MapEmptyIntoPlaceholder<rest, [...output, EmptyIntoPlaceholder<first>]>
   : output;
 
 /**
@@ -88,17 +95,19 @@ type MapNeverIntoPlaceholder<xs, output extends any[] = []> = xs extends [
  *  - etc
  * return `true` instead of false.
  */
-type UpdatePartialArgs<partialArgs extends any[]> = partialArgs extends [
-  infer a,
-  never
-]
-  ? [placeholder, NeverIntoPlaceholder<a>]
-  : MapNeverIntoPlaceholder<partialArgs>;
+type UpdatePartialArgs<partialArgs extends any[]> = [
+  partialArgs["length"],
+  IsNever<partialArgs[1]>,
+  partialArgs[0],
+  partialArgs[1]
+] extends [2, false, infer a, unset]
+  ? [placeholder, EmptyIntoPlaceholder<a>]
+  : MapEmptyIntoPlaceholder<partialArgs>;
 
 export type MergeArgs<
-  inputArgs extends any[],
+  pipedArgs extends any[],
   partialArgs extends any[]
 > = MergeArgsRec<
-  RemoveUnknownArrayConstraint<inputArgs>,
+  RemoveUnknownArrayConstraint<pipedArgs>,
   UpdatePartialArgs<partialArgs>
 >;

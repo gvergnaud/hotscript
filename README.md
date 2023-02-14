@@ -158,4 +158,4 @@ type T = {
   - [x] Not
   - [x] Extends
   - [x] Equals
-  - [x] DoesNotExtends
+  - [x] DoesNotExtend

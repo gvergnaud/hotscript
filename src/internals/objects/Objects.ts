@@ -4,7 +4,7 @@ import {
   Prettify,
   UnionToIntersection,
 } from "../helpers";
-import { Call, Call2, Fn, MergeArgs, placeholder } from "../core/Core";
+import { Call, Call2, Fn, MergeArgs, placeholder, unset } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
 
@@ -133,7 +133,7 @@ export namespace Objects {
     UnionToIntersection<xs[number]>
   >;
 
-  export interface Assign<arg1 = never, arg2 = never, arg3 = never> extends Fn {
+  export interface Assign<arg1 = unset, arg2 = unset, arg3 = unset> extends Fn {
     output: AssignImpl<MergeArgs<this["args"], [arg1, arg2, arg3]>>;
   }
 
@@ -163,8 +163,10 @@ export namespace Objects {
     output: GroupByImpl<this["args"][0], fn>;
   }
 
-  export interface Get<_path extends string | placeholder = never, _obj = never>
-    extends Fn {
+  export interface Get<
+    _path extends string | placeholder | unset = unset,
+    _obj = unset
+  > extends Fn {
     output: MergeArgs<this["args"], [_obj, _path]> extends [
       infer obj,
       infer path extends string,
