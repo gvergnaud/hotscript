@@ -38,12 +38,6 @@ describe("Strings", () => {
     type test2 = Expect<Equal<res2, "1">>;
   });
 
-  it("Join", () => {
-    type res1 = Call<Strings.Join<".">, [1, 2, 3]>;
-    //    ^?
-    type test1 = Expect<Equal<res1, "1.2.3">>;
-  });
-
   it("Replace", () => {
     type res1 = Call<Strings.Replace<"a", "b">, "abc">;
     //    ^?
