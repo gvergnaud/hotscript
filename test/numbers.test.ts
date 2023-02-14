@@ -235,6 +235,9 @@ describe("Numbers", () => {
       type res1 = Call<Tuples.Map<Numbers.LessThan<Args._, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [true, false, false]>>;
+      type res2 = Call<Tuples.Map<Numbers.LessThan<2>>, [1, 2, 3]>;
+      //    ^?
+      type test2 = Expect<Equal<res1, [true, false, false]>>;
     });
 
     it("can be called with 1 pre-filled arguments", () => {
