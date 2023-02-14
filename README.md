@@ -30,8 +30,7 @@ type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;
 type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 //     ^? [1, 1, 2, 2, 3, 3, 4, 4]
 
-// Let's compose some functions to turn a type
-
+// Let's compose some functions to transform an object type:
 type ToAPIPayload<T> = Pipe<
   T,
   [
