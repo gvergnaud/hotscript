@@ -1,5 +1,4 @@
-import { Apply, Call, Fn, MergeArgs, placeholder } from "../core/Core";
-import { Tuples } from "../tuples/Tuples";
+import { Apply, Fn, MergeArgs } from "../core/Core";
 
 export namespace Functions {
   export interface Identity extends Fn {

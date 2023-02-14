@@ -1,5 +1,9 @@
-import { Call, Fn, Tuples, Args, B, Pipe, T, Numbers } from "../src";
+import { Args } from "../src/internals/args/Args";
+import { Booleans } from "../src/internals/booleans/Booleans";
+import { Call, Fn, Pipe } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
+import { Numbers } from "../src/internals/numbers/Numbers";
+import { Tuples } from "../src/internals/tuples/Tuples";
 
 describe("Tuples", () => {
   it("Head", () => {
@@ -123,7 +127,7 @@ describe("Tuples", () => {
   it("TakeWhile", () => {
     type res1 = Call<
       //   ^?
-      Tuples.TakeWhile<B.Extends<Args._, string>>,
+      Tuples.TakeWhile<Booleans.Extends<Args._, string>>,
       ["a", "b", "c", 2, "d"]
     >;
     type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
@@ -132,7 +136,7 @@ describe("Tuples", () => {
 
     type res2 = Call<
       //   ^?
-      Tuples.TakeWhile<B.Extends<NewType, number>>,
+      Tuples.TakeWhile<Booleans.Extends<NewType, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, [1, 2]>>;
@@ -141,14 +145,14 @@ describe("Tuples", () => {
   it("Every", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Every<B.Extends<Args._, string>>,
+      Tuples.Every<Booleans.Extends<Args._, string>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, true>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Every<B.Extends<Args._, number>>,
+      Tuples.Every<Booleans.Extends<Args._, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, false>>;
@@ -157,14 +161,14 @@ describe("Tuples", () => {
   it("Some", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Some<B.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<Args._, number>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, false>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Some<B.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<Args._, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, true>>;
@@ -189,11 +193,11 @@ describe("Tuples", () => {
     //    ^?
       [1, 2, 3, 4, 5, 5, 6],
       [
-        T.FlatMap<Duplicate>,
-        T.Map<Numbers.Add<3>>,
-        T.Drop<3>,
-        T.Take<6>,
-        T.Sum
+        Tuples.FlatMap<Duplicate>,
+        Tuples.Map<Numbers.Add<3>>,
+        Tuples.Drop<3>,
+        Tuples.Take<6>,
+        Tuples.Sum
       ]
     >;
 

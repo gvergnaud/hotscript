@@ -1,6 +1,4 @@
 import { RemoveUnknownArrayConstraint } from "../helpers";
-import { Booleans } from "../booleans/Booleans";
-import { Tuples } from "../tuples/Tuples";
 
 export interface Fn {
   args: unknown[];
@@ -51,6 +49,15 @@ export type PipeRight<xs extends Fn[], acc> = xs extends [
 
 export type placeholder = "@hotscript/placeholder";
 
+type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
+  infer first,
+  ...infer rest
+]
+  ? first extends placeholder
+    ? ExcludePlaceholders<rest, output>
+    : ExcludePlaceholders<rest, [...output, first]>
+  : output;
+
 type MergeArgsRec<
   inputArgs extends any[],
   partialArgs extends any[],
@@ -59,23 +66,18 @@ type MergeArgsRec<
   ? partialFirst extends placeholder
     ? inputArgs extends [infer inputFirst, ...infer inputRest]
       ? MergeArgsRec<inputRest, partialRest, [...output, inputFirst]>
-      : [
-          ...output,
-          ...Call<
-            Tuples.Filter<Booleans.Not<Booleans.Extends<placeholder>>>,
-            partialRest
-          >
-        ]
+      : [...output, ...ExcludePlaceholders<partialRest>]
     : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
   : [...output, ...inputArgs];
 
-interface NeverIntoPlaceholder extends Fn {
-  output: this["args"] extends [infer value, ...any]
-    ? [value] extends [never]
-      ? placeholder
-      : value
-    : never;
-}
+type NeverIntoPlaceholder<x> = [x] extends [never] ? placeholder : x;
+
+type MapNeverIntoPlaceholder<xs, output extends any[] = []> = xs extends [
+  infer first,
+  ...infer rest
+]
+  ? MapNeverIntoPlaceholder<rest, [...output, NeverIntoPlaceholder<first>]>
+  : output;
 
 /**
  * Special case if the arity of the function is 2, we want the first
@@ -90,8 +92,8 @@ type UpdatePartialArgs<partialArgs extends any[]> = partialArgs extends [
   infer a,
   never
 ]
-  ? [placeholder, Call<NeverIntoPlaceholder, a>]
-  : Call<Tuples.Map<NeverIntoPlaceholder>, partialArgs>;
+  ? [placeholder, NeverIntoPlaceholder<a>]
+  : MapNeverIntoPlaceholder<partialArgs>;
 
 export type MergeArgs<
   inputArgs extends any[],

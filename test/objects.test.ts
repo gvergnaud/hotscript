@@ -1,11 +1,15 @@
-import { Call, Tuples, O, B, Pipe, T, S, Eval, Booleans, Fn } from "../src";
+import { Booleans } from "../src/internals/booleans/Booleans";
+import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
+import { Strings } from "../src/internals/strings/Strings";
+import { Objects } from "../src/internals/objects/Objects";
+import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Objects", () => {
   it("FromEntries", () => {
     type res1 = Call<
       //   ^?
-      O.FromEntries,
+      Objects.FromEntries,
       ["a", string] | ["b", number]
     >;
     type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
@@ -14,14 +18,17 @@ describe("Objects", () => {
   it("Entries", () => {
     type res1 = Call<
       //   ^?
-      O.Entries,
+      Objects.Entries,
       { a: string; b: number }
     >;
     type tes1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
   });
 
   it("Entries >> FromEntries identity", () => {
-    type res1 = Pipe<{ a: string; b: number }, [O.Entries, O.FromEntries]>;
+    type res1 = Pipe<
+      { a: string; b: number },
+      [Objects.Entries, Objects.FromEntries]
+    >;
     //   ^?
 
     type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
@@ -30,7 +37,7 @@ describe("Objects", () => {
   it("MapValues", () => {
     type res1 = Call<
       //   ^?
-      O.MapValues<S.ToString>,
+      Objects.MapValues<Strings.ToString>,
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
@@ -39,7 +46,7 @@ describe("Objects", () => {
   it("MapKeys", () => {
     type res1 = Call<
       //   ^?
-      O.MapKeys<S.Prepend<"get_">>,
+      Objects.MapKeys<Strings.Prepend<"get_">>,
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
@@ -48,7 +55,7 @@ describe("Objects", () => {
   it("Pick", () => {
     type res1 = Call<
       //   ^?
-      O.Pick<"a">,
+      Objects.Pick<"a">,
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { a: 1 }>>;
@@ -57,7 +64,7 @@ describe("Objects", () => {
   it("Omit", () => {
     type res1 = Call<
       //   ^?
-      O.Omit<"a">,
+      Objects.Omit<"a">,
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { b: true }>>;
@@ -66,7 +73,7 @@ describe("Objects", () => {
   it("PickBy", () => {
     type res1 = Call<
       //   ^?
-      O.PickBy<B.Extends<1>>,
+      Objects.PickBy<Booleans.Extends<1>>,
       { a: 1; b: true; c: 1 }
     >;
     type tes1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
@@ -75,7 +82,7 @@ describe("Objects", () => {
   it("OmitBy", () => {
     type res1 = Call<
       //   ^?
-      O.OmitBy<B.Extends<1>>,
+      Objects.OmitBy<Booleans.Extends<1>>,
       { a: 1; b: true; c: 1 }
     >;
     type tes1 = Expect<Equal<res1, { b: true }>>;
@@ -85,14 +92,14 @@ describe("Objects", () => {
     it("can be called without any pre-filled arguments", () => {
       type res1 = Call<
         //   ^?
-        T.Reduce<O.Assign, {}>,
+        Tuples.Reduce<Objects.Assign, {}>,
         [{ a: 1 }, { b: true }, { c: 1 }]
       >;
       type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
 
       type res2 = Call<
         //   ^?
-        T.Reduce<O.Assign, {}>,
+        Tuples.Reduce<Objects.Assign, {}>,
         [{ a: 2 }, { b: true }, { c: 2 }]
       >;
       type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
@@ -101,7 +108,7 @@ describe("Objects", () => {
     it("can be called with one pre-filled argument", () => {
       type res1 = Call<
         //   ^?
-        Tuples.Map<O.Assign<{ new: "new" }>>,
+        Tuples.Map<Objects.Assign<{ new: "new" }>>,
         [{ a: 2 }, { b: true }, { c: 2 }]
       >;
 
@@ -114,7 +121,7 @@ describe("Objects", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<O.Assign<{ a: string }, { b: number }>>;
+      type res1 = Eval<Objects.Assign<{ a: string }, { b: number }>>;
       //    ^?
       type test1 = Expect<Equal<res1, { a: string; b: number }>>;
     });
@@ -123,7 +130,7 @@ describe("Objects", () => {
   it("KebabCase", () => {
     type res1 = Call<
       //   ^?
-      O.KebabCase,
+      Objects.KebabCase,
       { helloWorld: string; userName: string }
     >;
 
@@ -135,7 +142,7 @@ describe("Objects", () => {
   it("SnakeCase", () => {
     type res1 = Call<
       //   ^?
-      O.SnakeCase,
+      Objects.SnakeCase,
       { helloWorld: string; userName: string }
     >;
 
@@ -147,7 +154,7 @@ describe("Objects", () => {
   it("CamelCase", () => {
     type res1 = Call<
       //   ^?
-      O.CamelCase,
+      Objects.CamelCase,
       { hello_world: string; user_name: string }
     >;
 
@@ -157,7 +164,7 @@ describe("Objects", () => {
   it("KebabCaseDeep", () => {
     type res1 = Call<
       //   ^?
-      O.KebabCaseDeep,
+      Objects.KebabCaseDeep,
       {
         helloWorld: string;
         currentUser: { userName: string };
@@ -184,7 +191,7 @@ describe("Objects", () => {
   it("SnakeCaseDeep", () => {
     type res1 = Call<
       //   ^?
-      O.SnakeCaseDeep,
+      Objects.SnakeCaseDeep,
       {
         helloWorld: string;
         currentUser: { userName: string };
@@ -211,7 +218,7 @@ describe("Objects", () => {
   it("CamelCaseDeep", () => {
     type res1 = Call<
       //   ^?
-      O.CamelCaseDeep,
+      Objects.CamelCaseDeep,
       {
         hello_world: string;
         current_user: {
@@ -241,14 +248,16 @@ describe("Objects", () => {
 
   describe("Get", () => {
     it("should retrieve a deep property", () => {
-      type res1 = Eval<O.Get<"a.b.c.d", { a: { b: { c: { d: string } } } }>>;
-      //   ^?
+      type res1 = Eval<
+        //   ^?
+        Objects.Get<"a.b.c.d", { a: { b: { c: { d: string } } } }>
+      >;
       type test1 = Expect<Equal<res1, string>>;
 
       type res2 = Pipe<
         //  ^?
         { a: { b: { c: { d: string } } } },
-        [O.Get<"a.b.c.d">]
+        [Objects.Get<"a.b.c.d">]
       >;
       type test2 = Expect<Equal<res2, string>>;
     });
@@ -258,29 +267,29 @@ describe("Objects", () => {
         | { a: { b: string | { c: { d: string } } } }
         | { a: { b: { c: { d: number } } } };
 
-      type res1 = Eval<O.Get<"a.b.c.d", input>>;
+      type res1 = Eval<Objects.Get<"a.b.c.d", input>>;
       //    ^?
       type test1 = Expect<Equal<res1, string | number | undefined>>;
 
-      type res2 = Pipe<input, [O.Get<"a.b.c.d">]>;
+      type res2 = Pipe<input, [Objects.Get<"a.b.c.d">]>;
       //    ^?
       type test2 = Expect<Equal<res2, string | number | undefined>>;
     });
 
     it("should support arrays", () => {
-      type res1 = Eval<O.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
+      type res1 = Eval<Objects.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
       //   ^?
       type test1 = Expect<Equal<res1, string>>;
     });
 
     it("should support tuples", () => {
       type input = { a: { b: [{ d: string }, "hello"] } };
-      type res1 = Eval<O.Get<"a.b[0].d", input>>;
+      type res1 = Eval<Objects.Get<"a.b[0].d", input>>;
       //   ^?
 
       type test1 = Expect<Equal<res1, string>>;
 
-      type res2 = Eval<O.Get<"a.b[1]", input>>;
+      type res2 = Eval<Objects.Get<"a.b[1]", input>>;
       //   ^?
       type test2 = Expect<Equal<res2, "hello">>;
     });
@@ -297,10 +306,10 @@ describe("Objects", () => {
       //    ^?
       User,
       [
-        O.OmitBy<Booleans.Equals<symbol>>,
-        O.Assign<{ metadata: { newUser: true } }>,
-        O.SnakeCaseDeep,
-        O.Assign<{ id: string }>
+        Objects.OmitBy<Booleans.Equals<symbol>>,
+        Objects.Assign<{ metadata: { newUser: true } }>,
+        Objects.SnakeCaseDeep,
+        Objects.Assign<{ id: string }>
       ]
     >;
 
@@ -325,7 +334,7 @@ describe("Objects", () => {
     }
     type res1 = Call<
       // ^?
-      O.GroupBy<GetTypeKey>,
+      Objects.GroupBy<GetTypeKey>,
       [
         { type: "img"; src: string },
         { type: "video"; src: 1 },
