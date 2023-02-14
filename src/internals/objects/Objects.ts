@@ -133,11 +133,7 @@ export namespace Objects {
     UnionToIntersection<xs[number]>
   >;
 
-  export interface Assign<
-    arg1 = placeholder,
-    arg2 = placeholder,
-    arg3 = placeholder
-  > extends Fn {
+  export interface Assign<arg1 = never, arg2 = never, arg3 = never> extends Fn {
     output: AssignImpl<MergeArgs<this["args"], [arg1, arg2, arg3]>>;
   }
 
@@ -167,10 +163,8 @@ export namespace Objects {
     output: GroupByImpl<this["args"][0], fn>;
   }
 
-  export interface Get<
-    _path extends string | placeholder = placeholder,
-    _obj = placeholder
-  > extends Fn {
+  export interface Get<_path extends string | placeholder = never, _obj = never>
+    extends Fn {
     output: MergeArgs<this["args"], [_obj, _path]> extends [
       infer obj,
       infer path extends string,

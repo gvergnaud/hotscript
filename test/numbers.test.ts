@@ -52,6 +52,12 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 1>>;
     });
+
+    it("shouldn't reverse if the position is explicit", () => {
+      type res1 = Call<Numbers.Sub<1, Args._>, 2>;
+      //    ^?
+      type test1 = Expect<Equal<res1, -1>>;
+    });
   });
 
   describe("Mul", () => {

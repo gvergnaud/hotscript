@@ -3,9 +3,9 @@ import { Call, Fn, MergeArgs, placeholder } from "../core/Core";
 import { Functions } from "../functions/Functions";
 
 export namespace Booleans {
-  type ExtendsImpl<a, b> = a extends b ? true : false;
+  type ExtendsImpl<a, b> = [a] extends [b] ? true : false;
 
-  export interface Extends<a = placeholder, b = placeholder> extends Fn {
+  export interface Extends<a = never, b = never> extends Fn {
     output: MergeArgs<this["args"], [a, b]> extends [
       infer first,
       infer second,
@@ -17,7 +17,7 @@ export namespace Booleans {
 
   type NotImpl<a> = a extends true ? false : true;
 
-  export interface Not<a = placeholder> extends Fn {
+  export interface Not<a = never> extends Fn {
     output: MergeArgs<this["args"], [a]> extends [infer first, ...any]
       ? NotImpl<first>
       : never;
@@ -25,7 +25,7 @@ export namespace Booleans {
 
   type EqualsImpl<a, b> = Equal<a, b>;
 
-  export interface Equals<a = placeholder, b = placeholder> extends Fn {
+  export interface Equals<a = never, b = never> extends Fn {
     output: MergeArgs<this["args"], [a, b]> extends [
       infer first,
       infer second,
@@ -37,7 +37,7 @@ export namespace Booleans {
 
   export type DoesNotExtends<T> = Functions.Compose<[Not, Extends<T>]>;
 
-  export interface And<a = placeholder, b = placeholder> extends Fn {
+  export interface And<a = never, b = never> extends Fn {
     output: MergeArgs<this["args"], [a, b]> extends [
       infer first extends boolean,
       infer second extends boolean,
@@ -47,7 +47,7 @@ export namespace Booleans {
       : never;
   }
 
-  export interface Or<a = placeholder, b = placeholder> extends Fn {
+  export interface Or<a = never, b = never> extends Fn {
     output: MergeArgs<this["args"], [a, b]> extends [
       infer first extends boolean,
       infer second extends boolean,

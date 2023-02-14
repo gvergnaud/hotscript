@@ -69,6 +69,14 @@ type MergeArgsRec<
     : MergeArgsRec<inputArgs, partialRest, [...output, partialFirst]>
   : [...output, ...inputArgs];
 
+interface NeverIntoPlaceholder extends Fn {
+  output: this["args"] extends [infer value, ...any]
+    ? [value] extends [never]
+      ? placeholder
+      : value
+    : never;
+}
+
 /**
  * Special case if the arity of the function is 2, we want the first
  * partial argument to be position as the second one so that expressions
@@ -80,10 +88,10 @@ type MergeArgsRec<
  */
 type UpdatePartialArgs<partialArgs extends any[]> = partialArgs extends [
   infer a,
-  placeholder
+  never
 ]
-  ? [placeholder, a]
-  : partialArgs;
+  ? [placeholder, Call<NeverIntoPlaceholder, a>]
+  : Call<Tuples.Map<NeverIntoPlaceholder>, partialArgs>;
 
 export type MergeArgs<
   inputArgs extends any[],

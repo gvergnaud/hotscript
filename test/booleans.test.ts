@@ -76,18 +76,20 @@ describe("Booleans", () => {
     type test2 = Expect<Equal<res2, false>>;
   });
 
-  it("Extends", () => {
-    type res1 = Call<Booleans.Extends<".">, [1, 2, 3]>;
-    //    ^?
-    type test1 = Expect<Equal<res1, false>>;
+  describe("Extends", () => {
+    it("should check if a type is assignable to another type", () => {
+      type res1 = Call<Booleans.Extends<".">, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, false>>;
 
-    type res2 = Eval<Booleans.Extends<"a", string>>;
-    //    ^?
-    type test2 = Expect<Equal<res2, true>>;
+      type res2 = Eval<Booleans.Extends<"a", string>>;
+      //    ^?
+      type test2 = Expect<Equal<res2, true>>;
 
-    type res3 = Eval<Booleans.Extends<string, "a">>;
-    //    ^?
-    type test3 = Expect<Equal<res3, false>>;
+      type res3 = Eval<Booleans.Extends<string, "a">>;
+      //    ^?
+      type test3 = Expect<Equal<res3, false>>;
+    });
 
     it("should reverse it's function arguments when partial applied", () => {
       type res4 = Eval<Booleans.Extends<1, number>>;

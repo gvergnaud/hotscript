@@ -359,8 +359,8 @@ export namespace Strings {
    * ```
    */
   export interface Compare<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -385,8 +385,8 @@ export namespace Strings {
    * type T2 = Call2<Strings.Equal,"abc","abc">; // true
    */
   export interface Equal<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -412,8 +412,8 @@ export namespace Strings {
    * ```
    */
   export interface NotEqual<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -439,8 +439,8 @@ export namespace Strings {
    * ```
    */
   export interface LessThan<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -465,8 +465,8 @@ export namespace Strings {
    * type T2 = Call2<Strings.LessThanOrEqual,"abc","abc">; // true
    */
   export interface LessThanOrEqual<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -492,8 +492,8 @@ export namespace Strings {
    * ```
    */
   export interface GreaterThan<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
@@ -519,8 +519,8 @@ export namespace Strings {
    * ```
    */
   export interface GreaterThanOrEqual<
-    n1 extends string | placeholder = placeholder,
-    n2 extends string | placeholder = placeholder
+    n1 extends string | placeholder = never,
+    n2 extends string | placeholder = never
   > extends Fn {
     output: MergeArgs<this["args"], [n1, n2]> extends [
       infer a extends string,
