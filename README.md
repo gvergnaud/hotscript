@@ -61,7 +61,7 @@ type T = {
   - [x] PipeRight
   - [x] Call
   - [x] Apply
-  - [x] Bind
+  - [x] PartialApply
   - [x] Compose
   - [x] ComposeLeft
 - [ ] Tuples

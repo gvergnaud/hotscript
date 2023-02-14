@@ -5,7 +5,8 @@ export namespace Functions {
     output: this["args"][0];
   }
 
-  export interface Bind<fn extends Fn, partialArgs extends any[]> extends Fn {
+  export interface PartialApply<fn extends Fn, partialArgs extends any[]>
+    extends Fn {
     output: Apply<fn, MergeArgs<this["args"], partialArgs>>;
   }
 

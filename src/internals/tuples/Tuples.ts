@@ -334,14 +334,17 @@ export namespace Tuples {
   ]
     ? [
         ...SortImpl<
-          Call<Tuples.Filter<F.Bind<predicateFn, [Args._, head]>>, tail>,
+          Call<
+            Tuples.Filter<F.PartialApply<predicateFn, [Args._, head]>>,
+            tail
+          >,
           predicateFn
         >,
         head,
         ...SortImpl<
           Call<
             Tuples.Filter<
-              F.Compose<[B.Not, F.Bind<predicateFn, [Args._, head]>]>
+              F.Compose<[B.Not, F.PartialApply<predicateFn, [Args._, head]>]>
             >,
             tail
           >,
