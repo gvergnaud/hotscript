@@ -1,6 +1,6 @@
 import { Args } from "../src/internals/args/Args";
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Fn, Pipe } from "../src/internals/core/Core";
+import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
@@ -206,6 +206,26 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Join<".">, [1, 2, 3]>;
     //    ^?
     type test1 = Expect<Equal<res1, "1.2.3">>;
+  });
+
+  it("Append", () => {
+    type res1 = Call<Tuples.Append<4>, [1, 2, 3]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [1, 2, 3, 4]>>;
+
+    type res2 = Eval<Tuples.Append<[1, 2, 3], 4>>;
+    //    ^?
+    type test2 = Expect<Equal<res2, [1, 2, 3, 4]>>;
+  });
+
+  it("Prepend", () => {
+    type res1 = Call<Tuples.Prepend<0>, [1, 2, 3]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [0, 1, 2, 3]>>;
+
+    type res2 = Eval<Tuples.Prepend<[1, 2, 3], 0>>;
+    //    ^?
+    type test2 = Expect<Equal<res2, [0, 1, 2, 3]>>;
   });
 
   it("Composition", () => {

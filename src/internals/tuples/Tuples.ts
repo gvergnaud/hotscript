@@ -1,8 +1,8 @@
 import { Args } from "../args/Args";
 import { Booleans as B } from "../booleans/Booleans";
-import { Call, Call2, Fn } from "../core/Core";
 import { Functions as F } from "../functions/Functions";
 import { Numbers as N } from "../numbers/Numbers";
+import { Call, Call2, Fn, MergeArgs, placeholder, unset } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -391,5 +391,42 @@ export namespace Tuples {
    */
   export interface Join<sep extends string> extends Fn {
     output: ReduceImpl<this["args"][0], "", JoinReducer<sep>>;
+  }
+
+  /**
+   * Adds a new element to the start of a tuple
+   * @param args[0] - The tuple to update.
+   * @param element - The element to add to our tuple
+   * @returns The updated tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Prepend<"new">, ["a", "b", "c"]>; // ["new", "a", "b", "c"]
+   * ```
+   */
+  export interface Prepend<tupleOrElement = unset, element = unset> extends Fn {
+    output: MergeArgs<this["args"], [tupleOrElement, element]> extends [
+      infer tuple extends any[],
+      infer element
+    ]
+      ? [element, ...tuple]
+      : never;
+  }
+  /**
+   * Adds a new element to the end of a tuple
+   * @param args[0] - The tuple to update.
+   * @param element - The element to add to our tuple
+   * @returns The updated tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Append<"new">, ["a", "b", "c"]>; // ["a", "b", "c", "new"]
+   * ```
+   */
+  export interface Append<tupleOrElement = unset, element = unset> extends Fn {
+    output: MergeArgs<this["args"], [tupleOrElement, element]> extends [
+      infer tuple extends any[],
+      infer element
+    ]
+      ? [...tuple, element]
+      : never;
   }
 }
