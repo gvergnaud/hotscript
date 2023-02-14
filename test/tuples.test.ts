@@ -3,6 +3,7 @@ import { Booleans } from "../src/internals/booleans/Booleans";
 import { Call, Fn, Pipe } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
+import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 
 describe("Tuples", () => {
@@ -174,13 +175,31 @@ describe("Tuples", () => {
     type tes2 = Expect<Equal<res2, true>>;
   });
 
-  it("Sort", () => {
+  it("Sort Numbers (default)", () => {
     type res1 = Call<
       //   ^?
       Tuples.Sort,
-      [1, 3, 2, 6, 5, 4]
+      [7, 1, 3, 2, 6, 5, 8, 4]
     >;
-    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6]>>;
+    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6, 7, 8]>>;
+  });
+
+  it("Sort Numbers (custom)", () => {
+    type res1 = Call<
+      //   ^?
+      Tuples.Sort<Numbers.LessThanOrEqual>,
+      [7, 1, 3, 2, 6, 5, 8, 4]
+    >;
+    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6, 7, 8]>>;
+  });
+
+  it("Sort Strings (custom)", () => {
+    type res1 = Call<
+      //   ^?
+      Tuples.Sort<Strings.LessThanOrEqual>,
+      ["c", "a", "f", "b", "e", "d"]
+    >;
+    type tes1 = Expect<Equal<res1, ["a", "b", "c", "d", "e", "f"]>>;
   });
 
   it("Join", () => {

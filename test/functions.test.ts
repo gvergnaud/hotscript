@@ -82,10 +82,10 @@ describe("Composition", () => {
     type tes1 = Expect<Equal<res1, 95>>;
   });
 
-  it("ApplyPartial", () => {
+  it("Bind", () => {
     type res1 = Call2<
       //   ^?
-      F.ApplyPartial<O.Assign, [Args._, Args._, { c: boolean }]>,
+      F.Bind<O.Assign, [Args._, Args._, { c: boolean }]>,
       { a: string },
       { b: number }
     >;
@@ -94,7 +94,7 @@ describe("Composition", () => {
 
     type res2 = Call<
       //   ^?
-      F.ApplyPartial<N.Add, [2]>,
+      F.Bind<N.Add, [2]>,
       2
     >;
     type test2 = Expect<Equal<res2, 4>>;
@@ -110,10 +110,10 @@ describe("Composition", () => {
       //   ^?
       {},
       [
-        F.ApplyPartial<O.Assign, [{ a: string }]>,
-        F.ApplyPartial<O.Assign, [{ b: number }]>,
-        F.ApplyPartial<O.Assign, [{ c: boolean }]>,
-        F.ApplyPartial<O.Assign, [{ d: bigint }]>
+        F.Bind<O.Assign, [{ a: string }]>,
+        F.Bind<O.Assign, [{ b: number }]>,
+        F.Bind<O.Assign, [{ c: boolean }]>,
+        F.Bind<O.Assign, [{ d: bigint }]>
       ]
     >;
     type test4 = Expect<

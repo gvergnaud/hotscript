@@ -1,5 +1,8 @@
+import { Args } from "../args/Args";
+import { Booleans as B } from "../booleans/Booleans";
 import { Call, Call2, Fn } from "../core/Core";
-import { Numbers } from "../numbers/Numbers";
+import { Functions as F } from "../functions/Functions";
+import { Numbers as N } from "../numbers/Numbers";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -89,7 +92,7 @@ export namespace Tuples {
   }
 
   export interface Sum extends Fn {
-    output: ReduceImpl<this["args"][0], 0, Numbers.Add>;
+    output: ReduceImpl<this["args"][0], 0, N.Add>;
   }
 
   export type Range<n, acc extends any[] = []> = acc["length"] extends n
@@ -156,20 +159,32 @@ export namespace Tuples {
       : true;
   }
 
-  type SortImpl<xs extends any[]> = xs extends [
-    infer head extends number,
+  type SortImpl<xs extends any[], LessThanOrEqual extends Fn> = xs extends [
+    infer head,
     ...infer tail
   ]
     ? [
-        ...SortImpl<Call<Tuples.Filter<Numbers.LessThanOrEqual<head>>, tail>>,
+        ...SortImpl<
+          Call<Tuples.Filter<F.Bind<LessThanOrEqual, [Args._, head]>>, tail>,
+          LessThanOrEqual
+        >,
         head,
-        ...SortImpl<Call<Tuples.Filter<Numbers.GreaterThan<head>>, tail>>
+        ...SortImpl<
+          Call<
+            Tuples.Filter<
+              F.Compose<[B.Not, F.Bind<LessThanOrEqual, [Args._, head]>]>
+            >,
+            tail
+          >,
+          LessThanOrEqual
+        >
       ]
     : [];
 
-  export interface Sort extends Fn {
+  export interface Sort<LessThanOrEqual extends Fn = N.LessThanOrEqual>
+    extends Fn {
     output: this["args"] extends [infer xs extends any[]]
-      ? SortImpl<xs>
+      ? SortImpl<xs, LessThanOrEqual>
       : never;
   }
 
