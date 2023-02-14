@@ -1,6 +1,7 @@
-import { Call, Call2 } from "../../core/Core";
+import { Call2 } from "../../core/Core";
 import { Numbers } from "../../numbers/Numbers";
 import { StringToTuple } from "./split";
+import { Equal as _Equal } from "../../helpers";
 
 // prettier-ignore
 type ascii = {
@@ -53,10 +54,12 @@ type CharactersCompare<T extends string[], U extends string[]> = T extends [
   ? -1
   : 0;
 
-export type Compare<T extends string, U extends string> = CharactersCompare<
-  StringToTuple<T>,
-  StringToTuple<U>
->;
+export type Compare<T extends string, U extends string> = _Equal<
+  T,
+  U
+> extends true
+  ? 0
+  : CharactersCompare<StringToTuple<T>, StringToTuple<U>>;
 
 export type LessThan<T extends string, U extends string> = Compare<
   T,
@@ -72,14 +75,12 @@ export type LessThanOrEqual<T extends string, U extends string> = Compare<
   ? false
   : true;
 
-export type Equal<T extends string, U extends string> = Compare<T, U> extends 0
-  ? true
-  : false;
+export type Equal<T extends string, U extends string> = _Equal<T, U>;
 
-export type NotEqual<T extends string, U extends string> = Compare<
+export type NotEqual<T extends string, U extends string> = _Equal<
   T,
   U
-> extends 0
+> extends true
   ? false
   : true;
 

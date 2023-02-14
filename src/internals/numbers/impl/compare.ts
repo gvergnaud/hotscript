@@ -6,6 +6,7 @@ import type {
   Sign,
   Num,
 } from "./utils";
+import { Equal as _Equal } from "../../helpers";
 
 export type CompareLength<
   T extends any[],
@@ -70,7 +71,7 @@ export type CompareDigitNumbers<
 export type Compare<
   T extends number | bigint,
   U extends number | bigint
-> = T extends U
+> = _Equal<T, U> extends true
   ? 0
   : CompareDigitNumbers<ToDigitNumber<ToString<T>>, ToDigitNumber<ToString<U>>>;
 
@@ -87,12 +88,12 @@ export type GreaterThan<
 export type Equal<
   T extends number | bigint,
   U extends number | bigint
-> = Compare<T, U> extends 0 ? true : false;
+> = _Equal<T, U>;
 
 export type NotEqual<
   T extends number | bigint,
   U extends number | bigint
-> = Compare<T, U> extends 0 ? false : true;
+> = _Equal<T, U> extends true ? false : true;
 
 export type LessThanOrEqual<
   T extends number | bigint,
