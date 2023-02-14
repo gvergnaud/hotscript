@@ -1035,6 +1035,15 @@ describe("HOTScript", () => {
       type res1 = Call<Strings.Split<".">, "1.2.3">;
       //    ^?
       type test1 = Expect<Equal<res1, ["1", "2", "3"]>>;
+      type res2 = Call<Strings.Split<"">, "123">;
+      //    ^?
+      type test2 = Expect<Equal<res2, ["1", "2", "3"]>>;
+      type res3 = Call<Strings.Split<"">, "">;
+      //    ^?
+      type test3 = Expect<Equal<res3, []>>;
+      type res4 = Call<Strings.Split<"--" | ".">, "1--2-3.4..5">;
+      //    ^?
+      type test4 = Expect<Equal<res4, ["1", "2-3", "4", "5"]>>;
     });
 
     it("ToNumber", () => {

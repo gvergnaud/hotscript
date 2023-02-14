@@ -18,10 +18,27 @@ export type Extends<a, b> = [a] extends [b] ? true : false;
 
 export type Not<a extends boolean> = a extends true ? false : true;
 
+/**
+ * trick to combine multiple unions of objects into a single object
+ * only works with objects not primitives
+ * @param union - Union of objects
+ * @returns Intersection of objects
+ */
 export type UnionToIntersection<union> = (
   union extends any ? (k: union) => void : never
 ) extends (k: infer intersection) => void
   ? intersection
+  : never;
+
+/**
+ * Trick to force union to intersection
+ * It works even with primitives since we are creating a function with different results for each one
+ * @param Union - Union converted to intersection of functions returning the each element of the union
+ */
+export type UnionToIntersectionFn<Union> = (
+  Union extends unknown ? (k: () => Union) => void : never
+) extends (k: infer Intersection) => void
+  ? Intersection
   : never;
 
 export type Prettify<T> = { [K in keyof T]: T[K] } | never;
@@ -148,28 +165,46 @@ export type IsArrayStrict<a> = a extends readonly any[]
   ? Not<IsTuple<a>>
   : false;
 
-// This split function is a bit complex because it needs to support
-// a union type as a separator.
+/**
+ * get last element of union
+ * @param Union - Union of any types
+ * @returns Last element of union
+ */
+type GetUnionLast<Union> = UnionToIntersectionFn<Union> extends () => infer Last
+  ? Last
+  : never;
+
+/**
+ * Convert union to tuple
+ * @param Union - Union of any types, can be union of complex, composed or primitive types
+ * @returns Tuple of each elements in the union
+ */
+export type UnionToTuple<Union, Tuple extends unknown[] = []> = [
+  Union
+] extends [never]
+  ? Tuple
+  : UnionToTuple<
+      Exclude<Union, GetUnionLast<Union>>,
+      [GetUnionLast<Union>, ...Tuple]
+    >;
+
+/**
+ * Split string into a tuple, using a simple string literal separator
+ * @description - This is a simple implementation of split, it does not support multiple separators
+ *  A more complete implementation is built on top of this one
+ * @param Str - String to split
+ * @param Sep - Separator, must be a string literal not a union of string literals
+ * @returns Tuple of strings
+ */
 export type Split<
   Str,
   Sep extends string,
-  Output extends string[] = [],
-  CurrentChunk extends string = ""
-> =
-  // Loop through each character:
-  Str extends `${infer First}${infer Rest}`
-    ? // If `First` is a separator:
-      First extends Sep
-      ? // Add the current chunk to our output:
-        Split<Rest, Sep, [...Output, CurrentChunk], "">
-      : // Otherwise, add it to the chunk:
-        Split<Rest, Sep, Output, `${CurrentChunk}${First}`>
-    : // If the string is empty and `CurrentChunk` as well:
-    CurrentChunk extends ""
-    ? // Return the output:
-      Output
-    : // Otherwise, append the CurrentChunk to our Output:
-      [...Output, CurrentChunk];
+  Acc extends string[] = []
+> = Str extends ""
+  ? Acc
+  : Str extends `${infer T}${Sep}${infer U}`
+  ? Split<U, Sep, [...Acc, T]>
+  : [...Acc, Str];
 
 export type GetFromPath<Obj, Path> = RecursiveGet<Obj, ParsePath<Path>>;
 
