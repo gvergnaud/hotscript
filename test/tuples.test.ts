@@ -187,10 +187,10 @@ describe("Tuples", () => {
   it("Sort Numbers (custom)", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Sort<Numbers.LessThanOrEqual>,
+      Tuples.Sort<Numbers.GreaterThanOrEqual>,
       [7, 1, 3, 2, 6, 5, 8, 4]
     >;
-    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6, 7, 8]>>;
+    type tes1 = Expect<Equal<res1, [8, 7, 6, 5, 4, 3, 2, 1]>>;
   });
 
   it("Sort Strings (custom)", () => {
