@@ -3,7 +3,7 @@ import {
   IsArrayStrict,
   Prettify,
   UnionToIntersection,
-} from "../../helpers";
+} from "../helpers";
 import { Call, Call2, Fn, MergeArgs, placeholder } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";

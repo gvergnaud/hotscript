@@ -1,4 +1,4 @@
-import { RemoveUnknownArrayConstraint } from "../../helpers";
+import { RemoveUnknownArrayConstraint } from "../helpers";
 import { Booleans } from "../booleans/Booleans";
 import { Tuples } from "../tuples/Tuples";
 

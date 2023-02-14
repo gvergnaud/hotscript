@@ -1,4 +1,4 @@
-import { Equal, Every, Some } from "../../helpers";
+import { Equal, Every, Some } from "../helpers";
 import { Call, Fn, MergeArgs, placeholder } from "../core/Core";
 import { Functions } from "../functions/Functions";
 

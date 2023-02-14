@@ -1,4 +1,4 @@
-import * as H from "../../../helpers";
+import * as H from "../../helpers";
 
 export type Repeat<
   str,

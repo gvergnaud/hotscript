@@ -1,6 +1,6 @@
 import { Call, Call2, Fn } from "../core/Core";
 import { Numbers } from "../numbers/Numbers";
-import { Iterator } from "../../helpers";
+import { Iterator } from "../helpers";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;

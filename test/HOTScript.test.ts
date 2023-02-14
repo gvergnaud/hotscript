@@ -18,7 +18,7 @@ import {
   Booleans,
   Args,
 } from "../src/index";
-import { Equal, Expect } from "../src/helpers";
+import { Equal, Expect } from "../src/internals/helpers";
 
 describe("HOTScript", () => {
   describe("Functions", () => {

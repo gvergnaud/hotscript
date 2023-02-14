@@ -1,4 +1,4 @@
-import * as H from "../../../helpers";
+import * as H from "../../helpers";
 
 type ConcatSplits<
   Parts extends string[],

@@ -1,7 +1,7 @@
 import { Call, Call2, Fn, MergeArgs, Pipe, placeholder } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
-import * as H from "../../helpers";
+import * as H from "../helpers";
 import * as Impl from "./impl/strings";
 
 export namespace Strings {
