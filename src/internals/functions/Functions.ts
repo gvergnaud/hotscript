@@ -5,15 +5,10 @@ export namespace Functions {
     output: this["args"][0];
   }
 
-  interface PipeableApplyPartial<fn extends Fn, partialArgs extends any[]>
+  export interface PartialApply<fn extends Fn, partialArgs extends any[]>
     extends Fn {
     output: Apply<fn, MergeArgs<this["args"], partialArgs>>;
   }
-
-  export type ApplyPartial<
-    fn extends Fn,
-    args extends any[]
-  > = PipeableApplyPartial<fn, args>;
 
   type ParametersImpl<fn> = fn extends (...args: infer args) => any
     ? args
