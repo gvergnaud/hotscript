@@ -4,7 +4,7 @@
   "description": "Type-level madness",
   "type": "module",
   "source": "src/index.ts",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "div0": "======================setup=============================",
