@@ -37,9 +37,7 @@ export namespace Strings {
    * ```
    */
   export interface LengthFn extends Fn {
-    output: Fn.args<this> extends [infer S extends string]
-      ? Impl.Length<S>
-      : never;
+    return: Fn.arg0<this> extends string ? Impl.Length<Fn.arg0<this>> : never;
   }
 
   /**
