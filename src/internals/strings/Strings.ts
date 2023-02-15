@@ -27,7 +27,7 @@ export namespace Strings {
   export type Length<Str = unset> = Functions.PartialApply<LengthFn, [Str]>;
 
   export interface LengthFn extends Fn {
-    return: Impl.StringToTuple<Fn.arg0<this>>["length"];
+    return: Impl.StringToTuple<this["arg0"]>["length"];
   }
 
   /**
@@ -46,7 +46,7 @@ export namespace Strings {
   > = Functions.PartialApply<TrimLeftFn, [Sep, Str]>;
 
   interface TrimLeftFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer Sep extends string,
       infer Str extends string,
       ...any
@@ -71,7 +71,7 @@ export namespace Strings {
   > = Functions.PartialApply<TrimRightFn, [Sep, Str]>;
 
   interface TrimRightFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer Sep extends string,
       infer Str extends string,
       ...any
@@ -96,7 +96,7 @@ export namespace Strings {
   > = Functions.PartialApply<TrimFn, [Sep, Str]>;
 
   interface TrimFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer Sep extends string,
       infer Str extends string,
       ...any
@@ -122,7 +122,7 @@ export namespace Strings {
   > = Functions.PartialApply<ReplaceFn, [from, to, str]>;
 
   interface ReplaceFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer From extends string,
       infer To extends string,
       infer Str
@@ -166,7 +166,7 @@ export namespace Strings {
   > = Functions.PartialApply<SplitFn, [Sep, Str]>;
 
   export interface SplitFn extends Fn {
-    return: Fn.args<this> extends [infer Sep extends string, infer Str]
+    return: this["args"] extends [infer Sep extends string, infer Str]
       ? Impl.Split<Str, Sep>
       : never;
   }
@@ -187,7 +187,7 @@ export namespace Strings {
   > = Functions.PartialApply<RepeatFn, [Times, Str]>;
 
   interface RepeatFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer Times extends number,
       infer Str extends string
     ]
@@ -212,7 +212,7 @@ export namespace Strings {
   > = Functions.PartialApply<StartsWithFn, [Start, Str]>;
 
   interface StartsWithFn extends Fn {
-    return: Fn.args<this> extends [infer Start extends string, infer Str]
+    return: this["args"] extends [infer Start extends string, infer Str]
       ? Str extends `${Start}${string}`
         ? true
         : false
@@ -236,7 +236,7 @@ export namespace Strings {
   > = Functions.PartialApply<EndsWithFn, [End, Str]>;
 
   interface EndsWithFn extends Fn {
-    return: Fn.args<this> extends [infer End extends string, infer Str]
+    return: this["args"] extends [infer End extends string, infer Str]
       ? Str extends `${string}${End}`
         ? true
         : false
@@ -254,7 +254,7 @@ export namespace Strings {
    * ```
    */
   export interface ToTuple extends Fn {
-    return: Impl.StringToTuple<Fn.arg0<this>>;
+    return: Impl.StringToTuple<this["arg0"]>;
   }
 
   /**
@@ -268,7 +268,7 @@ export namespace Strings {
    * ```
    */
   export interface ToNumber extends Fn {
-    return: Fn.arg0<this> extends `${infer n extends number | bigint}`
+    return: this["arg0"] extends `${infer n extends number | bigint}`
       ? n
       : never;
   }
@@ -285,7 +285,7 @@ export namespace Strings {
    * ```
    */
   export interface ToString extends Fn {
-    return: `${Extract<Fn.arg0<this>, Strings.Stringifiable>}`;
+    return: `${Extract<this["arg0"], Strings.Stringifiable>}`;
   }
 
   /**
@@ -304,8 +304,8 @@ export namespace Strings {
   > = Functions.PartialApply<PrependFn, [Start, Str]>;
 
   interface PrependFn extends Fn {
-    return: `${Extract<Fn.arg0<this>, Strings.Stringifiable>}${Extract<
-      Fn.arg1<this>,
+    return: `${Extract<this["arg0"], Strings.Stringifiable>}${Extract<
+      this["arg1"],
       Strings.Stringifiable
     >}`;
   }
@@ -326,8 +326,8 @@ export namespace Strings {
   > = Functions.PartialApply<AppendFn, [End, Str]>;
 
   interface AppendFn extends Fn {
-    return: `${Extract<Fn.arg1<this>, Strings.Stringifiable>}${Extract<
-      Fn.arg0<this>,
+    return: `${Extract<this["arg1"], Strings.Stringifiable>}${Extract<
+      this["arg0"],
       Strings.Stringifiable
     >}`;
   }
@@ -342,7 +342,7 @@ export namespace Strings {
    * ```
    */
   export interface Uppercase extends Fn {
-    return: Std._Uppercase<Extract<Fn.arg0<this>, string>>;
+    return: Std._Uppercase<Extract<this["arg0"], string>>;
   }
 
   /**
@@ -355,7 +355,7 @@ export namespace Strings {
    * ```
    */
   export interface Lowercase extends Fn {
-    return: Std._Lowercase<Extract<Fn.arg0<this>, string>>;
+    return: Std._Lowercase<Extract<this["arg0"], string>>;
   }
 
   /**
@@ -368,7 +368,7 @@ export namespace Strings {
    * ```
    */
   export interface Capitalize extends Fn {
-    return: Std._Capitalize<Extract<Fn.arg0<this>, string>>;
+    return: Std._Capitalize<Extract<this["arg0"], string>>;
   }
 
   /**
@@ -381,7 +381,7 @@ export namespace Strings {
    * ```
    */
   export interface Uncapitalize extends Fn {
-    return: Std._Uncapitalize<Extract<Fn.arg0<this>, string>>;
+    return: Std._Uncapitalize<Extract<this["arg0"], string>>;
   }
 
   /**
@@ -394,7 +394,7 @@ export namespace Strings {
    * ```
    */
   export interface SnakeCase extends Fn {
-    return: H.SnakeCase<Fn.arg0<this>>;
+    return: H.SnakeCase<this["arg0"]>;
   }
 
   /**
@@ -407,7 +407,7 @@ export namespace Strings {
    * ```
    */
   export interface CamelCase extends Fn {
-    return: H.CamelCase<Fn.arg0<this>>;
+    return: H.CamelCase<this["arg0"]>;
   }
 
   /**
@@ -422,7 +422,7 @@ export namespace Strings {
    * ```
    */
   export interface KebabCase extends Fn {
-    return: H.KebabCase<Fn.arg0<this>>;
+    return: H.KebabCase<this["arg0"]>;
   }
 
   /**
@@ -448,7 +448,7 @@ export namespace Strings {
   >;
 
   interface CompareFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -480,7 +480,7 @@ export namespace Strings {
   >;
 
   interface LessThanFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -511,7 +511,7 @@ export namespace Strings {
   >;
 
   interface LessThanOrEqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -543,7 +543,7 @@ export namespace Strings {
   >;
 
   interface GreaterThanFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -575,7 +575,7 @@ export namespace Strings {
   >;
 
   interface GreaterThanOrEqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends string,
       infer b extends string,
       ...any

@@ -3,7 +3,7 @@ import { MergeArgs } from "./impl/MergeArgs";
 
 export namespace Functions {
   export interface Identity extends Fn {
-    return: Fn.arg0<this>;
+    return: this["arg0"];
   }
 
   export interface Constant<T> extends Fn {
@@ -15,17 +15,17 @@ export namespace Functions {
     : never;
 
   export interface Parameters extends Fn {
-    return: ParametersImpl<Fn.arg0<this>>;
+    return: ParametersImpl<this["arg0"]>;
   }
 
   export interface Parameter<N extends number> extends Fn {
-    return: ParametersImpl<Fn.arg0<this>>[N];
+    return: ParametersImpl<this["arg0"]>[N];
   }
 
   type ReturnImpl<fn> = fn extends (...args: any[]) => infer ret ? ret : never;
 
   export interface Return extends Fn {
-    return: ReturnImpl<Fn.arg0<this>>;
+    return: ReturnImpl<this["arg0"]>;
   }
 
   type Head<xs> = xs extends [infer first, ...any] ? first : never;
@@ -38,7 +38,7 @@ export namespace Functions {
     : Head<args>;
 
   export interface Compose<fns extends Fn[]> extends Fn {
-    return: ComposeImpl<fns, Fn.args<this>>;
+    return: ComposeImpl<fns, this["args"]>;
   }
 
   type ComposeLeftImpl<fns extends Fn[], args extends any[]> = fns extends [
@@ -49,13 +49,13 @@ export namespace Functions {
     : Head<args>;
 
   export interface ComposeLeft<fns extends Fn[]> extends Fn {
-    return: ComposeLeftImpl<fns, Fn.args<this>>;
+    return: ComposeLeftImpl<fns, this["args"]>;
   }
 
   export interface PartialApply<fn extends Fn, partialArgs extends unknown[]>
     extends Fn {
     return: MergeArgs<
-      Fn.args<this>,
+      this["args"],
       partialArgs
     > extends infer args extends unknown[]
       ? Apply<fn, args>

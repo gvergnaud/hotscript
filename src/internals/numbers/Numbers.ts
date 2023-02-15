@@ -21,7 +21,7 @@ export namespace Numbers {
   > = Functions.PartialApply<AddFn, [n1, n2]>;
 
   interface AddFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -48,7 +48,7 @@ export namespace Numbers {
   > = Functions.PartialApply<SubFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface SubFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -75,7 +75,7 @@ export namespace Numbers {
   > = Functions.PartialApply<MulFn, [n1, n2]>;
 
   interface MulFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -102,7 +102,7 @@ export namespace Numbers {
   > = Functions.PartialApply<DivFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface DivFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -129,7 +129,7 @@ export namespace Numbers {
   > = Functions.PartialApply<ModFn, [n1, n2]>;
 
   interface ModFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -153,7 +153,7 @@ export namespace Numbers {
     Functions.PartialApply<NegateFn, [n]>;
 
   interface NegateFn extends Fn {
-    return: Fn.args<this> extends [infer a extends number | bigint, ...any]
+    return: this["args"] extends [infer a extends number | bigint, ...any]
       ? Impl.Negate<a>
       : never;
   }
@@ -173,7 +173,7 @@ export namespace Numbers {
     Functions.PartialApply<AbsFn, [n]>;
 
   export interface AbsFn extends Fn {
-    return: Fn.args<this> extends [infer a extends number | bigint, ...any]
+    return: this["args"] extends [infer a extends number | bigint, ...any]
       ? Impl.Abs<a>
       : never;
   }
@@ -198,7 +198,7 @@ export namespace Numbers {
   >;
 
   interface PowerFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -229,7 +229,7 @@ export namespace Numbers {
   >;
 
   interface CompareFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -259,7 +259,7 @@ export namespace Numbers {
   >;
 
   interface EqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -289,7 +289,7 @@ export namespace Numbers {
   >;
 
   interface NotEqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -320,7 +320,7 @@ export namespace Numbers {
   >;
 
   interface LessThanFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -351,7 +351,7 @@ export namespace Numbers {
   >;
 
   interface LessThanOrEqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -382,7 +382,7 @@ export namespace Numbers {
   >;
 
   interface GreaterThanFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any
@@ -413,7 +413,7 @@ export namespace Numbers {
   >;
 
   interface GreaterThanOrEqualFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer a extends number | bigint,
       infer b extends number | bigint,
       ...any

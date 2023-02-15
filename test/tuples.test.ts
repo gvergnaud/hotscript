@@ -56,7 +56,7 @@ describe("Tuples", () => {
 
   it("Map", () => {
     interface ToPhrase extends Fn {
-      return: `number is ${Extract<Fn.arg0<this>, string | number | boolean>}`;
+      return: `number is ${Extract<this["arg0"], string | number | boolean>}`;
     }
 
     type res1 = Call<Tuples.Map<ToPhrase>, [1, 2, 3]>;
@@ -74,7 +74,7 @@ describe("Tuples", () => {
 
   it("Filter", () => {
     interface IsNumber extends Fn {
-      return: Fn.arg0<this> extends number ? true : false;
+      return: this["arg0"] extends number ? true : false;
     }
 
     type res1 = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
@@ -88,7 +88,7 @@ describe("Tuples", () => {
 
   it("Reduce", () => {
     interface ToUnaryTupleArray extends Fn {
-      return: Fn.args<this> extends [infer acc extends any[], infer item]
+      return: this["args"] extends [infer acc extends any[], infer item]
         ? [...acc, [item]]
         : never;
     }
@@ -104,7 +104,7 @@ describe("Tuples", () => {
 
   it("ReduceRight", () => {
     interface ToUnaryTupleArray extends Fn {
-      return: Fn.args<this> extends [infer acc extends any[], infer item]
+      return: this["args"] extends [infer acc extends any[], infer item]
         ? [...acc, [item]]
         : never;
     }
@@ -123,7 +123,7 @@ describe("Tuples", () => {
 
   it("FlatMap", () => {
     interface Duplicate extends Fn {
-      return: [Fn.arg0<this>, Fn.arg0<this>];
+      return: [this["arg0"], this["arg0"]];
     }
 
     type res1 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
@@ -137,7 +137,7 @@ describe("Tuples", () => {
 
   it("Find", () => {
     interface IsNumber extends Fn {
-      return: Fn.arg0<this> extends number ? true : false;
+      return: this["arg0"] extends number ? true : false;
     }
 
     type res1 = Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
@@ -145,7 +145,7 @@ describe("Tuples", () => {
     type tes1 = Expect<Equal<res1, 2>>;
 
     interface IsSecond extends Fn {
-      return: Fn.arg1<this> extends 1 ? true : false;
+      return: this["arg1"] extends 1 ? true : false;
     }
 
     type res2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
@@ -395,7 +395,7 @@ describe("Tuples", () => {
 
   it("Composition", () => {
     interface Duplicate extends Fn {
-      return: [Fn.arg0<this>, Fn.arg0<this>];
+      return: [this["arg0"], this["arg0"]];
     }
 
     // prettier-ignore
