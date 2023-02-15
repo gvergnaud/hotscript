@@ -9,7 +9,7 @@ import {
   O,
   N,
   F,
-  Args,
+  _,
 } from "../src/index";
 import { unset } from "../src/internals/core/Core";
 import { MergeArgs } from "../src/internals/functions/impl/MergeArgs";
@@ -60,7 +60,7 @@ describe("Composition", () => {
         Strings.Split<".">,
         Tuples.Map<Strings.ToNumber>,
         Tuples.Map<Numbers.Add<10>>,
-        Tuples.Map<Numbers.Sub<Args._, 1>>,
+        Tuples.Map<Numbers.Sub<_, 1>>,
         Tuples.Sum
       ]
     >;

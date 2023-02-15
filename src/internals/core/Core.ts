@@ -39,6 +39,8 @@ export namespace Fn {
 
 export type unset = "@hotscript/unset";
 
+export type _ = "@hotscript/placeholder";
+
 export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
   args: args;
 })["return"];

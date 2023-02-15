@@ -1,8 +1,7 @@
-import { Args } from "../args/Args";
 import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N } from "../numbers/Numbers";
-import { Call, Call2, Fn, unset } from "../core/Core";
+import { Call, Call2, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -228,7 +227,7 @@ export namespace Tuples {
    * ```
    */
   export type Drop<
-    n extends number | unset | Args._ = unset,
+    n extends number | unset | _ = unset,
     str = unset
   > = Functions.PartialApply<DropFn, [n, str]>;
 
@@ -264,7 +263,7 @@ export namespace Tuples {
    * ```
    */
   export type Take<
-    n extends number | unset | Args._ = unset,
+    n extends number | unset | _ = unset,
     str = unset
   > = Functions.PartialApply<TakeFn, [n, str]>;
 
@@ -344,17 +343,14 @@ export namespace Tuples {
   ]
     ? [
         ...SortImpl<
-          Call<
-            Tuples.Filter<F.PartialApply<predicateFn, [Args._, head]>>,
-            tail
-          >,
+          Call<Tuples.Filter<F.PartialApply<predicateFn, [_, head]>>, tail>,
           predicateFn
         >,
         head,
         ...SortImpl<
           Call<
             Tuples.Filter<
-              F.Compose<[B.Not, F.PartialApply<predicateFn, [Args._, head]>]>
+              F.Compose<[B.Not, F.PartialApply<predicateFn, [_, head]>]>
             >,
             tail
           >,
@@ -400,7 +396,7 @@ export namespace Tuples {
    * ```
    */
   export type Join<
-    Sep extends string | Args._ | unset = unset,
+    Sep extends string | _ | unset = unset,
     Tuple = unset
   > = Functions.PartialApply<JoinFn, [Sep, Tuple]>;
 
@@ -498,7 +494,7 @@ export namespace Tuples {
    * ```
    */
   export type At<
-    index extends number | Args._ | unset = unset,
+    index extends number | _ | unset = unset,
     tuple = unset
   > = Functions.PartialApply<AtFn, [index, tuple]>;
 

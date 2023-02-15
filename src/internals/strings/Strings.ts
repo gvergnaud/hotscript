@@ -1,7 +1,6 @@
-import { Fn, unset } from "../core/Core";
+import { Fn, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
-import { Args } from "../args/Args";
 import * as H from "../helpers";
 import * as Impl from "./impl/strings";
 import { Functions } from "../functions/Functions";
@@ -42,7 +41,7 @@ export namespace Strings {
    * ```
    */
   export type TrimLeft<
-    Sep extends string | Args._ = " ",
+    Sep extends string | _ = " ",
     Str = unset
   > = Functions.PartialApply<TrimLeftFn, [Sep, Str]>;
 
@@ -67,7 +66,7 @@ export namespace Strings {
    * ```
    */
   export type TrimRight<
-    Sep extends string | Args._ = " ",
+    Sep extends string | _ = " ",
     Str = unset
   > = Functions.PartialApply<TrimRightFn, [Sep, Str]>;
 
@@ -92,7 +91,7 @@ export namespace Strings {
    * ```
    */
   export type Trim<
-    Sep extends string | Args._ = " ",
+    Sep extends string | _ = " ",
     Str = unset
   > = Functions.PartialApply<TrimFn, [Sep, Str]>;
 
@@ -117,8 +116,8 @@ export namespace Strings {
    * type T0 = Call<Strings.Replace<".","/">,"a.b.c.d">; // "a/b/c/d"
    */
   export type Replace<
-    from extends string | unset | Args._ = unset,
-    to extends string | unset | Args._ = unset,
+    from extends string | unset | _ = unset,
+    to extends string | unset | _ = unset,
     str = unset
   > = Functions.PartialApply<ReplaceFn, [from, to, str]>;
 
@@ -144,8 +143,8 @@ export namespace Strings {
    * type T0 = Call<Strings.Slice<1,9>,"1234567890">; // "23456789"
    */
   export type Slice<
-    start extends number | unset | Args._ = unset,
-    end extends number | unset | Args._ = unset
+    start extends number | unset | _ = unset,
+    end extends number | unset | _ = unset
   > = Functions.ComposeLeft<
     [Strings.Split<"">, Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
   >;
@@ -162,8 +161,8 @@ export namespace Strings {
    * ```
    */
   export type Split<
-    Sep extends string | unset | Args._ = unset,
-    Str extends string | unset | Args._ = unset
+    Sep extends string | unset | _ = unset,
+    Str extends string | unset | _ = unset
   > = Functions.PartialApply<SplitFn, [Sep, Str]>;
 
   export interface SplitFn extends Fn {
@@ -183,8 +182,8 @@ export namespace Strings {
    * ```
    */
   export type Repeat<
-    Times extends number | Args._ | unset = unset,
-    Str extends number | Args._ | unset = unset
+    Times extends number | _ | unset = unset,
+    Str extends number | _ | unset = unset
   > = Functions.PartialApply<RepeatFn, [Times, Str]>;
 
   interface RepeatFn extends Fn {
@@ -208,8 +207,8 @@ export namespace Strings {
    * ```
    */
   export type StartsWith<
-    Start extends string | Args._ | unset = unset,
-    Str extends string | Args._ | unset = unset
+    Start extends string | _ | unset = unset,
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<StartsWithFn, [Start, Str]>;
 
   interface StartsWithFn extends Fn {
@@ -232,8 +231,8 @@ export namespace Strings {
    * ```
    */
   export type EndsWith<
-    End extends string | Args._ | unset = unset,
-    Str extends string | Args._ | unset = unset
+    End extends string | _ | unset = unset,
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<EndsWithFn, [End, Str]>;
 
   interface EndsWithFn extends Fn {
@@ -300,8 +299,8 @@ export namespace Strings {
    * ```
    */
   export type Prepend<
-    Start extends string | Args._ | unset = unset,
-    Str extends string | Args._ | unset = unset
+    Start extends string | _ | unset = unset,
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<PrependFn, [Start, Str]>;
 
   interface PrependFn extends Fn {
@@ -322,8 +321,8 @@ export namespace Strings {
    * ```
    */
   export type Append<
-    End extends string | Args._ | unset = unset,
-    Str extends string | Args._ | unset = unset
+    End extends string | _ | unset = unset,
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<AppendFn, [End, Str]>;
 
   interface AppendFn extends Fn {
@@ -430,8 +429,8 @@ export namespace Strings {
    * Compare two strings. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or Args._.
-   * @n2 - The second string to compare or Args._.
+   * @n1 - The first string to compare or _.
+   * @n2 - The second string to compare or _.
    * @returns The result of the comparison.
    * @example
    * ```ts
@@ -441,8 +440,8 @@ export namespace Strings {
    * ```
    */
   export type Compare<
-    n1 extends string | Args._ | unset = unset,
-    n2 extends string | Args._ | unset = unset
+    n1 extends string | _ | unset = unset,
+    n2 extends string | _ | unset = unset
   > = Functions.PartialApply<
     CompareFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -462,8 +461,8 @@ export namespace Strings {
    * Check if a string is lexically less than another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or Args._.
-   * @n2 - The second string to compare or Args._.
+   * @n1 - The first string to compare or _.
+   * @n2 - The second string to compare or _.
    * @returns True if the first string is lexically less than the second string, false otherwise.
    * @example
    * ```ts
@@ -473,8 +472,8 @@ export namespace Strings {
    * ```
    */
   export type LessThan<
-    n1 extends string | Args._ | unset = unset,
-    n2 extends string | Args._ | unset = unset
+    n1 extends string | _ | unset = unset,
+    n2 extends string | _ | unset = unset
   > = Functions.PartialApply<
     LessThanFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -494,8 +493,8 @@ export namespace Strings {
    * Check if a string is lexically less than or equal to another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or Args._.
-   * @n2 - The second string to compare or Args._.
+   * @n1 - The first string to compare or _.
+   * @n2 - The second string to compare or _.
    * @returns True if the first string is lexically less than or equal to the second string, false otherwise.
    * @example
    * ```ts
@@ -504,8 +503,8 @@ export namespace Strings {
    * type T2 = Call2<Strings.LessThanOrEqual,"abc","abc">; // true
    */
   export type LessThanOrEqual<
-    n1 extends string | Args._ | unset = unset,
-    n2 extends string | Args._ | unset = unset
+    n1 extends string | _ | unset = unset,
+    n2 extends string | _ | unset = unset
   > = Functions.PartialApply<
     LessThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -525,8 +524,8 @@ export namespace Strings {
    * Check if a string is lexically greater than another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or Args._.
-   * @n2 - The second string to compare or Args._.
+   * @n1 - The first string to compare or _.
+   * @n2 - The second string to compare or _.
    * @returns True if the first string is lexically greater than the second string, false otherwise.
    * @example
    * ```ts
@@ -536,8 +535,8 @@ export namespace Strings {
    * ```
    */
   export type GreaterThan<
-    n1 extends string | Args._ | unset = unset,
-    n2 extends string | Args._ | unset = unset
+    n1 extends string | _ | unset = unset,
+    n2 extends string | _ | unset = unset
   > = Functions.PartialApply<
     GreaterThanFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -557,8 +556,8 @@ export namespace Strings {
    * Check if a string is lexically greater than or equal to another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or Args._.
-   * @n2 - The second string to compare or Args._.
+   * @n1 - The first string to compare or _.
+   * @n2 - The second string to compare or _.
    * @returns True if the first string is lexically greater than or equal to the second string, false otherwise.
    * @example
    * ```ts
@@ -568,8 +567,8 @@ export namespace Strings {
    * ```
    */
   export type GreaterThanOrEqual<
-    n1 extends string | Args._ | unset = unset,
-    n2 extends string | Args._ | unset = unset
+    n1 extends string | _ | unset = unset,
+    n2 extends string | _ | unset = unset
   > = Functions.PartialApply<
     GreaterThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]

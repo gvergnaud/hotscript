@@ -1,4 +1,4 @@
-import { Call, Call2, Eval, Numbers, Tuples, Args, T } from "../src/index";
+import { Call, Call2, Eval, Numbers, Tuples, _, T } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Numbers", () => {
@@ -37,7 +37,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled argument", () => {
-      type res1 = Call<Tuples.Map<Numbers.Sub<Args._, 1>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.Sub<_, 1>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [0, 1, 2]>>;
     });
@@ -54,7 +54,7 @@ describe("Numbers", () => {
     });
 
     it("shouldn't reverse if the position is explicit", () => {
-      type res1 = Call<Numbers.Sub<1, Args._>, 2>;
+      type res1 = Call<Numbers.Sub<1, _>, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, -1>>;
     });
@@ -76,7 +76,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled argument", () => {
-      type res1 = Call<Tuples.Map<Numbers.Mul<Args._, 2>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.Mul<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [2, 4, 6]>>;
     });
@@ -100,7 +100,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled argument", () => {
-      type res1 = Call<Tuples.Map<Numbers.Div<Args._, 2>>, [2, 4, 6]>;
+      type res1 = Call<Tuples.Map<Numbers.Div<_, 2>>, [2, 4, 6]>;
       //    ^?
       type test1 = Expect<Equal<res1, [1, 2, 3]>>;
     });
@@ -120,7 +120,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled argument", () => {
-      type res1 = Call<Tuples.Map<Numbers.Mod<Args._, 5>>, [2, 4, 6]>;
+      type res1 = Call<Tuples.Map<Numbers.Mod<_, 5>>, [2, 4, 6]>;
       //    ^?
       type test1 = Expect<Equal<res1, [2, 4, 1]>>;
     });
@@ -176,7 +176,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<Tuples.Map<Numbers.Power<Args._, 2>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.Power<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [1, 4, 9]>>;
     });
@@ -204,7 +204,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<Tuples.Map<Numbers.Compare<Args._, 2>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.Compare<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [-1, 0, 1]>>;
     });
@@ -232,12 +232,9 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<Tuples.Map<Numbers.LessThan<Args._, 2>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.LessThan<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [true, false, false]>>;
-      type res2 = Call<Tuples.Map<Numbers.LessThan<2>>, [1, 2, 3]>;
-      //    ^?
-      type test2 = Expect<Equal<res1, [true, false, false]>>;
     });
 
     it("can be called with 1 pre-filled arguments", () => {
@@ -263,10 +260,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<
-        Tuples.Map<Numbers.LessThanOrEqual<Args._, 2>>,
-        [1, 2, 3]
-      >;
+      type res1 = Call<Tuples.Map<Numbers.LessThanOrEqual<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [true, true, false]>>;
     });
@@ -294,7 +288,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<Tuples.Map<Numbers.GreaterThan<Args._, 2>>, [1, 2, 3]>;
+      type res1 = Call<Tuples.Map<Numbers.GreaterThan<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [false, false, true]>>;
     });
@@ -309,10 +303,10 @@ describe("Numbers", () => {
       type res4 = Eval<Numbers.GreaterThan<1, 2>>;
       type test4 = Expect<Equal<res4, false>>;
 
-      type res5 = Call<Numbers.GreaterThan<Args._, 2>, 1>;
+      type res5 = Call<Numbers.GreaterThan<_, 2>, 1>;
       type test5 = Expect<Equal<res5, false>>;
 
-      type res6 = Call<T.Map<Numbers.GreaterThan<Args._, 2>>, [1, 2, 3]>;
+      type res6 = Call<T.Map<Numbers.GreaterThan<_, 2>>, [1, 2, 3]>;
       type test6 = Expect<Equal<res6, [false, false, true]>>;
 
       type res7 = Call<Numbers.GreaterThan<2>, 1>;
@@ -339,10 +333,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with one pre-filled arguments", () => {
-      type res1 = Call<
-        Tuples.Map<Numbers.GreaterThanOrEqual<Args._, 2>>,
-        [1, 2, 3]
-      >;
+      type res1 = Call<Tuples.Map<Numbers.GreaterThanOrEqual<_, 2>>, [1, 2, 3]>;
       //    ^?
       type test1 = Expect<Equal<res1, [false, true, true]>>;
     });

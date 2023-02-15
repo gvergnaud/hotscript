@@ -1,6 +1,5 @@
-import { Args } from "../src/internals/args/Args";
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
+import { Call, Eval, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
@@ -125,16 +124,14 @@ describe("Tuples", () => {
   it("TakeWhile", () => {
     type res1 = Call<
       //   ^?
-      Tuples.TakeWhile<Booleans.Extends<Args._, string>>,
+      Tuples.TakeWhile<Booleans.Extends<_, string>>,
       ["a", "b", "c", 2, "d"]
     >;
     type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
 
-    type NewType = Args._;
-
     type res2 = Call<
       //   ^?
-      Tuples.TakeWhile<Booleans.Extends<NewType, number>>,
+      Tuples.TakeWhile<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, [1, 2]>>;
@@ -143,14 +140,14 @@ describe("Tuples", () => {
   it("Every", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Every<Booleans.Extends<Args._, string>>,
+      Tuples.Every<Booleans.Extends<_, string>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, true>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Every<Booleans.Extends<Args._, number>>,
+      Tuples.Every<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, false>>;
@@ -159,14 +156,14 @@ describe("Tuples", () => {
   it("Some", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Some<Booleans.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<_, number>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, false>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Some<Booleans.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, true>>;

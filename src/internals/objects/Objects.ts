@@ -1,11 +1,10 @@
-import { Args } from "../args/Args";
 import {
   GetFromPath,
   IsArrayStrict,
   Prettify,
   UnionToIntersection,
 } from "../helpers";
-import { Call, Call2, Fn, unset } from "../core/Core";
+import { Call, Call2, Fn, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
 import { Functions } from "../functions/Functions";
@@ -184,7 +183,7 @@ export namespace Objects {
   }
 
   export type Get<
-    path extends string | number | Args._ | unset = unset,
+    path extends string | number | _ | unset = unset,
     obj = unset
   > = Functions.PartialApply<GetFn, [path, obj]>;
 

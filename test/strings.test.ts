@@ -1,4 +1,4 @@
-import { Args, Call, Call2, Strings } from "../src/index";
+import { _, Call, Call2, Strings } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
@@ -219,7 +219,7 @@ describe("Strings", () => {
     type res2 = Call<Strings.Compare<"a">, "b">;
     //    ^?
     type test2 = Expect<Equal<res2, 1>>;
-    type res3 = Call<Strings.Compare<"a", Args._>, "b">;
+    type res3 = Call<Strings.Compare<"a", _>, "b">;
     //    ^?
     type test3 = Expect<Equal<res3, -1>>;
     type res4 = Call<Strings.Compare<"b">, "a">;
