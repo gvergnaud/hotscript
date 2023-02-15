@@ -484,4 +484,25 @@ export namespace Tuples {
   interface PartitionFn extends Fn {
     return: PartitionImpl<Fn.arg0<this, Fn>, Fn.arg1<this, any[]>>;
   }
+
+  /**
+   * Get an element from a tuple at a given index.
+   *
+   * @param index - The index to lookup
+   * @param tuple - the tuple
+   * @returns - a tuple containing two tuples: one for each groupe
+   * @example
+   * ```ts
+   * type T0 = Call<T.Partition<B.Extends<number>>, [1, "a", 2, "b", 3, "c"]>;
+   * //   ^? [[1, 2, 3], ["a", "b", "c"]]
+   * ```
+   */
+  export type At<
+    index extends number | Args._ | unset = unset,
+    tuple = unset
+  > = Functions.PartialApply<AtFn, [index, tuple]>;
+
+  interface AtFn extends Fn {
+    return: Fn.arg1<this, readonly any[]>[Fn.arg0<this, number>];
+  }
 }

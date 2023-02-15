@@ -232,6 +232,21 @@ describe("Tuples", () => {
       [1, "a", 2, "b", 3, "c"]
     >;
     type test1 = Expect<Equal<res1, [[1, 2, 3], ["a", "b", "c"]]>>;
+
+    type res2 = Pipe<
+      //    ^?
+      [1, "a", 2, "b", 3, "c"],
+      [Tuples.Partition<Booleans.Extends<number>>, Tuples.At<0>, Tuples.At<2>]
+    >;
+    type test2 = Expect<Equal<res2, 3>>;
+  });
+
+  it("At", () => {
+    type res1 = Eval<
+      //    ^?
+      Tuples.At<2, [1, "a", 2, "b", 3, "c"]>
+    >;
+    type test1 = Expect<Equal<res1, 2>>;
   });
 
   it("Composition", () => {
