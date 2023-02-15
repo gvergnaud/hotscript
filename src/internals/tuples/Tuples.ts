@@ -614,14 +614,14 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.Zip, [[1, 2, 3], [10, 2, 5]]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T0 = Call2<Tuples.Zip, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
    * type T1 = Eval<Tuples.Zip<[1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * ```
    */
-  export type Zip<arr1 = unset, arr2 = unset> = Functions.PartialApply<
-    ZipWithFn<F.Identity>,
-    [arr1, arr2]
-  >;
+  export type Zip<
+    arr1 extends unknown[] | _ | unset = unset,
+    arr2 extends unknown[] | _ | unset = unset
+  > = Functions.PartialApply<ZipWithFn<F.Identity>, [arr1, arr2]>;
 
   /**
    * Zip two tuples together using a function.
@@ -642,7 +642,7 @@ export namespace Tuples {
    */
   export type ZipWith<
     fn extends Fn,
-    arr1 = unset,
-    arr2 = unset
+    arr1 extends unknown[] | _ | unset = unset,
+    arr2 extends unknown[] | _ | unset = unset
   > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
 }
