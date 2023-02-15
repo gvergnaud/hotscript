@@ -6,21 +6,33 @@ export interface Fn {
 }
 
 export namespace Fn {
-  export type args<F> = F extends { args: infer args extends unknown[] }
+  export type args<F, Constraint extends unknown[] = unknown[]> = F extends {
+    args: infer args extends Constraint;
+  }
     ? RemoveUnknownArrayConstraint<args>
     : never;
 
-  export type arg0<F> = F extends { args: [infer arg, ...any] } ? arg : never;
-
-  export type arg1<F> = F extends { args: [any, infer arg, ...any] }
+  export type arg0<F, Constraint = unknown> = F extends {
+    args: [infer arg extends Constraint, ...any];
+  }
     ? arg
     : never;
 
-  export type arg2<F> = F extends { args: [any, any, infer arg, ...any] }
+  export type arg1<F, Constraint = unknown> = F extends {
+    args: [any, infer arg extends Constraint, ...any];
+  }
     ? arg
     : never;
 
-  export type arg3<F> = F extends { args: [any, any, any, infer arg, ...any] }
+  export type arg2<F, Constraint = unknown> = F extends {
+    args: [any, any, infer arg extends Constraint, ...any];
+  }
+    ? arg
+    : never;
+
+  export type arg3<F, Constraint = unknown> = F extends {
+    args: [any, any, any, infer arg extends Constraint, ...any];
+  }
     ? arg
     : never;
 }
