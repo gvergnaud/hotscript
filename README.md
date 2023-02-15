@@ -67,7 +67,7 @@ type T = {
 - [ ] Tuples
   - [x] Partition
   - [x] At
-  - [x] Empty
+  - [x] IsEmpty
   - [x] Zip
   - [x] ZipWith
   - [x] Sort

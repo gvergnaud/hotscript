@@ -308,23 +308,23 @@ describe("Tuples", () => {
     type test2 = Expect<Equal<res2, undefined>>;
   });
 
-  it("Empty", () => {
+  it("IsEmpty", () => {
     type res1 = Eval<
       //    ^?
-      Tuples.Empty<[1, "a", 2, "b", 3, "c"]>
+      Tuples.IsEmpty<[1, "a", 2, "b", 3, "c"]>
     >;
     type test1 = Expect<Equal<res1, false>>;
 
     type res2 = Call<
       //    ^?
-      Tuples.Empty,
+      Tuples.IsEmpty,
       []
     >;
     type test2 = Expect<Equal<res2, true>>;
 
     type res3 = Eval<
       //    ^?
-      Tuples.Empty<[]>
+      Tuples.IsEmpty<[]>
     >;
     type test3 = Expect<Equal<res3, true>>;
   });

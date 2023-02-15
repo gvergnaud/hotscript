@@ -30,10 +30,10 @@ export namespace Tuples {
     return: Fn.arg1<this, readonly any[]>[Fn.arg0<this, number>];
   }
 
-  type EmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
+  type IsEmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
 
-  interface EmptyFn extends Fn {
-    return: EmptyImpl<Fn.arg0<this, unknown[]>>;
+  interface IsEmptyFn extends Fn {
+    return: IsEmptyImpl<Fn.arg0<this, unknown[]>>;
   }
 
   /**
@@ -43,12 +43,15 @@ export namespace Tuples {
    * @returns `true` if the tuple is empty, `false` otherwise.
    * @example
    * ```ts
-   * type T0 = Call<Tuples.Empty, []>; // true
-   * type T1 = Call<Tuples.Empty, [1, 2, 3]>; // false
-   * type T2 = Eval<Tuples.Empty<[]>>; // true
+   * type T0 = Call<Tuples.IsEmpty, []>; // true
+   * type T1 = Call<Tuples.IsEmpty, [1, 2, 3]>; // false
+   * type T2 = Eval<Tuples.IsEmpty<[]>>; // true
    * ```
    */
-  export type Empty<tuple = unset> = Functions.PartialApply<EmptyFn, [tuple]>;
+  export type IsEmpty<tuple = unset> = Functions.PartialApply<
+    IsEmptyFn,
+    [tuple]
+  >;
 
   /**
    * Returns the first element of a tuple.
@@ -625,7 +628,7 @@ export namespace Tuples {
 
   /**
    * Zip two tuples together using a function.
-   * @description The function should take a 2-tuple and return a value.
+   * @description The function should take a 2 elements and return a value.
    * Using the identity function will return a 2-tuple and have the same effect as `Zip`.
    * @param args[0] - The first tuple to zip.
    * @param args[1] - The second tuple to zip.
