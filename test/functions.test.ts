@@ -2,12 +2,9 @@ import {
   Pipe,
   PipeRight,
   Call,
-  Call2,
   Numbers,
   Strings,
   Tuples,
-  O,
-  N,
   F,
   _,
 } from "../src/index";

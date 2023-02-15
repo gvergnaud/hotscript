@@ -7,7 +7,7 @@ export namespace Booleans {
   type ExtendsImpl<a, b> = [a] extends [b] ? true : false;
 
   interface ExtendsFn extends Fn {
-    return: Fn.args<this> extends [infer first, infer second, ...any]
+    return: this["args"] extends [infer first, infer second, ...any]
       ? ExtendsImpl<first, second>
       : never;
   }
@@ -20,15 +20,13 @@ export namespace Booleans {
   type NotImpl<a> = a extends true ? false : true;
 
   interface NotFn extends Fn {
-    return: Fn.args<this> extends [infer first, ...any]
-      ? NotImpl<first>
-      : never;
+    return: this["args"] extends [infer first, ...any] ? NotImpl<first> : never;
   }
 
   export type Not<a = unset> = Functions.PartialApply<NotFn, [a]>;
 
   interface EqualsFn extends Fn {
-    return: Fn.args<this> extends [infer a, infer b, ...any]
+    return: this["args"] extends [infer a, infer b, ...any]
       ? Equal<a, b>
       : never;
   }
@@ -47,7 +45,7 @@ export namespace Booleans {
   >;
 
   interface AndFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer first extends boolean,
       infer second extends boolean,
       ...any
@@ -59,7 +57,7 @@ export namespace Booleans {
   export type And<a = unset, b = unset> = Functions.PartialApply<AndFn, [a, b]>;
 
   interface OrFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer first extends boolean,
       infer second extends boolean,
       ...any
