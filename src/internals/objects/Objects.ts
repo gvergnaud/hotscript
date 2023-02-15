@@ -189,7 +189,11 @@ export namespace Objects {
   > = Functions.PartialApply<GetFn, [path, obj]>;
 
   export interface GetFn extends Fn {
-    return: Fn.args<this> extends [infer path extends string, infer obj, ...any]
+    return: Fn.args<this> extends [
+      infer path extends string | number,
+      infer obj,
+      ...any
+    ]
       ? GetFromPath<obj, path>
       : never;
   }
