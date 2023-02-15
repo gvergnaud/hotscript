@@ -6,6 +6,7 @@ import {
   Fn,
   Pipe,
   PipeRight,
+  _,
 } from "./internals/core/Core";
 import { Functions } from "./internals/functions/Functions";
 import { Numbers } from "./internals/numbers/Numbers";
@@ -14,9 +15,9 @@ import { Strings } from "./internals/strings/Strings";
 import { Tuples } from "./internals/tuples/Tuples";
 import { Unions } from "./internals/unions/Unions";
 import { Booleans } from "./internals/booleans/Booleans";
-import { Args } from "./internals/args/Args";
 
 export {
+  _,
   Fn,
   Pipe,
   PipeRight,
@@ -31,7 +32,6 @@ export {
   Numbers,
   Tuples,
   Functions,
-  Args,
   Booleans as B,
   Objects as O,
   Unions as U,

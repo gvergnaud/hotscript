@@ -1,6 +1,5 @@
-import { Args } from "../src/internals/args/Args";
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
+import { Call, Eval, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
@@ -11,26 +10,35 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Head, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, 1>>;
+
+    type res2 = Eval<Tuples.Head<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, 1>>;
   });
 
   it("Tail", () => {
     type res1 = Call<Tuples.Tail, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [2, 3]>>;
+
+    type res2 = Eval<Tuples.Tail<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [2, 3]>>;
   });
 
   it("Last", () => {
     type res1 = Call<Tuples.Last, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, 3>>;
+
+    type res2 = Eval<Tuples.Last<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, 3>>;
   });
 
   it("Map", () => {
     interface ToPhrase extends Fn {
-      output: `number is ${Extract<
-        this["args"][0],
-        string | number | boolean
-      >}`;
+      return: `number is ${Extract<Fn.arg0<this>, string | number | boolean>}`;
     }
 
     type res1 = Call<Tuples.Map<ToPhrase>, [1, 2, 3]>;
@@ -38,21 +46,31 @@ describe("Tuples", () => {
     type tes1 = Expect<
       Equal<res1, ["number is 1", "number is 2", "number is 3"]>
     >;
+
+    type res2 = Eval<Tuples.Map<ToPhrase, [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<
+      Equal<res2, ["number is 1", "number is 2", "number is 3"]>
+    >;
   });
 
   it("Filter", () => {
     interface IsNumber extends Fn {
-      output: this["args"][0] extends number ? true : false;
+      return: Fn.arg0<this> extends number ? true : false;
     }
 
     type res1 = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
+
+    type res2 = Eval<Tuples.Filter<IsNumber, [1, 2, "oops", 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [1, 2, 3]>>;
   });
 
   it("Reduce", () => {
     interface ToUnaryTupleArray extends Fn {
-      output: this["args"] extends [infer acc extends any[], infer item]
+      return: Fn.args<this> extends [infer acc extends any[], infer item]
         ? [...acc, [item]]
         : never;
     }
@@ -60,11 +78,15 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Reduce<ToUnaryTupleArray, []>, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
+
+    type res2 = Eval<Tuples.Reduce<ToUnaryTupleArray, [], [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [[1], [2], [3]]>>;
   });
 
   it("ReduceRight", () => {
     interface ToUnaryTupleArray extends Fn {
-      output: this["args"] extends [infer acc extends any[], infer item]
+      return: Fn.args<this> extends [infer acc extends any[], infer item]
         ? [...acc, [item]]
         : never;
     }
@@ -75,21 +97,29 @@ describe("Tuples", () => {
       [1, 2, 3]
     >;
     type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
+
+    type res2 = Eval<Tuples.ReduceRight<ToUnaryTupleArray, [], [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [[3], [2], [1]]>>;
   });
 
   it("FlatMap", () => {
     interface Duplicate extends Fn {
-      output: [this["args"][0], this["args"][0]];
+      return: [Fn.arg0<this>, Fn.arg0<this>];
     }
 
     type res1 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+
+    type res2 = Eval<Tuples.FlatMap<Duplicate, [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [1, 1, 2, 2, 3, 3]>>;
   });
 
   it("Find", () => {
     interface IsNumber extends Fn {
-      output: this["args"][0] extends number ? true : false;
+      return: Fn.arg0<this> extends number ? true : false;
     }
 
     type res1 = Call<Tuples.Find<IsNumber>, ["a", "b", "c", 2, "d"]>;
@@ -97,12 +127,16 @@ describe("Tuples", () => {
     type tes1 = Expect<Equal<res1, 2>>;
 
     interface IsSecond extends Fn {
-      output: this["args"][1] extends 1 ? true : false;
+      return: Fn.arg1<this> extends 1 ? true : false;
     }
 
     type res2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, "b">>;
+
+    type res3 = Eval<Tuples.Find<IsSecond, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, "b">>;
   });
 
   it("Drop", () => {
@@ -113,6 +147,10 @@ describe("Tuples", () => {
     type res2 = Call<Tuples.Drop<2>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, ["c", 2, "d"]>>;
+
+    type res3 = Eval<Tuples.Drop<2, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, ["c", 2, "d"]>>;
   });
 
   it("Take", () => {
@@ -123,37 +161,48 @@ describe("Tuples", () => {
     type res2 = Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, ["a", "b"]>>;
+
+    type res3 = Eval<Tuples.Take<2, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, ["a", "b"]>>;
   });
 
   it("TakeWhile", () => {
     type res1 = Call<
       //   ^?
-      Tuples.TakeWhile<Booleans.Extends<Args._, string>>,
+      Tuples.TakeWhile<Booleans.Extends<_, string>>,
       ["a", "b", "c", 2, "d"]
     >;
     type tes1 = Expect<Equal<res1, ["a", "b", "c"]>>;
 
-    type NewType = Args._;
-
     type res2 = Call<
       //   ^?
-      Tuples.TakeWhile<Booleans.Extends<NewType, number>>,
+      Tuples.TakeWhile<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, [1, 2]>>;
+
+    type res3 = Eval<
+      //   ^?
+      Tuples.TakeWhile<
+        Booleans.Extends<_, number>,
+        [1, 2, "a", "b", "c", 2, "d"]
+      >
+    >;
+    type tes3 = Expect<Equal<res3, [1, 2]>>;
   });
 
   it("Every", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Every<Booleans.Extends<Args._, string>>,
+      Tuples.Every<Booleans.Extends<_, string>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, true>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Every<Booleans.Extends<Args._, number>>,
+      Tuples.Every<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, false>>;
@@ -162,14 +211,14 @@ describe("Tuples", () => {
   it("Some", () => {
     type res1 = Call<
       //   ^?
-      Tuples.Some<Booleans.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<_, number>>,
       ["a", "b", "c", "d"]
     >;
     type tes1 = Expect<Equal<res1, false>>;
 
     type res2 = Call<
       //   ^?
-      Tuples.Some<Booleans.Extends<Args._, number>>,
+      Tuples.Some<Booleans.Extends<_, number>>,
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, true>>;
@@ -213,7 +262,7 @@ describe("Tuples", () => {
     //    ^?
     type test1 = Expect<Equal<res1, [1, 2, 3, 4]>>;
 
-    type res2 = Eval<Tuples.Append<[1, 2, 3], 4>>;
+    type res2 = Eval<Tuples.Append<4, [1, 2, 3]>>;
     //    ^?
     type test2 = Expect<Equal<res2, [1, 2, 3, 4]>>;
   });
@@ -223,14 +272,38 @@ describe("Tuples", () => {
     //    ^?
     type test1 = Expect<Equal<res1, [0, 1, 2, 3]>>;
 
-    type res2 = Eval<Tuples.Prepend<[1, 2, 3], 0>>;
+    type res2 = Eval<Tuples.Prepend<0, [1, 2, 3]>>;
     //    ^?
     type test2 = Expect<Equal<res2, [0, 1, 2, 3]>>;
   });
 
+  it("Partition", () => {
+    type res1 = Call<
+      //    ^?
+      Tuples.Partition<Booleans.Extends<number>>,
+      [1, "a", 2, "b", 3, "c"]
+    >;
+    type test1 = Expect<Equal<res1, [[1, 2, 3], ["a", "b", "c"]]>>;
+
+    type res2 = Pipe<
+      //    ^?
+      [1, "a", 2, "b", 3, "c"],
+      [Tuples.Partition<Booleans.Extends<number>>, Tuples.At<0>, Tuples.At<2>]
+    >;
+    type test2 = Expect<Equal<res2, 3>>;
+  });
+
+  it("At", () => {
+    type res1 = Eval<
+      //    ^?
+      Tuples.At<2, [1, "a", 2, "b", 3, "c"]>
+    >;
+    type test1 = Expect<Equal<res1, 2>>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
-      output: [this["args"][0], this["args"][0]];
+      return: [Fn.arg0<this>, Fn.arg0<this>];
     }
 
     // prettier-ignore

@@ -330,7 +330,7 @@ describe("Objects", () => {
 
   describe("GroupBy", () => {
     interface GetTypeKey extends Fn {
-      output: this["args"][0] extends { type: infer Type } ? Type : never;
+      return: Fn.arg0<this> extends { type: infer Type } ? Type : never;
     }
     type res1 = Call<
       // ^?

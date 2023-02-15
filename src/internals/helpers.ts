@@ -215,7 +215,9 @@ type ParsePath<
   Path,
   Output extends string[] = [],
   CurrentChunk extends string = ""
-> = Path extends `${infer First}${infer Rest}`
+> = Path extends number
+  ? [`${Path}`]
+  : Path extends `${infer First}${infer Rest}`
   ? First extends "." | "[" | "]"
     ? ParsePath<
         Rest,
