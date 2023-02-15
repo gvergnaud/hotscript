@@ -225,6 +225,15 @@ describe("Tuples", () => {
     type test2 = Expect<Equal<res2, [0, 1, 2, 3]>>;
   });
 
+  it("Partition", () => {
+    type res1 = Call<
+      //    ^?
+      Tuples.Partition<Booleans.Extends<number>>,
+      [1, "a", 2, "b", 3, "c"]
+    >;
+    type test1 = Expect<Equal<res1, [[1, 2, 3], ["a", "b", "c"]]>>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
       return: [Fn.arg0<this>, Fn.arg0<this>];

@@ -450,4 +450,38 @@ export namespace Tuples {
       ? [...tuple, element]
       : never;
   }
+
+  /**
+   * Splits a tuple into two groups based on a predicate:
+   * - The first group contains elements predicate returns true for.
+   * - The second group contains elements predicate returns false for.
+   *
+   * @param predicate - The tuple to update.
+   * @param element - The element to add to our tuple
+   * @returns - a tuple containing two tuples: one for each groupe
+   * @example
+   * ```ts
+   * type T0 = Call<T.Partition<B.Extends<number>>, [1, "a", 2, "b", 3, "c"]>;
+   * //   ^? [[1, 2, 3], ["a", "b", "c"]]
+   * ```
+   */
+  export type Partition<fn extends Fn, tuple = unset> = Functions.PartialApply<
+    PartitionFn,
+    [fn, tuple]
+  >;
+
+  type PartitionImpl<
+    fn extends Fn,
+    tuple extends any[],
+    left extends any[] = [],
+    right extends any[] = []
+  > = tuple extends [infer first, ...infer rest]
+    ? Call<fn, first> extends true
+      ? PartitionImpl<fn, rest, [...left, first], right>
+      : PartitionImpl<fn, rest, left, [...right, first]>
+    : [left, right];
+
+  interface PartitionFn extends Fn {
+    return: PartitionImpl<Fn.arg0<this, Fn>, Fn.arg1<this, any[]>>;
+  }
 }
