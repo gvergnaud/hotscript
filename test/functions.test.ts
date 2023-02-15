@@ -2,12 +2,9 @@ import {
   Pipe,
   PipeRight,
   Call,
-  Call2,
   Numbers,
   Strings,
   Tuples,
-  O,
-  N,
   F,
   _,
 } from "../src/index";
@@ -95,13 +92,6 @@ describe("Composition", () => {
       type partialArgs2 = [unset, unset];
       type res2 = MergeArgs<pipedArgs2, partialArgs2>;
       type test2 = Expect<Equal<res2, [1, 2]>>;
-    });
-
-    it("should support intersections with unknown[] coming from function application", () => {
-      type pipedArgs2 = unknown[] & [0, 1];
-      type partialArgs2 = [unset, unset];
-      type res2 = MergeArgs<pipedArgs2, partialArgs2>;
-      type test2 = Expect<Equal<res2, [0, 1]>>;
     });
 
     it("should support never", () => {

@@ -42,28 +42,6 @@ export type Prettify<T> = { [K in keyof T]: T[K] } | never;
 
 export type AnyTuple = readonly [any, ...any];
 
-/**
- * args sometimes have an  unknown[] & [...tuple] type, and the
- * unknown[] breaks destructuring. Might be a TS bug?
- */
-export type RemoveUnknownArrayConstraint<xs extends any[]> = xs extends [
-  infer x1,
-  infer x2,
-  infer x3,
-  infer x4,
-  infer x5
-]
-  ? [x1, x2, x3, x4, x5]
-  : xs extends [infer x1, infer x2, infer x3, infer x4]
-  ? [x1, x2, x3, x4]
-  : xs extends [infer x1, infer x2, infer x3]
-  ? [x1, x2, x3]
-  : xs extends [infer x1, infer x2]
-  ? [x1, x2]
-  : xs extends [infer x1]
-  ? [x1]
-  : [];
-
 export namespace Iterator {
   export type Get<it extends readonly any[]> = it["length"];
 

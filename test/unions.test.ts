@@ -30,7 +30,7 @@ describe("Unions", () => {
 
   it("Map", () => {
     interface ToTuple extends Fn {
-      return: [Fn.arg0<this>];
+      return: [this["arg0"]];
     }
 
     type res1 = Pipe<"a" | "b" | "c", [U.Map<ToTuple>]>;

@@ -1,11 +1,82 @@
 import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N } from "../numbers/Numbers";
-import { Call, Call2, Fn, unset, _ } from "../core/Core";
+import { Apply, Call, Call2, Call3, Eval, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
+
+  /**
+   * Get an element from a tuple at a given index.
+   * @param args[0] - The index of the element to get.
+   * @param args[1] - The tuple to get the element from.
+   * @param index - The index of the element to get.
+   * @param tuple - The tuple to get the element from.
+   * @returns The element at the specified index.
+   * @example
+   * ```ts
+   * type T0 = Call2<Tuples.At, 1, ["a", "b", "c"]>; // "b"
+   * type T1 = Eval<Tuples.At<1, ["a", "b", "c"]>>; // "b"
+   * type T2 = Call<Tuples.At<1>, ["a", "b", "c"]>; // "b"
+   * ```
+   */
+  export type At<
+    index extends number | _ | unset = unset,
+    tuple = unset
+  > = Functions.PartialApply<AtFn, [index, tuple]>;
+
+  interface AtFn extends Fn {
+    return: Extract<this["arg1"], readonly any[]>[Extract<
+      this["arg0"],
+      number
+    >];
+  }
+
+  type IsEmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
+
+  interface CreateFn extends Fn {
+    return: this["args"];
+  }
+
+  /**
+   * Create a tuple from a list of arguments.
+   * @param args - The arguments to create a tuple from.
+   * @returns A tuple containing the arguments.
+   * @example
+   * ```ts
+   * type T0 = Call3<Tuples.Create, 1, 2, 3>; // [1, 2, 3]
+   * type T1 = Eval<Tuples.Create<1, 2, 3>>; // [1, 2, 3]
+   * ```
+   */
+  export type Create<
+    arg1 = unset,
+    arg2 = unset,
+    arg3 = unset,
+    arg4 = unset,
+    arg5 = unset
+  > = Functions.PartialApply<CreateFn, [arg1, arg2, arg3, arg4, arg5]>;
+
+  interface IsEmptyFn extends Fn {
+    return: IsEmptyImpl<Extract<this["arg0"], unknown[]>>;
+  }
+
+  /**
+   * Check if a tuple is empty.
+   * @param args[0] - The tuple to check.
+   * @param tuple - The tuple to check.
+   * @returns `true` if the tuple is empty, `false` otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.IsEmpty, []>; // true
+   * type T1 = Call<Tuples.IsEmpty, [1, 2, 3]>; // false
+   * type T2 = Eval<Tuples.IsEmpty<[]>>; // true
+   * ```
+   */
+  export type IsEmpty<tuple = unset> = Functions.PartialApply<
+    IsEmptyFn,
+    [tuple]
+  >;
 
   /**
    * Returns the first element of a tuple.
@@ -22,7 +93,7 @@ export namespace Tuples {
     Functions.PartialApply<HeadFn, [tuple]>;
 
   interface HeadFn extends Fn {
-    return: HeadImpl<Fn.arg0<this>>;
+    return: HeadImpl<this["arg0"]>;
   }
 
   type TailImpl<xs> = xs extends readonly [any, ...infer tail] ? tail : [];
@@ -42,7 +113,7 @@ export namespace Tuples {
     Functions.PartialApply<TailFn, [tuple]>;
 
   export interface TailFn extends Fn {
-    return: TailImpl<Fn.arg0<this>>;
+    return: TailImpl<this["arg0"]>;
   }
 
   type LastImpl<xs> = xs extends readonly [...any, infer last] ? last : never;
@@ -62,11 +133,11 @@ export namespace Tuples {
     Functions.PartialApply<LastFn, [tuple]>;
 
   export interface LastFn extends Fn {
-    return: LastImpl<Fn.arg0<this>>;
+    return: LastImpl<this["arg0"]>;
   }
 
   interface MapReducer<fn extends Fn> extends Fn {
-    return: Fn.args<this> extends [infer acc extends any[], infer item]
+    return: this["args"] extends [infer acc extends any[], infer item]
       ? [...acc, Call<fn, item>]
       : never;
   }
@@ -88,11 +159,11 @@ export namespace Tuples {
   > = Functions.PartialApply<MapFn, [fn, tuple]>;
 
   interface MapFn extends Fn {
-    return: ReduceImpl<Fn.arg1<this>, [], MapReducer<Fn.arg0<this, Fn>>>;
+    return: ReduceImpl<this["arg1"], [], MapReducer<Extract<this["arg0"], Fn>>>;
   }
 
   interface FlatMapReducer<fn extends Fn> extends Fn {
-    return: Fn.args<this> extends [infer acc extends any[], infer item]
+    return: this["args"] extends [infer acc extends any[], infer item]
       ? [...acc, ...Extract<Call<fn, item>, readonly any[]>]
       : never;
   }
@@ -114,7 +185,11 @@ export namespace Tuples {
   > = Functions.PartialApply<FlatMapFn, [fn, tuple]>;
 
   interface FlatMapFn extends Fn {
-    return: ReduceImpl<Fn.arg1<this>, [], FlatMapReducer<Fn.arg0<this, Fn>>>;
+    return: ReduceImpl<
+      this["arg1"],
+      [],
+      FlatMapReducer<Extract<this["arg0"], Fn>>
+    >;
   }
 
   type ReduceImpl<xs, acc, fn extends Fn> = xs extends [
@@ -143,7 +218,7 @@ export namespace Tuples {
   > = Functions.PartialApply<ReduceFn, [fn, init, tuple]>;
 
   interface ReduceFn extends Fn {
-    return: ReduceImpl<Fn.arg2<this>, Fn.arg1<this>, Fn.arg0<this, Fn>>;
+    return: ReduceImpl<this["arg2"], this["arg1"], Extract<this["arg0"], Fn>>;
   }
 
   type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
@@ -172,11 +247,15 @@ export namespace Tuples {
   > = Functions.PartialApply<ReduceRightFn, [fn, init, tuple]>;
 
   interface ReduceRightFn extends Fn {
-    return: ReduceRightImpl<Fn.arg2<this>, Fn.arg1<this>, Fn.arg0<this, Fn>>;
+    return: ReduceRightImpl<
+      this["arg2"],
+      this["arg1"],
+      Extract<this["arg0"], Fn>
+    >;
   }
 
   interface FilterReducer<fn extends Fn> extends Fn {
-    return: Fn.args<this> extends [infer acc extends any[], infer item]
+    return: this["args"] extends [infer acc extends any[], infer item]
       ? Call<fn, item> extends true
         ? [...acc, item]
         : acc
@@ -200,7 +279,11 @@ export namespace Tuples {
   > = Functions.PartialApply<FilterFn, [fn, tuple]>;
 
   export interface FilterFn extends Fn {
-    return: ReduceImpl<Fn.arg1<this>, [], FilterReducer<Fn.arg0<this, Fn>>>;
+    return: ReduceImpl<
+      this["arg1"],
+      [],
+      FilterReducer<Extract<this["arg0"], Fn>>
+    >;
   }
 
   type FindImpl<xs, fn extends Fn, index extends any[] = []> = xs extends [
@@ -229,7 +312,7 @@ export namespace Tuples {
   > = Functions.PartialApply<FindFn, [fn, tuple]>;
 
   export interface FindFn extends Fn {
-    return: FindImpl<Fn.arg1<this>, Fn.arg0<this, Fn>>;
+    return: FindImpl<this["arg1"], Extract<this["arg0"], Fn>>;
   }
 
   /**
@@ -246,7 +329,7 @@ export namespace Tuples {
     Functions.PartialApply<SumFn, [tuple]>;
 
   interface SumFn extends Fn {
-    return: ReduceImpl<Fn.arg0<this>, 0, N.Add>;
+    return: ReduceImpl<this["arg0"], 0, N.Add>;
   }
 
   type DropImpl<
@@ -276,7 +359,7 @@ export namespace Tuples {
   > = Functions.PartialApply<DropFn, [n, tuple]>;
 
   export interface DropFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer N extends number,
       infer T extends readonly any[]
     ]
@@ -312,7 +395,7 @@ export namespace Tuples {
   > = Functions.PartialApply<TakeFn, [n, tuple]>;
 
   interface TakeFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer N extends number,
       infer T extends readonly any[]
     ]
@@ -348,7 +431,10 @@ export namespace Tuples {
   >;
 
   export interface TakeWhileFn extends Fn {
-    return: TakeWhileImpl<Fn.arg1<this, readonly any[]>, Fn.arg0<this, Fn>>;
+    return: TakeWhileImpl<
+      Extract<this["arg1"], readonly any[]>,
+      Extract<this["arg0"], Fn>
+    >;
   }
 
   /**
@@ -368,8 +454,8 @@ export namespace Tuples {
   >;
   export interface SomeFn extends Fn {
     return: true extends Call<
-      Tuples.Map<Fn.arg0<this, Fn>>,
-      Fn.arg1<this>
+      Tuples.Map<Extract<this["arg0"], Fn>>,
+      this["arg1"]
     >[number]
       ? true
       : false;
@@ -393,8 +479,8 @@ export namespace Tuples {
   >;
   export interface EveryFn extends Fn {
     return: false extends Call<
-      Tuples.Map<Fn.arg0<this, Fn>>,
-      Fn.arg1<this>
+      Tuples.Map<Extract<this["arg0"], Fn>>,
+      this["arg1"]
     >[number]
       ? false
       : true;
@@ -404,22 +490,11 @@ export namespace Tuples {
     infer head,
     ...infer tail
   ]
-    ? [
-        ...SortImpl<
-          Call<Tuples.Filter<F.PartialApply<predicateFn, [_, head]>>, tail>,
-          predicateFn
-        >,
-        head,
-        ...SortImpl<
-          Call<
-            Tuples.Filter<
-              F.Compose<[B.Not, F.PartialApply<predicateFn, [_, head]>]>
-            >,
-            tail
-          >,
-          predicateFn
-        >
-      ]
+    ? Eval<
+        Tuples.Partition<F.PartialApply<predicateFn, [_, head]>, tail>
+      > extends [infer left extends any[], infer right extends any[]]
+      ? [...SortImpl<left, predicateFn>, head, ...SortImpl<right, predicateFn>]
+      : never
     : [];
 
   /**
@@ -434,13 +509,13 @@ export namespace Tuples {
    * ```
    */
   export interface Sort<predicateFn extends Fn = N.LessThanOrEqual> extends Fn {
-    return: Fn.args<this> extends [infer xs extends any[]]
+    return: this["args"] extends [infer xs extends any[]]
       ? SortImpl<xs, predicateFn>
       : never;
   }
 
   interface JoinReducer<sep extends string> extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer acc extends Stringifiable,
       infer item extends Stringifiable
     ]
@@ -456,6 +531,8 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.Join<",">,["a","b","c"]>; // "a,b,c"
+   * type T1 = Call2<Tuples.Join,",",["a","b","c"]>; // "a,b,c"
+   * type T2 = Eval<Tuples.Join<",",["a","b","c"]>>; // "a,b,c"
    * ```
    */
   export type Join<
@@ -464,7 +541,7 @@ export namespace Tuples {
   > = Functions.PartialApply<JoinFn, [Sep, Tuple]>;
 
   interface JoinFn extends Fn {
-    return: Fn.args<this> extends [infer Sep extends string, infer Tuple]
+    return: this["args"] extends [infer Sep extends string, infer Tuple]
       ? ReduceImpl<Tuple, "", JoinReducer<Sep>>
       : never;
   }
@@ -485,7 +562,7 @@ export namespace Tuples {
   >;
 
   interface PrependFn extends Fn {
-    return: Fn.args<this> extends [infer element, infer tuple extends any[]]
+    return: this["args"] extends [infer element, infer tuple extends any[]]
       ? [element, ...tuple]
       : never;
   }
@@ -505,7 +582,7 @@ export namespace Tuples {
   >;
 
   interface AppendFn extends Fn {
-    return: Fn.args<this> extends [infer element, infer tuple extends any[]]
+    return: this["args"] extends [infer element, infer tuple extends any[]]
       ? [...tuple, element]
       : never;
   }
@@ -541,27 +618,70 @@ export namespace Tuples {
     : [left, right];
 
   interface PartitionFn extends Fn {
-    return: PartitionImpl<Fn.arg0<this, Fn>, Fn.arg1<this, any[]>>;
+    return: PartitionImpl<
+      Extract<this["arg0"], Fn>,
+      Extract<this["arg1"], any[]>
+    >;
+  }
+
+  type ZipWithImpl<
+    arr1 extends unknown[],
+    arr2 extends unknown[],
+    fn extends Fn,
+    acc extends unknown[] = []
+  > = [arr1, arr2] extends [
+    [infer item1, ...infer rest1],
+    [infer item2, ...infer rest2]
+  ]
+    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call2<fn, item1, item2>]>
+    : acc;
+
+  interface ZipWithFn<fn extends Fn> extends Fn {
+    return: ZipWithImpl<
+      Extract<this["arg0"], unknown[]>,
+      Extract<this["arg1"], unknown[]>,
+      fn
+    >;
   }
 
   /**
-   * Get an element from a tuple at a given index.
-   *
-   * @param index - The index to lookup
-   * @param tuple - the tuple
-   * @returns - a tuple containing two tuples: one for each groupe
+   * Zip two tuples together.
+   * @param args[0] - The first tuple to zip.
+   * @param args[1] - The second tuple to zip.
+   * @param arr1 - The first tuple to zip.
+   * @param arr2 - The second tuple to zip.
+   * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call<T.Partition<B.Extends<number>>, [1, "a", 2, "b", 3, "c"]>;
-   * //   ^? [[1, 2, 3], ["a", "b", "c"]]
+   * type T0 = Call2<Tuples.Zip, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.Zip<[1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * ```
    */
-  export type At<
-    index extends number | _ | unset = unset,
-    tuple = unset
-  > = Functions.PartialApply<AtFn, [index, tuple]>;
+  export type Zip<
+    arr1 extends unknown[] | _ | unset = unset,
+    arr2 extends unknown[] | _ | unset = unset
+  > = Functions.PartialApply<ZipWithFn<CreateFn>, [arr1, arr2]>;
 
-  interface AtFn extends Fn {
-    return: Fn.arg1<this, readonly any[]>[Fn.arg0<this, number>];
-  }
+  /**
+   * Zip two tuples together using a function.
+   * @description The function should take a 2 elements and return a value.
+   * Using the identity function will return a 2-tuple and have the same effect as `Zip`.
+   * @param args[0] - The first tuple to zip.
+   * @param args[1] - The second tuple to zip.
+   * @param fn - The function to use to zip the tuples.
+   * @param arr1 - The first tuple to zip.
+   * @param arr2 - The second tuple to zip.
+   * @returns The zipped tuple.
+   * @example
+   * ```ts
+   * type T0 = Call2<Tuples.ZipWith<Tuples.Create>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.ZipWith<Tuples.Create, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T3 = Call2<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
+   * ```
+   */
+  export type ZipWith<
+    fn extends Fn,
+    arr1 extends unknown[] | _ | unset = unset,
+    arr2 extends unknown[] | _ | unset = unset
+  > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
 }

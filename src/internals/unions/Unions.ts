@@ -14,7 +14,7 @@ export namespace Unions {
   >;
 
   interface ExtractFn extends Fn {
-    return: Std._Extract<Fn.arg0<this>, Fn.arg1<this>>;
+    return: Std._Extract<this["arg0"], this["arg1"]>;
   }
 
   type ExtractByImpl<union, predicate extends Fn> = union extends any
@@ -24,7 +24,7 @@ export namespace Unions {
     : never;
 
   export interface ExtractBy<predicate extends Fn> extends Fn {
-    return: ExtractByImpl<Fn.arg0<this>, predicate>;
+    return: ExtractByImpl<this["arg0"], predicate>;
   }
 
   export type Exclude<
@@ -38,7 +38,7 @@ export namespace Unions {
   >;
 
   interface ExcludeFn extends Fn {
-    return: Std._Exclude<Fn.arg0<this>, Fn.arg1<this>>;
+    return: Std._Exclude<this["arg0"], this["arg1"]>;
   }
 
   type ExcludeByImpl<union, predicate extends Fn> = union extends any
@@ -48,7 +48,7 @@ export namespace Unions {
     : never;
 
   export interface ExcludeBy<predicate extends Fn> extends Fn {
-    return: ExcludeByImpl<Fn.arg0<this>, predicate>;
+    return: ExcludeByImpl<this["arg0"], predicate>;
   }
 
   type MapImpl<fn extends Fn, union> = union extends any
@@ -60,6 +60,8 @@ export namespace Unions {
     [fn, u]
   >;
   interface MapFn extends Fn {
-    return: MapImpl<Fn.arg0<this, Fn>, Fn.arg1<this>>;
+    return: this["args"] extends [infer fn extends Fn, infer u]
+      ? MapImpl<fn, u>
+      : never;
   }
 }

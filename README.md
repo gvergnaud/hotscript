@@ -21,7 +21,7 @@ type res1 = Pipe<
 
 // This is a type-level "lambda"!
 interface Duplicate extends Fn {
-  return: [Fn.arg0<this>, Fn.arg0<this>];
+  return: [this["arg0"], this["arg0"]];
 }
 
 type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;
@@ -65,8 +65,11 @@ type T = {
   - [x] Compose
   - [x] ComposeLeft
 - [ ] Tuples
-  - [ ] Zip
+  - [x] Create
   - [x] Partition
+  - [x] IsEmpty
+  - [x] Zip
+  - [x] ZipWith
   - [x] Sort
   - [x] Head
   - [x] At

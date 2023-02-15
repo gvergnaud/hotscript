@@ -15,7 +15,7 @@ export namespace Objects {
   };
 
   export interface FromEntries extends Fn {
-    return: FromEntriesImpl<Extract<Fn.arg0<this>, [PropertyKey, any]>>;
+    return: FromEntriesImpl<Extract<this["arg0"], [PropertyKey, any]>>;
   }
 
   type EntriesImpl<T> = {
@@ -23,7 +23,7 @@ export namespace Objects {
   }[keyof T];
 
   export interface Entries extends Fn {
-    return: EntriesImpl<Fn.arg0<this>>;
+    return: EntriesImpl<this["arg0"]>;
   }
 
   type MapValuesImpl<T, fn extends Fn> = {
@@ -31,7 +31,7 @@ export namespace Objects {
   };
 
   export interface MapValues<fn extends Fn> extends Fn {
-    return: MapValuesImpl<Fn.arg0<this>, fn>;
+    return: MapValuesImpl<this["arg0"], fn>;
   }
 
   type MapKeysImpl<T, fn extends Fn> = {
@@ -39,19 +39,19 @@ export namespace Objects {
   };
 
   export interface MapKeys<fn extends Fn> extends Fn {
-    return: MapKeysImpl<Fn.arg0<this>, fn>;
+    return: MapKeysImpl<this["arg0"], fn>;
   }
 
   export interface KebabCase extends Fn {
-    return: Call<MapKeys<Strings.KebabCase>, Fn.arg0<this>>;
+    return: Call<MapKeys<Strings.KebabCase>, this["arg0"]>;
   }
 
   export interface SnakeCase extends Fn {
-    return: Call<MapKeys<Strings.SnakeCase>, Fn.arg0<this>>;
+    return: Call<MapKeys<Strings.SnakeCase>, this["arg0"]>;
   }
 
   export interface CamelCase extends Fn {
-    return: Call<MapKeys<Strings.CamelCase>, Fn.arg0<this>>;
+    return: Call<MapKeys<Strings.CamelCase>, this["arg0"]>;
   }
 
   type MapKeysDeepImpl<T, fn extends Fn> = IsArrayStrict<T> extends true
@@ -65,19 +65,19 @@ export namespace Objects {
     : T;
 
   export interface MapKeysDeep<fn extends Fn> extends Fn {
-    return: MapKeysDeepImpl<Fn.arg0<this>, fn>;
+    return: MapKeysDeepImpl<this["arg0"], fn>;
   }
 
   export interface KebabCaseDeep extends Fn {
-    return: Call<MapKeysDeep<Strings.KebabCase>, Fn.arg0<this>>;
+    return: Call<MapKeysDeep<Strings.KebabCase>, this["arg0"]>;
   }
 
   export interface SnakeCaseDeep extends Fn {
-    return: Call<MapKeysDeep<Strings.SnakeCase>, Fn.arg0<this>>;
+    return: Call<MapKeysDeep<Strings.SnakeCase>, this["arg0"]>;
   }
 
   export interface CamelCaseDeep extends Fn {
-    return: Call<MapKeysDeep<Strings.CamelCase>, Fn.arg0<this>>;
+    return: Call<MapKeysDeep<Strings.CamelCase>, this["arg0"]>;
   }
 
   type PickImpl<obj, keys> = {
@@ -90,7 +90,7 @@ export namespace Objects {
   >;
 
   interface PickFn extends Fn {
-    return: PickImpl<Fn.arg1<this>, Fn.arg0<this>>;
+    return: PickImpl<this["arg1"], this["arg0"]>;
   }
 
   type OmitImpl<obj, keys> = {
@@ -103,7 +103,7 @@ export namespace Objects {
   >;
 
   interface OmitFn extends Fn {
-    return: OmitImpl<Fn.arg1<this>, Fn.arg0<this>>;
+    return: OmitImpl<this["arg1"], this["arg0"]>;
   }
 
   type PickEntriesImpl<
@@ -120,7 +120,7 @@ export namespace Objects {
   >;
 
   export interface PickBy<fn extends Fn> extends Fn {
-    return: PickByImpl<Fn.arg0<this>, fn>;
+    return: PickByImpl<this["arg0"], fn>;
   }
 
   type OmitEntriesImpl<
@@ -137,7 +137,7 @@ export namespace Objects {
   >;
 
   export interface OmitBy<fn extends Fn> extends Fn {
-    return: OmitByImpl<Fn.arg0<this>, fn>;
+    return: OmitByImpl<this["arg0"], fn>;
   }
 
   type AssignImpl<xs extends readonly any[]> = Prettify<
@@ -153,7 +153,7 @@ export namespace Objects {
   > = Functions.PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface AssignFn extends Fn {
-    return: AssignImpl<Fn.args<this>>;
+    return: AssignImpl<this["args"]>;
   }
 
   type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
@@ -179,7 +179,7 @@ export namespace Objects {
   type GroupByImpl<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
 
   export interface GroupBy<fn extends Fn> extends Fn {
-    return: GroupByImpl<Fn.arg0<this>, fn>;
+    return: GroupByImpl<this["arg0"], fn>;
   }
 
   export type Get<
@@ -188,7 +188,7 @@ export namespace Objects {
   > = Functions.PartialApply<GetFn, [path, obj]>;
 
   export interface GetFn extends Fn {
-    return: Fn.args<this> extends [
+    return: this["args"] extends [
       infer path extends string | number,
       infer obj,
       ...any
