@@ -1,7 +1,7 @@
 import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N } from "../numbers/Numbers";
-import { Apply, Call, Call2, Call3, Fn, unset, _ } from "../core/Core";
+import { Apply, Call, Call2, Call3, Eval, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -490,22 +490,11 @@ export namespace Tuples {
     infer head,
     ...infer tail
   ]
-    ? [
-        ...SortImpl<
-          Call<Tuples.Filter<F.PartialApply<predicateFn, [_, head]>>, tail>,
-          predicateFn
-        >,
-        head,
-        ...SortImpl<
-          Call<
-            Tuples.Filter<
-              F.Compose<[B.Not, F.PartialApply<predicateFn, [_, head]>]>
-            >,
-            tail
-          >,
-          predicateFn
-        >
-      ]
+    ? Eval<
+        Tuples.Partition<F.PartialApply<predicateFn, [_, head]>, tail>
+      > extends [infer left extends any[], infer right extends any[]]
+      ? [...SortImpl<left, predicateFn>, head, ...SortImpl<right, predicateFn>]
+      : never
     : [];
 
   /**
