@@ -60,7 +60,7 @@ export type Call3<fn extends Fn, arg1, arg2, arg3> = (fn & {
 })["return"];
 
 export type Call4<fn extends Fn, arg1, arg2, arg3, arg4> = (fn & {
-  args: [arg1, arg2, arg3, arg3];
+  args: [arg1, arg2, arg3, arg4];
 })["return"];
 
 export type Pipe<acc, xs extends Fn[]> = xs extends [
