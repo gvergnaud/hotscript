@@ -1,13 +1,14 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const lightCodeTheme = require('prism-react-renderer/themes/github')
+const darkCodeTheme = require('prism-react-renderer/themes/dracula')
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Higher-Order Typescript',
-  tagline: 'A lodash-like library for types with support for type-level lambda functions.',
+  tagline:
+    'A lodash-like library for types with support for type-level lambda functions.',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -54,6 +55,10 @@ const config = {
     ({
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
+      colorMode: {
+        defaultMode: 'light', // I recommend dark mode
+        respectPrefersColorScheme: false,
+      },
       navbar: {
         title: 'HOTScript',
         logo: {
@@ -111,6 +116,6 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
-};
+}
 
-module.exports = config;
+module.exports = config
