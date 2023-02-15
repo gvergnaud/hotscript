@@ -37,7 +37,7 @@ export namespace Strings {
    * ```
    */
   export interface LengthFn extends Fn {
-    return: Impl.StringToTuple<this["arg0"]>["length"];
+    return: this["arg0"] extends string ? Impl.Length<this["arg0"]> : never;
   }
 
   /**
