@@ -1,8 +1,20 @@
-import { Fn, unset, _ } from "../core/Core";
+import { Eval, Fn, unset, _ } from "../core/Core";
 import * as Impl from "./impl/numbers";
 import { Functions } from "../functions/Functions";
 
 export namespace Numbers {
+  /**
+   * Add two numbers together
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number
+   * @returns the sum of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Add<1, 2>>; // 3
+   * type T1 = Eval<Numbers.Add<999999999999999999999999999n, 2>>; // 1000000000000000000000000001n
+   * ```
+   */
   export type Add<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -18,6 +30,18 @@ export namespace Numbers {
       : never;
   }
 
+  /**
+   * Subtract two numbers
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to subtract from the first
+   * @returns the difference of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Sub<1, 2>>; // -1
+   * type T1 = Eval<Numbers.Sub<1000000000000000000000000001n, 2>>; // 999999999999999999999999999n
+   * ```
+   */
   export type Sub<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -33,8 +57,18 @@ export namespace Numbers {
       : never;
   }
 
-  // Multiply
-
+  /**
+   * Multiply two numbers together
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number
+   * @returns the product of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Mul<99, 3>>; // 297
+   * type T1 = Eval<Numbers.Mul<999999999999999999999999999n, 2>>; // 1999999999999999999999999998n
+   * ```
+   */
   export type Mul<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -50,8 +84,18 @@ export namespace Numbers {
       : never;
   }
 
-  // Divide
-
+  /**
+   * Divide two numbers
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to divide the first by
+   * @returns the quotient of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Div<99, 3>>; // 33
+   * type T1 = Eval<Numbers.Div<999999999999999999999999999n, 4>>; // 249999999999999999999999999n
+   * ```
+   */
   export type Div<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -67,8 +111,18 @@ export namespace Numbers {
       : never;
   }
 
-  // Modulo
-
+  /**
+   * Modulo of two numbers
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to divide the first by
+   * @returns the remainder of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Mod<100, 3>>; // 1
+   * type T1 = Eval<Numbers.Mod<999999999999999999999999999n, 4>>; // 3n
+   * ```
+   */
   export type Mod<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -84,7 +138,17 @@ export namespace Numbers {
       : never;
   }
 
-  // Negate
+  /**
+   * Negate a number
+   * @description the number can be of different types (bigint or number) and handle really large numbers
+   * @param n - the number to negate
+   * @returns the negated number
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Negate<1>>; // -1
+   * type T1 = Eval<Numbers.Negate<999999999999999999999999999n>>; // -999999999999999999999999999n
+   * ```
+   */
   export type Negate<n extends number | bigint | _ | unset = unset> =
     Functions.PartialApply<NegateFn, [n]>;
 
@@ -94,7 +158,17 @@ export namespace Numbers {
       : never;
   }
 
-  // Absolute
+  /**
+   * Absolute value of a number
+   * @description the number can be of different types (bigint or number) and handle really large numbers
+   * @param n - the number to get the absolute value of
+   * @returns the absolute value of the number
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Abs<-1>>; // 1
+   * type T1 = Eval<Numbers.Abs<999999999999999999999999999n>>; // 999999999999999999999999999n
+   * ```
+   */
   export type Abs<n extends number | bigint | _ | unset = unset> =
     Functions.PartialApply<AbsFn, [n]>;
 
@@ -104,7 +178,17 @@ export namespace Numbers {
       : never;
   }
 
-  // Power
+  /**
+   * Power of a number
+   * @description the number can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the base number
+   * @param n2 - the exponent
+   * @returns the power of the two numbers
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Power<2, 128>>; // 340282366920938463463374607431768211456
+   * ```
+   */
   export type Power<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -123,7 +207,19 @@ export namespace Numbers {
       : never;
   }
 
-  // Compare
+  /**
+   * Compare two numbers
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns -1 if n1 < n2, 0 if n1 === n2, 1 if n1 > n2
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Compare<1, 2>>; // -1
+   * type T1 = Eval<Numbers.Compare<999999999999999999999999999n, 4>>; // 1
+   * type T2 = Eval<Numbers.Compare<999999999999999999999999999n, 999999999999999999999999999n>>; // 0
+   * ```
+   */
   export type Compare<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -142,7 +238,18 @@ export namespace Numbers {
       : never;
   }
 
-  // Equal
+  /**
+   * Check if two numbers are equal
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 === n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Equal<1, 2>>; // false
+   * type T1 = Eval<Numbers.Equal<2, 2>>; // true
+   * ```
+   */
   export type Equal<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -161,7 +268,18 @@ export namespace Numbers {
       : never;
   }
 
-  // NotEqual
+  /**
+   * Check if two numbers are not equal
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 !== n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.NotEqual<1, 2>>; // true
+   * type T1 = Eval<Numbers.NotEqual<2, 2>>; // false
+   * ```
+   */
   export type NotEqual<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -180,7 +298,19 @@ export namespace Numbers {
       : never;
   }
 
-  // LessThan
+  /**
+   * Check if a number is less than another
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 < n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.LessThan<1, 2>>; // true
+   * type T1 = Eval<Numbers.LessThan<2, 2>>; // false
+   * type T2 = Eval<Numbers.LessThan<3, 2>>; // false
+   * ```
+   */
   export type LessThan<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -199,7 +329,19 @@ export namespace Numbers {
       : never;
   }
 
-  // LessThanOrEqual
+  /**
+   * Check if a number is less than or equal to another
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 <= n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.LessThanOrEqual<1, 2>>; // true
+   * type T1 = Eval<Numbers.LessThanOrEqual<2, 2>>; // true
+   * type T2 = Eval<Numbers.LessThanOrEqual<3, 2>>; // false
+   * ```
+   */
   export type LessThanOrEqual<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -218,7 +360,19 @@ export namespace Numbers {
       : never;
   }
 
-  // GreaterThan
+  /**
+   * Check if a number is greater than another
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 > n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.GreaterThan<1, 2>>; // false
+   * type T1 = Eval<Numbers.GreaterThan<2, 2>>; // false
+   * type T2 = Eval<Numbers.GreaterThan<3, 2>>; // true
+   * ```
+   */
   export type GreaterThan<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
@@ -237,7 +391,19 @@ export namespace Numbers {
       : never;
   }
 
-  // GreaterThanOrEqual
+  /**
+   * Check if a number is greater than or equal to another
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to compare the first to
+   * @returns true if n1 >= n2, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.GreaterThanOrEqual<1, 2>>; // false
+   * type T1 = Eval<Numbers.GreaterThanOrEqual<2, 2>>; // true
+   * type T2 = Eval<Numbers.GreaterThanOrEqual<3, 2>>; // true
+   * ```
+   */
   export type GreaterThanOrEqual<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
