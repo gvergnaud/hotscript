@@ -1,12 +1,11 @@
-import { Fn, unset } from "../core/Core";
-import { Args } from "../args/Args";
+import { Fn, unset, _ } from "../core/Core";
 import * as Impl from "./impl/numbers";
 import { Functions } from "../functions/Functions";
 
 export namespace Numbers {
   export type Add<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<AddFn, [n1, n2]>;
 
   interface AddFn extends Fn {
@@ -20,8 +19,8 @@ export namespace Numbers {
   }
 
   export type Sub<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<SubFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface SubFn extends Fn {
@@ -37,8 +36,8 @@ export namespace Numbers {
   // Multiply
 
   export type Mul<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<MulFn, [n1, n2]>;
 
   interface MulFn extends Fn {
@@ -54,8 +53,8 @@ export namespace Numbers {
   // Divide
 
   export type Div<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<DivFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface DivFn extends Fn {
@@ -71,8 +70,8 @@ export namespace Numbers {
   // Modulo
 
   export type Mod<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<ModFn, [n1, n2]>;
 
   interface ModFn extends Fn {
@@ -86,7 +85,7 @@ export namespace Numbers {
   }
 
   // Negate
-  export type Negate<n extends number | bigint | Args._ | unset = unset> =
+  export type Negate<n extends number | bigint | _ | unset = unset> =
     Functions.PartialApply<NegateFn, [n]>;
 
   interface NegateFn extends Fn {
@@ -96,7 +95,7 @@ export namespace Numbers {
   }
 
   // Absolute
-  export type Abs<n extends number | bigint | Args._ | unset = unset> =
+  export type Abs<n extends number | bigint | _ | unset = unset> =
     Functions.PartialApply<AbsFn, [n]>;
 
   export interface AbsFn extends Fn {
@@ -107,8 +106,8 @@ export namespace Numbers {
 
   // Power
   export type Power<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     PowerFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -126,8 +125,8 @@ export namespace Numbers {
 
   // Compare
   export type Compare<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     CompareFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -145,8 +144,8 @@ export namespace Numbers {
 
   // Equal
   export type Equal<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     EqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -164,8 +163,8 @@ export namespace Numbers {
 
   // NotEqual
   export type NotEqual<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     NotEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -183,8 +182,8 @@ export namespace Numbers {
 
   // LessThan
   export type LessThan<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     LessThanFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -202,8 +201,8 @@ export namespace Numbers {
 
   // LessThanOrEqual
   export type LessThanOrEqual<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     LessThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -221,8 +220,8 @@ export namespace Numbers {
 
   // GreaterThan
   export type GreaterThan<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     GreaterThanFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
@@ -240,8 +239,8 @@ export namespace Numbers {
 
   // GreaterThanOrEqual
   export type GreaterThanOrEqual<
-    n1 extends number | bigint | Args._ | unset = unset,
-    n2 extends number | bigint | Args._ | unset = unset
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
   > = Functions.PartialApply<
     GreaterThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
