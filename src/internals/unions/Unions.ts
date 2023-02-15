@@ -1,9 +1,20 @@
-import { Call, Fn } from "../core/Core";
+import { Call, Fn, unset } from "../core/Core";
+import { Functions } from "../functions/Functions";
 import { Std } from "../std/Std";
 
 export namespace Unions {
-  export interface Extract<key> extends Fn {
-    return: Std._Extract<Fn.arg0<this>, key>;
+  export type Extract<
+    unionOrExtracted = unset,
+    extracted = unset
+  > = Functions.PartialApply<
+    ExtractFn,
+    extracted extends unset
+      ? [unset, unionOrExtracted]
+      : [unionOrExtracted, extracted]
+  >;
+
+  interface ExtractFn extends Fn {
+    return: Std._Extract<Fn.arg0<this>, Fn.arg1<this>>;
   }
 
   type ExtractByImpl<union, predicate extends Fn> = union extends any
@@ -16,8 +27,18 @@ export namespace Unions {
     return: ExtractByImpl<Fn.arg0<this>, predicate>;
   }
 
-  export interface Exclude<key> extends Fn {
-    return: Std._Exclude<Fn.arg0<this>, key>;
+  export type Exclude<
+    unionOrExcluded = unset,
+    excluded = unset
+  > = Functions.PartialApply<
+    ExcludeFn,
+    excluded extends unset
+      ? [unset, unionOrExcluded]
+      : [unionOrExcluded, excluded]
+  >;
+
+  interface ExcludeFn extends Fn {
+    return: Std._Exclude<Fn.arg0<this>, Fn.arg1<this>>;
   }
 
   type ExcludeByImpl<union, predicate extends Fn> = union extends any

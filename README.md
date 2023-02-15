@@ -66,9 +66,10 @@ type T = {
   - [x] ComposeLeft
 - [ ] Tuples
   - [ ] Zip
-  - [ ] Partition
+  - [x] Partition
   - [x] Sort
   - [x] Head
+  - [x] At
   - [x] Tail
   - [x] Last
   - [x] FlatMap
@@ -85,6 +86,7 @@ type T = {
   - [x] Every
   - [x] Some
 - [ ] Object
+  - [x] Get
   - [x] FromEntries
   - [x] Entries
   - [x] MapValues
