@@ -8,6 +8,49 @@ export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
 
   /**
+   * Get an element from a tuple at a given index.
+   * @param args[0] - The index of the element to get.
+   * @param args[1] - The tuple to get the element from.
+   * @param index - The index of the element to get.
+   * @param tuple - The tuple to get the element from.
+   * @returns The element at the specified index.
+   * @example
+   * ```ts
+   * type T0 = Call2<Tuples.At, 1, ["a", "b", "c"]>; // "b"
+   * type T1 = Eval<Tuples.At<1, ["a", "b", "c"]>>; // "b"
+   * type T2 = Call<Tuples.At<1>, ["a", "b", "c"]>; // "b"
+   * ```
+   */
+  export type At<
+    index extends number | _ | unset = unset,
+    tuple = unset
+  > = Functions.PartialApply<AtFn, [index, tuple]>;
+
+  interface AtFn extends Fn {
+    return: Fn.arg1<this, readonly any[]>[Fn.arg0<this, number>];
+  }
+
+  type EmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
+
+  interface EmptyFn extends Fn {
+    return: EmptyImpl<Fn.arg0<this, unknown[]>>;
+  }
+
+  /**
+   * Check if a tuple is empty.
+   * @param args[0] - The tuple to check.
+   * @param tuple - The tuple to check.
+   * @returns `true` if the tuple is empty, `false` otherwise.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Empty, []>; // true
+   * type T1 = Call<Tuples.Empty, [1, 2, 3]>; // false
+   * type T2 = Eval<Tuples.Empty<[]>>; // true
+   * ```
+   */
+  export type Empty<tuple = unset> = Functions.PartialApply<EmptyFn, [tuple]>;
+
+  /**
    * Returns the first element of a tuple.
    * @params args[0] - A tuple.
    * @return The first element of a tuple.
@@ -456,6 +499,8 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.Join<",">,["a","b","c"]>; // "a,b,c"
+   * type T1 = Call2<Tuples.Join,",",["a","b","c"]>; // "a,b,c"
+   * type T2 = Eval<Tuples.Join<",",["a","b","c"]>>; // "a,b,c"
    * ```
    */
   export type Join<
@@ -544,24 +589,60 @@ export namespace Tuples {
     return: PartitionImpl<Fn.arg0<this, Fn>, Fn.arg1<this, any[]>>;
   }
 
+  type ZipWithImpl<
+    arr1 extends unknown[],
+    arr2 extends unknown[],
+    fn extends Fn,
+    acc extends unknown[] = []
+  > = [arr1, arr2] extends [
+    [infer item1, ...infer rest1],
+    [infer item2, ...infer rest2]
+  ]
+    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call<fn, [item1, item2]>]>
+    : acc;
+
+  interface ZipWithFn<fn extends Fn> extends Fn {
+    return: ZipWithImpl<Fn.arg0<this, unknown[]>, Fn.arg1<this, unknown[]>, fn>;
+  }
+
   /**
-   * Get an element from a tuple at a given index.
-   *
-   * @param index - The index to lookup
-   * @param tuple - the tuple
-   * @returns - a tuple containing two tuples: one for each groupe
+   * Zip two tuples together.
+   * @param args[0] - The first tuple to zip.
+   * @param args[1] - The second tuple to zip.
+   * @param arr1 - The first tuple to zip.
+   * @param arr2 - The second tuple to zip.
+   * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call<T.Partition<B.Extends<number>>, [1, "a", 2, "b", 3, "c"]>;
-   * //   ^? [[1, 2, 3], ["a", "b", "c"]]
+   * type T0 = Call2<Tuples.Zip, [[1, 2, 3], [10, 2, 5]]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.Zip<[1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * ```
    */
-  export type At<
-    index extends number | _ | unset = unset,
-    tuple = unset
-  > = Functions.PartialApply<AtFn, [index, tuple]>;
+  export type Zip<arr1 = unset, arr2 = unset> = Functions.PartialApply<
+    ZipWithFn<F.Identity>,
+    [arr1, arr2]
+  >;
 
-  interface AtFn extends Fn {
-    return: Fn.arg1<this, readonly any[]>[Fn.arg0<this, number>];
-  }
+  /**
+   * Zip two tuples together using a function.
+   * @description The function should take a 2-tuple and return a value.
+   * Using the identity function will return a 2-tuple and have the same effect as `Zip`.
+   * @param args[0] - The first tuple to zip.
+   * @param args[1] - The second tuple to zip.
+   * @param fn - The function to use to zip the tuples.
+   * @param arr1 - The first tuple to zip.
+   * @param arr2 - The second tuple to zip.
+   * @returns The zipped tuple.
+   * @example
+   * ```ts
+   * type T0 = Call2<Tuples.ZipWith<F.Identity>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.ZipWith<F.Identity, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T3 = Call2<Tuples.ZipWith<T.Sum>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
+   * ```
+   */
+  export type ZipWith<
+    fn extends Fn,
+    arr1 = unset,
+    arr2 = unset
+  > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
 }
