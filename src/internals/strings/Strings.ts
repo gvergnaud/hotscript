@@ -24,7 +24,19 @@ export namespace Strings {
    * type T0 = Call<Strings.Length,"abc">; // 3
    * ```
    */
-  export interface Length extends Fn {
+  export type Length<Str = unset> = Functions.PartialApply<LengthFn, [Str]>;
+
+  /**
+   * Get the length of a string.
+   * @warning - 🔥🔥🔥does not work with emojis since they are multiple characters🔥🔥🔥
+   * @param args[0] - The string to get the length of.
+   * @returns The length of the string.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.Length,"abc">; // 3
+   * ```
+   */
+  export interface LengthFn extends Fn {
     output: Fn.args<this> extends [infer S extends string]
       ? Impl.Length<S>
       : never;
