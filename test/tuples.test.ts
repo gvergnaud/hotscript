@@ -10,18 +10,30 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Head, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, 1>>;
+
+    type res2 = Eval<Tuples.Head<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, 1>>;
   });
 
   it("Tail", () => {
     type res1 = Call<Tuples.Tail, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [2, 3]>>;
+
+    type res2 = Eval<Tuples.Tail<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [2, 3]>>;
   });
 
   it("Last", () => {
     type res1 = Call<Tuples.Last, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, 3>>;
+
+    type res2 = Eval<Tuples.Last<[1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, 3>>;
   });
 
   it("Map", () => {
@@ -34,6 +46,12 @@ describe("Tuples", () => {
     type tes1 = Expect<
       Equal<res1, ["number is 1", "number is 2", "number is 3"]>
     >;
+
+    type res2 = Eval<Tuples.Map<ToPhrase, [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<
+      Equal<res2, ["number is 1", "number is 2", "number is 3"]>
+    >;
   });
 
   it("Filter", () => {
@@ -44,6 +62,10 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Filter<IsNumber>, [1, 2, "oops", 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
+
+    type res2 = Eval<Tuples.Filter<IsNumber, [1, 2, "oops", 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [1, 2, 3]>>;
   });
 
   it("Reduce", () => {
@@ -56,6 +78,10 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.Reduce<ToUnaryTupleArray, []>, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [[1], [2], [3]]>>;
+
+    type res2 = Eval<Tuples.Reduce<ToUnaryTupleArray, [], [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [[1], [2], [3]]>>;
   });
 
   it("ReduceRight", () => {
@@ -71,6 +97,10 @@ describe("Tuples", () => {
       [1, 2, 3]
     >;
     type tes1 = Expect<Equal<res1, [[3], [2], [1]]>>;
+
+    type res2 = Eval<Tuples.ReduceRight<ToUnaryTupleArray, [], [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [[3], [2], [1]]>>;
   });
 
   it("FlatMap", () => {
@@ -81,6 +111,10 @@ describe("Tuples", () => {
     type res1 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3]>;
     //   ^?
     type tes1 = Expect<Equal<res1, [1, 1, 2, 2, 3, 3]>>;
+
+    type res2 = Eval<Tuples.FlatMap<Duplicate, [1, 2, 3]>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [1, 1, 2, 2, 3, 3]>>;
   });
 
   it("Find", () => {
@@ -99,6 +133,10 @@ describe("Tuples", () => {
     type res2 = Call<Tuples.Find<IsSecond>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, "b">>;
+
+    type res3 = Eval<Tuples.Find<IsSecond, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, "b">>;
   });
 
   it("Drop", () => {
@@ -109,6 +147,10 @@ describe("Tuples", () => {
     type res2 = Call<Tuples.Drop<2>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, ["c", 2, "d"]>>;
+
+    type res3 = Eval<Tuples.Drop<2, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, ["c", 2, "d"]>>;
   });
 
   it("Take", () => {
@@ -119,6 +161,10 @@ describe("Tuples", () => {
     type res2 = Call<Tuples.Take<2>, ["a", "b", "c", 2, "d"]>;
     //   ^?
     type tes2 = Expect<Equal<res2, ["a", "b"]>>;
+
+    type res3 = Eval<Tuples.Take<2, ["a", "b", "c", 2, "d"]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, ["a", "b"]>>;
   });
 
   it("TakeWhile", () => {
@@ -135,6 +181,15 @@ describe("Tuples", () => {
       [1, 2, "a", "b", "c", 2, "d"]
     >;
     type tes2 = Expect<Equal<res2, [1, 2]>>;
+
+    type res3 = Eval<
+      //   ^?
+      Tuples.TakeWhile<
+        Booleans.Extends<_, number>,
+        [1, 2, "a", "b", "c", 2, "d"]
+      >
+    >;
+    type tes3 = Expect<Equal<res3, [1, 2]>>;
   });
 
   it("Every", () => {
