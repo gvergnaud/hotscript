@@ -51,11 +51,15 @@ export namespace Unions {
     return: ExcludeByImpl<Fn.arg0<this>, predicate>;
   }
 
-  type MapImpl<union, fn extends Fn> = union extends any
+  type MapImpl<fn extends Fn, union> = union extends any
     ? Call<fn, union>
     : never;
 
-  export interface Map<fn extends Fn> extends Fn {
-    return: MapImpl<Fn.arg0<this>, fn>;
+  export type Map<fn extends Fn, u = unset> = Functions.PartialApply<
+    MapFn,
+    [fn, u]
+  >;
+  interface MapFn extends Fn {
+    return: MapImpl<Fn.arg0<this, Fn>, Fn.arg1<this>>;
   }
 }

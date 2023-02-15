@@ -1,4 +1,4 @@
-import { Pipe, Fn, B, U, F } from "../src/index";
+import { Pipe, Fn, B, U, F, Eval } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Unions", () => {
@@ -36,5 +36,9 @@ describe("Unions", () => {
     type res1 = Pipe<"a" | "b" | "c", [U.Map<ToTuple>]>;
     //   ^?
     type tes1 = Expect<Equal<res1, ["a"] | ["b"] | ["c"]>>;
+
+    type res2 = Eval<U.Map<ToTuple, "a" | "b" | "c">>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, ["a"] | ["b"] | ["c"]>>;
   });
 });
