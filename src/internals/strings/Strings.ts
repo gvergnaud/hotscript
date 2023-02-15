@@ -25,8 +25,8 @@ export namespace Strings {
    * ```
    */
   export interface Length extends Fn {
-    output: this["args"][0] extends string
-      ? Impl.Length<this["args"][0]>
+    output: Fn.args<this> extends [infer S extends string]
+      ? Impl.Length<S>
       : never;
   }
 
