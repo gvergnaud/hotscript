@@ -1,8 +1,10 @@
-import { Fn, MergeArgs, Pipe, placeholder, unset } from "../core/Core";
+import { Fn, unset } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
+import { Args } from "../args/Args";
 import * as H from "../helpers";
 import * as Impl from "./impl/strings";
+import { Functions } from "../functions/Functions";
 
 export namespace Strings {
   export type Stringifiable =
@@ -23,8 +25,10 @@ export namespace Strings {
    * type T0 = Call<Strings.Length,"abc">; // 3
    * ```
    */
-  export interface Length extends Fn {
-    output: Impl.StringToTuple<this["args"][0]>["length"];
+  export type Length<Str = unset> = Functions.PartialApply<LengthFn, [Str]>;
+
+  export interface LengthFn extends Fn {
+    return: Impl.StringToTuple<Fn.arg0<this>>["length"];
   }
 
   /**
@@ -37,8 +41,19 @@ export namespace Strings {
    * type T0 = Call<Strings.TrimLeft,"  abc">; // "abc"
    * ```
    */
-  export interface TrimLeft<Sep extends string = " "> extends Fn {
-    output: Impl.TrimLeft<this["args"][0], Sep>;
+  export type TrimLeft<
+    Sep extends string | Args._ = " ",
+    Str = unset
+  > = Functions.PartialApply<TrimLeftFn, [Sep, Str]>;
+
+  interface TrimLeftFn extends Fn {
+    return: Fn.args<this> extends [
+      infer Sep extends string,
+      infer Str extends string,
+      ...any
+    ]
+      ? Impl.TrimLeft<Str, Sep>
+      : never;
   }
 
   /**
@@ -51,8 +66,19 @@ export namespace Strings {
    * type T0 = Call<Strings.TrimRight,"abc  ">; // "abc"
    * ```
    */
-  export interface TrimRight<Sep extends string = " "> extends Fn {
-    output: Impl.TrimRight<this["args"][0], Sep>;
+  export type TrimRight<
+    Sep extends string | Args._ = " ",
+    Str = unset
+  > = Functions.PartialApply<TrimRightFn, [Sep, Str]>;
+
+  interface TrimRightFn extends Fn {
+    return: Fn.args<this> extends [
+      infer Sep extends string,
+      infer Str extends string,
+      ...any
+    ]
+      ? Impl.TrimRight<Str, Sep>
+      : never;
   }
 
   /**
@@ -65,8 +91,19 @@ export namespace Strings {
    * type T0 = Call<Strings.Trim,"  abc  ">; // "abc"
    * ```
    */
-  export interface Trim<Sep extends string = " "> extends Fn {
-    output: Impl.Trim<this["args"][0], Sep>;
+  export type Trim<
+    Sep extends string | Args._ = " ",
+    Str = unset
+  > = Functions.PartialApply<TrimFn, [Sep, Str]>;
+
+  interface TrimFn extends Fn {
+    return: Fn.args<this> extends [
+      infer Sep extends string,
+      infer Str extends string,
+      ...any
+    ]
+      ? Impl.Trim<Str, Sep>
+      : never;
   }
 
   /**
@@ -79,8 +116,20 @@ export namespace Strings {
    * ```ts
    * type T0 = Call<Strings.Replace<".","/">,"a.b.c.d">; // "a/b/c/d"
    */
-  export interface Replace<from extends string, to extends string> extends Fn {
-    output: Impl.Replace<this["args"][0], from, to>;
+  export type Replace<
+    from extends string | unset | Args._ = unset,
+    to extends string | unset | Args._ = unset,
+    str = unset
+  > = Functions.PartialApply<ReplaceFn, [from, to, str]>;
+
+  interface ReplaceFn extends Fn {
+    return: Fn.args<this> extends [
+      infer From extends string,
+      infer To extends string,
+      infer Str
+    ]
+      ? Impl.Replace<Str, From, To>
+      : never;
   }
 
   /**
@@ -94,12 +143,12 @@ export namespace Strings {
    * ```ts
    * type T0 = Call<Strings.Slice<1,9>,"1234567890">; // "23456789"
    */
-  export interface Slice<start extends number, end extends number> extends Fn {
-    output: Pipe<
-      Impl.StringToTuple<this["args"][0]>,
-      [Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
-    >;
-  }
+  export type Slice<
+    start extends number | unset | Args._ = unset,
+    end extends number | unset | Args._ = unset
+  > = Functions.ComposeLeft<
+    [Strings.Split<"">, Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
+  >;
 
   /**
    * Split a string into a tuple of strings.
@@ -112,8 +161,15 @@ export namespace Strings {
    * type T0 = Call<Strings.Split<",">,"a,b,c">; // ["a","b","c"]
    * ```
    */
-  export interface Split<sep extends string> extends Fn {
-    output: Impl.Split<this["args"][0], sep>;
+  export type Split<
+    Sep extends string | unset | Args._ = unset,
+    Str extends string | unset | Args._ = unset
+  > = Functions.PartialApply<SplitFn, [Sep, Str]>;
+
+  export interface SplitFn extends Fn {
+    return: Fn.args<this> extends [infer Sep extends string, infer Str]
+      ? Impl.Split<Str, Sep>
+      : never;
   }
 
   /**
@@ -126,8 +182,18 @@ export namespace Strings {
    * type T0 = Call<Strings.Repeat<3>,"Hello! ">; // "Hello! Hello! Hello! "
    * ```
    */
-  export interface Repeat<times extends number> extends Fn {
-    output: Impl.Repeat<this["args"][0], H.Iterator.Iterator<times>>;
+  export type Repeat<
+    Times extends number | Args._ | unset = unset,
+    Str extends number | Args._ | unset = unset
+  > = Functions.PartialApply<RepeatFn, [Times, Str]>;
+
+  interface RepeatFn extends Fn {
+    return: Fn.args<this> extends [
+      infer Times extends number,
+      infer Str extends string
+    ]
+      ? Impl.Repeat<Str, H.Iterator.Iterator<Times>>
+      : never;
   }
 
   /**
@@ -141,8 +207,17 @@ export namespace Strings {
    * type T1 = Call<Strings.StartsWith<"abc">,"defabc">; // false
    * ```
    */
-  export interface StartsWith<str extends string> extends Fn {
-    output: this["args"][0] extends `${str}${string}` ? true : false;
+  export type StartsWith<
+    Start extends string | Args._ | unset = unset,
+    Str extends string | Args._ | unset = unset
+  > = Functions.PartialApply<StartsWithFn, [Start, Str]>;
+
+  interface StartsWithFn extends Fn {
+    return: Fn.args<this> extends [infer Start extends string, infer Str]
+      ? Str extends `${Start}${string}`
+        ? true
+        : false
+      : never;
   }
 
   /**
@@ -156,8 +231,17 @@ export namespace Strings {
    * type T1 = Call<Strings.EndsWith<"abc">,"defabc">; // true
    * ```
    */
-  export interface EndsWith<str extends string> extends Fn {
-    output: this["args"][0] extends `${string}${str}` ? true : false;
+  export type EndsWith<
+    End extends string | Args._ | unset = unset,
+    Str extends string | Args._ | unset = unset
+  > = Functions.PartialApply<EndsWithFn, [End, Str]>;
+
+  interface EndsWithFn extends Fn {
+    return: Fn.args<this> extends [infer End extends string, infer Str]
+      ? Str extends `${string}${End}`
+        ? true
+        : false
+      : never;
   }
 
   /**
@@ -171,7 +255,7 @@ export namespace Strings {
    * ```
    */
   export interface ToTuple extends Fn {
-    output: Impl.StringToTuple<this["args"][0]>;
+    return: Impl.StringToTuple<Fn.arg0<this>>;
   }
 
   /**
@@ -185,7 +269,7 @@ export namespace Strings {
    * ```
    */
   export interface ToNumber extends Fn {
-    output: this["args"][0] extends `${infer n extends number | bigint}`
+    return: Fn.arg0<this> extends `${infer n extends number | bigint}`
       ? n
       : never;
   }
@@ -202,7 +286,7 @@ export namespace Strings {
    * ```
    */
   export interface ToString extends Fn {
-    output: `${Extract<this["args"][0], Strings.Stringifiable>}`;
+    return: `${Extract<Fn.arg0<this>, Strings.Stringifiable>}`;
   }
 
   /**
@@ -215,8 +299,16 @@ export namespace Strings {
    * type T0 = Call<Strings.Prepend<"abc">,"def">; // "abcdef"
    * ```
    */
-  export interface Prepend<str extends string> extends Fn {
-    output: `${str}${Extract<this["args"][0], Strings.Stringifiable>}`;
+  export type Prepend<
+    Start extends string | Args._ | unset = unset,
+    Str extends string | Args._ | unset = unset
+  > = Functions.PartialApply<PrependFn, [Start, Str]>;
+
+  interface PrependFn extends Fn {
+    return: `${Extract<Fn.arg0<this>, Strings.Stringifiable>}${Extract<
+      Fn.arg1<this>,
+      Strings.Stringifiable
+    >}`;
   }
 
   /**
@@ -229,8 +321,16 @@ export namespace Strings {
    * type T0 = Call<Strings.Append<"abc">,"def">; // "defabc"
    * ```
    */
-  export interface Append<str extends string> extends Fn {
-    output: `${Extract<this["args"][0], Strings.Stringifiable>}${str}`;
+  export type Append<
+    End extends string | Args._ | unset = unset,
+    Str extends string | Args._ | unset = unset
+  > = Functions.PartialApply<AppendFn, [End, Str]>;
+
+  interface AppendFn extends Fn {
+    return: `${Extract<Fn.arg1<this>, Strings.Stringifiable>}${Extract<
+      Fn.arg0<this>,
+      Strings.Stringifiable
+    >}`;
   }
 
   /**
@@ -243,7 +343,7 @@ export namespace Strings {
    * ```
    */
   export interface Uppercase extends Fn {
-    output: Std._Uppercase<Extract<this["args"][0], string>>;
+    return: Std._Uppercase<Extract<Fn.arg0<this>, string>>;
   }
 
   /**
@@ -256,7 +356,7 @@ export namespace Strings {
    * ```
    */
   export interface Lowercase extends Fn {
-    output: Std._Lowercase<Extract<this["args"][0], string>>;
+    return: Std._Lowercase<Extract<Fn.arg0<this>, string>>;
   }
 
   /**
@@ -269,7 +369,7 @@ export namespace Strings {
    * ```
    */
   export interface Capitalize extends Fn {
-    output: Std._Capitalize<Extract<this["args"][0], string>>;
+    return: Std._Capitalize<Extract<Fn.arg0<this>, string>>;
   }
 
   /**
@@ -282,7 +382,7 @@ export namespace Strings {
    * ```
    */
   export interface Uncapitalize extends Fn {
-    output: Std._Uncapitalize<Extract<this["args"][0], string>>;
+    return: Std._Uncapitalize<Extract<Fn.arg0<this>, string>>;
   }
 
   /**
@@ -295,7 +395,7 @@ export namespace Strings {
    * ```
    */
   export interface SnakeCase extends Fn {
-    output: H.SnakeCase<this["args"][0]>;
+    return: H.SnakeCase<Fn.arg0<this>>;
   }
 
   /**
@@ -308,7 +408,7 @@ export namespace Strings {
    * ```
    */
   export interface CamelCase extends Fn {
-    output: H.CamelCase<this["args"][0]>;
+    return: H.CamelCase<Fn.arg0<this>>;
   }
 
   /**
@@ -323,15 +423,15 @@ export namespace Strings {
    * ```
    */
   export interface KebabCase extends Fn {
-    output: H.KebabCase<this["args"][0]>;
+    return: H.KebabCase<Fn.arg0<this>>;
   }
 
   /**
    * Compare two strings. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
+   * @n1 - The first string to compare or Args._.
+   * @n2 - The second string to compare or Args._.
    * @returns The result of the comparison.
    * @example
    * ```ts
@@ -340,11 +440,16 @@ export namespace Strings {
    * type T2 = Call2<Strings.Compare,"abc","abc">; // 0
    * ```
    */
-  export interface Compare<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
+  export type Compare<
+    n1 extends string | Args._ | unset = unset,
+    n2 extends string | Args._ | unset = unset
+  > = Functions.PartialApply<
+    CompareFn,
+    n2 extends unset ? [unset, n1] : [n1, n2]
+  >;
+
+  interface CompareFn extends Fn {
+    return: Fn.args<this> extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -354,64 +459,11 @@ export namespace Strings {
   }
 
   /**
-   * Check if two strings are equal. (only works with ascii extended characters)
-   * @param args[0] - The first string to compare.
-   * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
-   * @returns True if the strings are equal, false otherwise.
-   * @example
-   * ```ts
-   * type T0 = Call2<Strings.Equal,"abc","def">; // false
-   * type T1 = Call2<Strings.Equal,"def","abc">; // false
-   * type T2 = Call2<Strings.Equal,"abc","abc">; // true
-   */
-  export interface Equal<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
-      infer a extends string,
-      infer b extends string,
-      ...any
-    ]
-      ? Impl.Equal<a, b>
-      : never;
-  }
-
-  /**
-   * Check if two strings are not equal. (only works with ascii extended characters)
-   * @param args[0] - The first string to compare.
-   * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
-   * @returns True if the strings are not equal, false otherwise.
-   * @example
-   * ```ts
-   * type T0 = Call2<Strings.NotEqual,"abc","def">; // true
-   * type T1 = Call2<Strings.NotEqual,"def","abc">; // true
-   * type T2 = Call2<Strings.NotEqual,"abc","abc">; // false
-   * ```
-   */
-  export interface NotEqual<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
-      infer a extends string,
-      infer b extends string,
-      ...any
-    ]
-      ? Impl.NotEqual<a, b>
-      : never;
-  }
-
-  /**
    * Check if a string is lexically less than another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
+   * @n1 - The first string to compare or Args._.
+   * @n2 - The second string to compare or Args._.
    * @returns True if the first string is lexically less than the second string, false otherwise.
    * @example
    * ```ts
@@ -420,11 +472,16 @@ export namespace Strings {
    * type T2 = Call2<Strings.LessThan,"abc","abc">; // false
    * ```
    */
-  export interface LessThan<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
+  export type LessThan<
+    n1 extends string | Args._ | unset = unset,
+    n2 extends string | Args._ | unset = unset
+  > = Functions.PartialApply<
+    LessThanFn,
+    n2 extends unset ? [unset, n1] : [n1, n2]
+  >;
+
+  interface LessThanFn extends Fn {
+    return: Fn.args<this> extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -437,8 +494,8 @@ export namespace Strings {
    * Check if a string is lexically less than or equal to another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
+   * @n1 - The first string to compare or Args._.
+   * @n2 - The second string to compare or Args._.
    * @returns True if the first string is lexically less than or equal to the second string, false otherwise.
    * @example
    * ```ts
@@ -446,11 +503,16 @@ export namespace Strings {
    * type T1 = Call2<Strings.LessThanOrEqual,"def","abc">; // false
    * type T2 = Call2<Strings.LessThanOrEqual,"abc","abc">; // true
    */
-  export interface LessThanOrEqual<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
+  export type LessThanOrEqual<
+    n1 extends string | Args._ | unset = unset,
+    n2 extends string | Args._ | unset = unset
+  > = Functions.PartialApply<
+    LessThanOrEqualFn,
+    n2 extends unset ? [unset, n1] : [n1, n2]
+  >;
+
+  interface LessThanOrEqualFn extends Fn {
+    return: Fn.args<this> extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -463,8 +525,8 @@ export namespace Strings {
    * Check if a string is lexically greater than another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
+   * @n1 - The first string to compare or Args._.
+   * @n2 - The second string to compare or Args._.
    * @returns True if the first string is lexically greater than the second string, false otherwise.
    * @example
    * ```ts
@@ -473,11 +535,16 @@ export namespace Strings {
    * type T2 = Call2<Strings.GreaterThan,"abc","abc">; // false
    * ```
    */
-  export interface GreaterThan<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
+  export type GreaterThan<
+    n1 extends string | Args._ | unset = unset,
+    n2 extends string | Args._ | unset = unset
+  > = Functions.PartialApply<
+    GreaterThanFn,
+    n2 extends unset ? [unset, n1] : [n1, n2]
+  >;
+
+  interface GreaterThanFn extends Fn {
+    return: Fn.args<this> extends [
       infer a extends string,
       infer b extends string,
       ...any
@@ -490,8 +557,8 @@ export namespace Strings {
    * Check if a string is lexically greater than or equal to another string. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
    * @param args[1] - The second string to compare.
-   * @n1 - The first string to compare or placeholder.
-   * @n2 - The second string to compare or placeholder.
+   * @n1 - The first string to compare or Args._.
+   * @n2 - The second string to compare or Args._.
    * @returns True if the first string is lexically greater than or equal to the second string, false otherwise.
    * @example
    * ```ts
@@ -500,11 +567,16 @@ export namespace Strings {
    * type T2 = Call2<Strings.GreaterThanOrEqual,"abc","abc">; // true
    * ```
    */
-  export interface GreaterThanOrEqual<
-    n1 extends string | placeholder | unset = unset,
-    n2 extends string | placeholder | unset = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [n1, n2]> extends [
+  export type GreaterThanOrEqual<
+    n1 extends string | Args._ | unset = unset,
+    n2 extends string | Args._ | unset = unset
+  > = Functions.PartialApply<
+    GreaterThanOrEqualFn,
+    n2 extends unset ? [unset, n1] : [n1, n2]
+  >;
+
+  interface GreaterThanOrEqualFn extends Fn {
+    return: Fn.args<this> extends [
       infer a extends string,
       infer b extends string,
       ...any

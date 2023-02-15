@@ -11,6 +11,8 @@ import {
   F,
   Args,
 } from "../src/index";
+import { unset } from "../src/internals/core/Core";
+import { MergeArgs } from "../src/internals/functions/impl/MergeArgs";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Functions", () => {
@@ -82,50 +84,31 @@ describe("Composition", () => {
     type tes1 = Expect<Equal<res1, 95>>;
   });
 
-  it("PartialApply", () => {
-    type res1 = Call2<
-      //   ^?
-      F.PartialApply<O.Assign, [Args._, Args._, { c: boolean }]>,
-      { a: string },
-      { b: number }
-    >;
+  describe("MergeArgs", () => {
+    it("should remove unset args from partialArgs", () => {
+      type pipedArgs1 = ["hello"];
+      type partialArgs1 = [unset, unset];
+      type res1 = MergeArgs<pipedArgs1, partialArgs1>;
+      type test1 = Expect<Equal<res1, ["hello"]>>;
 
-    type test1 = Expect<Equal<res1, { c: boolean; a: string; b: number }>>;
+      type pipedArgs2 = [1, 2];
+      type partialArgs2 = [unset, unset];
+      type res2 = MergeArgs<pipedArgs2, partialArgs2>;
+      type test2 = Expect<Equal<res2, [1, 2]>>;
+    });
 
-    type res2 = Call<
-      //   ^?
-      F.PartialApply<N.Add, [2]>,
-      2
-    >;
-    type test2 = Expect<Equal<res2, 4>>;
+    it("should support intersections with unknown[] coming from function application", () => {
+      type pipedArgs2 = unknown[] & [0, 1];
+      type partialArgs2 = [unset, unset];
+      type res2 = MergeArgs<pipedArgs2, partialArgs2>;
+      type test2 = Expect<Equal<res2, [0, 1]>>;
+    });
 
-    type res3 = Pipe<
-      //   ^?
-      3,
-      [N.Add<3>, N.Add<3>, N.Add<3>, N.Add<3>]
-    >;
-    type test3 = Expect<Equal<res3, 15>>;
-
-    type res4 = Pipe<
-      //   ^?
-      {},
-      [
-        F.PartialApply<O.Assign, [{ a: string }]>,
-        F.PartialApply<O.Assign, [{ b: number }]>,
-        F.PartialApply<O.Assign, [{ c: boolean }]>,
-        F.PartialApply<O.Assign, [{ d: bigint }]>
-      ]
-    >;
-    type test4 = Expect<
-      Equal<
-        res4,
-        {
-          d: bigint;
-          c: boolean;
-          b: number;
-          a: string;
-        }
-      >
-    >;
+    it("should support never", () => {
+      type pipedArgs1 = ["hello"];
+      type partialArgs1 = ["a" | "b", never];
+      type res1 = MergeArgs<pipedArgs1, partialArgs1>;
+      type test1 = Expect<Equal<res1, ["a" | "b", never, "hello"]>>;
+    });
   });
 });

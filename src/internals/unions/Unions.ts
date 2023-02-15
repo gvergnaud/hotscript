@@ -3,7 +3,7 @@ import { Std } from "../std/Std";
 
 export namespace Unions {
   export interface Extract<key> extends Fn {
-    output: Std._Extract<this["args"][0], key>;
+    return: Std._Extract<Fn.arg0<this>, key>;
   }
 
   type ExtractByImpl<union, predicate extends Fn> = union extends any
@@ -13,11 +13,11 @@ export namespace Unions {
     : never;
 
   export interface ExtractBy<predicate extends Fn> extends Fn {
-    output: ExtractByImpl<this["args"][0], predicate>;
+    return: ExtractByImpl<Fn.arg0<this>, predicate>;
   }
 
   export interface Exclude<key> extends Fn {
-    output: Std._Exclude<this["args"][0], key>;
+    return: Std._Exclude<Fn.arg0<this>, key>;
   }
 
   type ExcludeByImpl<union, predicate extends Fn> = union extends any
@@ -27,7 +27,7 @@ export namespace Unions {
     : never;
 
   export interface ExcludeBy<predicate extends Fn> extends Fn {
-    output: ExcludeByImpl<this["args"][0], predicate>;
+    return: ExcludeByImpl<Fn.arg0<this>, predicate>;
   }
 
   type MapImpl<union, fn extends Fn> = union extends any
@@ -35,6 +35,6 @@ export namespace Unions {
     : never;
 
   export interface Map<fn extends Fn> extends Fn {
-    output: MapImpl<this["args"][0], fn>;
+    return: MapImpl<Fn.arg0<this>, fn>;
   }
 }

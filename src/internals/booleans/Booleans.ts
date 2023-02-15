@@ -1,48 +1,53 @@
 import { Equal, Every, Some } from "../helpers";
-import { Apply, Call, Fn, MergeArgs, unset } from "../core/Core";
+import { Fn, unset } from "../core/Core";
+
 import { Functions } from "../functions/Functions";
 
 export namespace Booleans {
   type ExtendsImpl<a, b> = [a] extends [b] ? true : false;
 
-  export interface Extends<a = unset, b = unset> extends Fn {
-    output: MergeArgs<this["args"], [a, b]> extends [
-      infer first,
-      infer second,
-      ...any
-    ]
+  interface ExtendsFn extends Fn {
+    return: Fn.args<this> extends [infer first, infer second, ...any]
       ? ExtendsImpl<first, second>
       : never;
   }
 
+  export type Extends<a = unset, b = unset> = Functions.PartialApply<
+    ExtendsFn,
+    b extends unset ? [unset, a] : [a, b]
+  >;
+
   type NotImpl<a> = a extends true ? false : true;
 
-  export interface Not<a = unset> extends Fn {
-    output: MergeArgs<this["args"], [a]> extends [infer first, ...any]
+  interface NotFn extends Fn {
+    return: Fn.args<this> extends [infer first, ...any]
       ? NotImpl<first>
       : never;
   }
 
-  type EqualsImpl<a, b> = Equal<a, b>;
+  export type Not<a = unset> = Functions.PartialApply<NotFn, [a]>;
 
-  export interface Equals<a = unset, b = unset> extends Fn {
-    output: MergeArgs<this["args"], [a, b]> extends [
-      infer first,
-      infer second,
-      ...any
-    ]
-      ? EqualsImpl<first, second>
+  interface EqualsFn extends Fn {
+    return: Fn.args<this> extends [infer a, infer b, ...any]
+      ? Equal<a, b>
       : never;
   }
 
-  export type NotEqual<a = unset, b = unset> = Functions.Compose<
-    [Not, Equals<a, b>]
+  export type Equals<a = unset, b = unset> = Functions.PartialApply<
+    EqualsFn,
+    [a, b]
   >;
 
-  export type DoesNotExtend<T> = Functions.Compose<[Not, Extends<T>]>;
+  export type NotEqual<a = unset, b = unset> = Functions.Compose<
+    [Not, Functions.PartialApply<EqualsFn, [a, b]>]
+  >;
 
-  export interface And<a = unset, b = unset> extends Fn {
-    output: MergeArgs<this["args"], [a, b]> extends [
+  export type DoesNotExtend<a = unset, b = unset> = Functions.Compose<
+    [Not, Functions.PartialApply<ExtendsFn, [a, b]>]
+  >;
+
+  interface AndFn extends Fn {
+    return: Fn.args<this> extends [
       infer first extends boolean,
       infer second extends boolean,
       ...any
@@ -51,8 +56,10 @@ export namespace Booleans {
       : never;
   }
 
-  export interface Or<a = unset, b = unset> extends Fn {
-    output: MergeArgs<this["args"], [a, b]> extends [
+  export type And<a = unset, b = unset> = Functions.PartialApply<AndFn, [a, b]>;
+
+  interface OrFn extends Fn {
+    return: Fn.args<this> extends [
       infer first extends boolean,
       infer second extends boolean,
       ...any
@@ -60,4 +67,6 @@ export namespace Booleans {
       ? Some<[first, second]>
       : never;
   }
+
+  export type Or<a = unset, b = unset> = Functions.PartialApply<OrFn, [a, b]>;
 }

@@ -11,7 +11,7 @@
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest",
     "clear-test": "jest --clearCache",
-    "perf": "tsc --project tests/tsconfig.json --noEmit --extendedDiagnostics",
+    "perf": "tsc --project test/tsconfig.json --noEmit --extendedDiagnostics",
     "fmt": "prettier ./src/** ./tests/** -w",
     "check": "tsc --strict --noEmit --extendedDiagnostics"
   },
