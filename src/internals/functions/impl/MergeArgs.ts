@@ -1,5 +1,5 @@
 import { unset, _ } from "../../core/Core";
-import { IsNever, RemoveUnknownArrayConstraint } from "../../helpers";
+import { IsNever } from "../../helpers";
 
 type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
   infer first,
@@ -40,7 +40,4 @@ type MapEmptyIntoPlaceholder<xs, output extends any[] = []> = xs extends [
 export type MergeArgs<
   pipedArgs extends any[],
   partialArgs extends any[]
-> = MergeArgsRec<
-  RemoveUnknownArrayConstraint<pipedArgs>,
-  MapEmptyIntoPlaceholder<partialArgs>
->;
+> = MergeArgsRec<pipedArgs, MapEmptyIntoPlaceholder<partialArgs>>;

@@ -1,5 +1,3 @@
-import { RemoveUnknownArrayConstraint } from "../helpers";
-
 export interface Fn {
   args: unknown;
   return: unknown;
@@ -9,7 +7,7 @@ export namespace Fn {
   export type args<F, Constraint extends unknown[] = unknown[]> = F extends {
     args: infer args extends Constraint;
   }
-    ? RemoveUnknownArrayConstraint<args>
+    ? args
     : never;
 
   export type arg0<F, Constraint = unknown> = F extends {
@@ -63,6 +61,10 @@ export type Call3<fn extends Fn, arg1, arg2, arg3> = (fn & {
 
 export type Call4<fn extends Fn, arg1, arg2, arg3, arg4> = (fn & {
   args: [arg1, arg2, arg3, arg4];
+})["return"];
+
+export type Call5<fn extends Fn, arg1, arg2, arg3, arg4, arg5> = (fn & {
+  args: [arg1, arg2, arg3, arg4, arg5];
 })["return"];
 
 export type Pipe<acc, xs extends Fn[]> = xs extends [

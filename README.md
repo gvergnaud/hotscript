@@ -65,8 +65,11 @@ type T = {
   - [x] Compose
   - [x] ComposeLeft
 - [ ] Tuples
-  - [ ] Zip
+  - [x] Create
   - [x] Partition
+  - [x] IsEmpty
+  - [x] Zip
+  - [x] ZipWith
   - [x] Sort
   - [x] Head
   - [x] At
