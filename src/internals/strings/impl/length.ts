@@ -20,7 +20,7 @@ type LengthUp<
           : never
       ) extends infer $DoubleC extends string
       ? `$${T}` extends `${$DoubleC}${infer $Rest}`
-        ? $Cache["length"] extends 13 // 2^13 is the last block size within the complexity limit
+        ? $Cache["length"] extends 12 // 2^12 is the last block size within the complexity limit
           ? LengthDownSlow<
               $Rest,
               Add<$Acc["length"], Mul<C[1]["length"], 2>>,
