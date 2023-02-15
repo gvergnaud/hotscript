@@ -21,7 +21,7 @@ type res1 = Pipe<
 
 // This is a type-level "lambda"!
 interface Duplicate extends Fn {
-  output: [this["args"][0], this["args"][0]];
+  return: [Fn.arg0<this>, Fn.arg0<this>];
 }
 
 type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;

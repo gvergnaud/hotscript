@@ -1,12 +1,14 @@
+import { Args } from "../args/Args";
 import {
   GetFromPath,
   IsArrayStrict,
   Prettify,
   UnionToIntersection,
 } from "../helpers";
-import { Call, Call2, Fn, MergeArgs, placeholder, unset } from "../core/Core";
+import { Call, Call2, Fn, unset } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
+import { Functions } from "../functions/Functions";
 
 export namespace Objects {
   type FromEntriesImpl<entries extends [PropertyKey, any]> = {
@@ -14,7 +16,7 @@ export namespace Objects {
   };
 
   export interface FromEntries extends Fn {
-    output: FromEntriesImpl<Extract<this["args"][0], [PropertyKey, any]>>;
+    return: FromEntriesImpl<Extract<Fn.arg0<this>, [PropertyKey, any]>>;
   }
 
   type EntriesImpl<T> = {
@@ -22,7 +24,7 @@ export namespace Objects {
   }[keyof T];
 
   export interface Entries extends Fn {
-    output: EntriesImpl<this["args"][0]>;
+    return: EntriesImpl<Fn.arg0<this>>;
   }
 
   type MapValuesImpl<T, fn extends Fn> = {
@@ -30,7 +32,7 @@ export namespace Objects {
   };
 
   export interface MapValues<fn extends Fn> extends Fn {
-    output: MapValuesImpl<this["args"][0], fn>;
+    return: MapValuesImpl<Fn.arg0<this>, fn>;
   }
 
   type MapKeysImpl<T, fn extends Fn> = {
@@ -38,19 +40,19 @@ export namespace Objects {
   };
 
   export interface MapKeys<fn extends Fn> extends Fn {
-    output: MapKeysImpl<this["args"][0], fn>;
+    return: MapKeysImpl<Fn.arg0<this>, fn>;
   }
 
   export interface KebabCase extends Fn {
-    output: Call<MapKeys<Strings.KebabCase>, this["args"][0]>;
+    return: Call<MapKeys<Strings.KebabCase>, Fn.arg0<this>>;
   }
 
   export interface SnakeCase extends Fn {
-    output: Call<MapKeys<Strings.SnakeCase>, this["args"][0]>;
+    return: Call<MapKeys<Strings.SnakeCase>, Fn.arg0<this>>;
   }
 
   export interface CamelCase extends Fn {
-    output: Call<MapKeys<Strings.CamelCase>, this["args"][0]>;
+    return: Call<MapKeys<Strings.CamelCase>, Fn.arg0<this>>;
   }
 
   type MapKeysDeepImpl<T, fn extends Fn> = IsArrayStrict<T> extends true
@@ -64,35 +66,45 @@ export namespace Objects {
     : T;
 
   export interface MapKeysDeep<fn extends Fn> extends Fn {
-    output: MapKeysDeepImpl<this["args"][0], fn>;
+    return: MapKeysDeepImpl<Fn.arg0<this>, fn>;
   }
 
   export interface KebabCaseDeep extends Fn {
-    output: Call<MapKeysDeep<Strings.KebabCase>, this["args"][0]>;
+    return: Call<MapKeysDeep<Strings.KebabCase>, Fn.arg0<this>>;
   }
 
   export interface SnakeCaseDeep extends Fn {
-    output: Call<MapKeysDeep<Strings.SnakeCase>, this["args"][0]>;
+    return: Call<MapKeysDeep<Strings.SnakeCase>, Fn.arg0<this>>;
   }
 
   export interface CamelCaseDeep extends Fn {
-    output: Call<MapKeysDeep<Strings.CamelCase>, this["args"][0]>;
+    return: Call<MapKeysDeep<Strings.CamelCase>, Fn.arg0<this>>;
   }
 
   type PickImpl<obj, keys> = {
     [key in Extract<keyof obj, keys>]: obj[key];
   };
 
-  export interface Pick<key> extends Fn {
-    output: PickImpl<this["args"][0], key>;
+  export type Pick<key = unset, obj = unset> = Functions.PartialApply<
+    PickFn,
+    [key, obj]
+  >;
+
+  interface PickFn extends Fn {
+    return: PickImpl<Fn.arg1<this>, Fn.arg0<this>>;
   }
 
   type OmitImpl<obj, keys> = {
     [key in Exclude<keyof obj, keys>]: obj[key];
   };
 
-  export interface Omit<key> extends Fn {
-    output: OmitImpl<this["args"][0], key>;
+  export type Omit<key = unset, obj = unset> = Functions.PartialApply<
+    OmitFn,
+    [key, obj]
+  >;
+
+  interface OmitFn extends Fn {
+    return: OmitImpl<Fn.arg1<this>, Fn.arg0<this>>;
   }
 
   type PickEntriesImpl<
@@ -109,7 +121,7 @@ export namespace Objects {
   >;
 
   export interface PickBy<fn extends Fn> extends Fn {
-    output: PickByImpl<this["args"][0], fn>;
+    return: PickByImpl<Fn.arg0<this>, fn>;
   }
 
   type OmitEntriesImpl<
@@ -126,15 +138,23 @@ export namespace Objects {
   >;
 
   export interface OmitBy<fn extends Fn> extends Fn {
-    output: OmitByImpl<this["args"][0], fn>;
+    return: OmitByImpl<Fn.arg0<this>, fn>;
   }
 
   type AssignImpl<xs extends readonly any[]> = Prettify<
     UnionToIntersection<xs[number]>
   >;
 
-  export interface Assign<arg1 = unset, arg2 = unset, arg3 = unset> extends Fn {
-    output: AssignImpl<MergeArgs<this["args"], [arg1, arg2, arg3]>>;
+  export type Assign<
+    arg1 = unset,
+    arg2 = unset,
+    arg3 = unset,
+    arg4 = unset,
+    arg5 = unset
+  > = Functions.PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
+
+  interface AssignFn extends Fn {
+    return: AssignImpl<Fn.args<this>>;
   }
 
   type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
@@ -160,18 +180,16 @@ export namespace Objects {
   type GroupByImpl<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
 
   export interface GroupBy<fn extends Fn> extends Fn {
-    output: GroupByImpl<this["args"][0], fn>;
+    return: GroupByImpl<Fn.arg0<this>, fn>;
   }
 
-  export interface Get<
-    _path extends string | placeholder | unset = unset,
-    _obj = unset
-  > extends Fn {
-    output: MergeArgs<this["args"], [_obj, _path]> extends [
-      infer obj,
-      infer path extends string,
-      ...any
-    ]
+  export type Get<
+    path extends string | number | Args._ | unset = unset,
+    obj = unset
+  > = Functions.PartialApply<GetFn, [path, obj]>;
+
+  export interface GetFn extends Fn {
+    return: Fn.args<this> extends [infer path extends string, infer obj, ...any]
       ? GetFromPath<obj, path>
       : never;
   }
