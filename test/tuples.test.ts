@@ -1,11 +1,29 @@
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Call2, Eval, Fn, Pipe, _ } from "../src/internals/core/Core";
+import {
+  Apply,
+  Call,
+  Call2,
+  Eval,
+  Fn,
+  Pipe,
+  _,
+} from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 
 describe("Tuples", () => {
+  it("Create", () => {
+    type res1 = Apply<Tuples.Create, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]>;
+    //   ^?
+    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]>>;
+
+    type res2 = Eval<Tuples.Create<1, 2, 3, 4, 5>>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, [1, 2, 3, 4, 5]>>;
+  });
+
   it("Head", () => {
     type res1 = Call<Tuples.Head, [1, 2, 3]>;
     //   ^?
@@ -355,7 +373,7 @@ describe("Tuples", () => {
   it("ZipWith", () => {
     type res1 = Call2<
       //    ^?
-      Tuples.ZipWith<Tuples.Sum>,
+      Tuples.ZipWith<Numbers.Add>,
       [1, 2, 3],
       [4, 5, 6]
     >;
@@ -363,14 +381,14 @@ describe("Tuples", () => {
 
     type res2 = Eval<
       //    ^?
-      Tuples.ZipWith<Tuples.Sum, [1, 2, 3], [4, 5, 6]>
+      Tuples.ZipWith<Numbers.Add, [1, 2, 3], [4, 5, 6]>
     >;
     type test2 = Expect<Equal<res2, [5, 7, 9]>>;
 
     type res3 = Pipe<
       //    ^?
       [1, 2, 3],
-      [Tuples.ZipWith<Tuples.Sum, [4, 5, 6]>]
+      [Tuples.ZipWith<Numbers.Add, [4, 5, 6]>]
     >;
     type test3 = Expect<Equal<res3, [5, 7, 9]>>;
   });

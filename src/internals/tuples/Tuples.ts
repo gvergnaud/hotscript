@@ -1,7 +1,7 @@
 import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N } from "../numbers/Numbers";
-import { Call, Call2, Fn, unset, _ } from "../core/Core";
+import { Apply, Call, Call2, Call3, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -31,6 +31,28 @@ export namespace Tuples {
   }
 
   type IsEmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
+
+  interface CreateFn extends Fn {
+    return: Fn.args<this>;
+  }
+
+  /**
+   * Create a tuple from a list of arguments.
+   * @param args - The arguments to create a tuple from.
+   * @returns A tuple containing the arguments.
+   * @example
+   * ```ts
+   * type T0 = Call3<Tuples.Create, 1, 2, 3>; // [1, 2, 3]
+   * type T1 = Eval<Tuples.Create<1, 2, 3>>; // [1, 2, 3]
+   * ```
+   */
+  export type Create<
+    arg1 = unset,
+    arg2 = unset,
+    arg3 = unset,
+    arg4 = unset,
+    arg5 = unset
+  > = Functions.PartialApply<CreateFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface IsEmptyFn extends Fn {
     return: IsEmptyImpl<Fn.arg0<this, unknown[]>>;
@@ -601,7 +623,7 @@ export namespace Tuples {
     [infer item1, ...infer rest1],
     [infer item2, ...infer rest2]
   ]
-    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call<fn, [item1, item2]>]>
+    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call2<fn, item1, item2>]>
     : acc;
 
   interface ZipWithFn<fn extends Fn> extends Fn {
@@ -624,7 +646,7 @@ export namespace Tuples {
   export type Zip<
     arr1 extends unknown[] | _ | unset = unset,
     arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<F.Identity>, [arr1, arr2]>;
+  > = Functions.PartialApply<ZipWithFn<CreateFn>, [arr1, arr2]>;
 
   /**
    * Zip two tuples together using a function.
@@ -638,9 +660,9 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.ZipWith<F.Identity>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
-   * type T1 = Eval<Tuples.ZipWith<F.Identity, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
-   * type T3 = Call2<Tuples.ZipWith<T.Sum>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
+   * type T0 = Call2<Tuples.ZipWith<Tuples.Create>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.ZipWith<Tuples.Create, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T3 = Call2<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
    * ```
    */
   export type ZipWith<
