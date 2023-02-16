@@ -193,7 +193,7 @@ export namespace Strings {
    */
   export type Repeat<
     Times extends number | _ | unset = unset,
-    Str extends number | _ | unset = unset
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<RepeatFn, [Times, Str]>;
 
   interface RepeatFn extends Fn {
