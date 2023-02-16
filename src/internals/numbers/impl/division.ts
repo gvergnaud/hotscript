@@ -9,8 +9,9 @@ import {
   ToDigitNumber,
   ToString,
   MulSign,
+  Digit,
 } from "./utils";
-import { DivDigits, ModDigits } from "./digits/division";
+import { DivDigits, ModDigits, DivModDigits } from "./digits/division";
 
 export type DivDigitNumbers<
   T extends DigitNumber,
@@ -43,3 +44,27 @@ export type Mod<
     >
   >
 >;
+
+export type DivModDigitNumbers<
+  T extends DigitNumber,
+  U extends DigitNumber,
+  DivMod extends { Quotient: Digit[]; Remainder: Digit[] } = DivModDigits<
+    Num<T>,
+    Num<U>
+  >
+> = {
+  Quotient: MakeDigitNumber<MulSign<Sign<T>, Sign<U>>, DivMod["Quotient"]>;
+  Remainder: MakeDigitNumber<Sign<T>, DivMod["Remainder"]>;
+};
+
+export type DivMod<
+  T extends number | bigint,
+  U extends number | bigint,
+  DivModNumbers extends {
+    Quotient: DigitNumber;
+    Remainder: DigitNumber;
+  } = DivModDigitNumbers<ToDigitNumber<ToString<T>>, ToDigitNumber<ToString<U>>>
+> = {
+  Quotient: ToNumber<FromDigitNumber<Normalize<DivModNumbers["Quotient"]>>>;
+  Remainder: ToNumber<FromDigitNumber<Normalize<DivModNumbers["Remainder"]>>>;
+};

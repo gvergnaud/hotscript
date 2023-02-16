@@ -49,7 +49,7 @@ type DivModByDigit<
  * @param Q the Quotient
  * @see https://en.wikipedia.org/wiki/Long_division#Algorithm_for_arbitrary_base
  */
-export type DivModDigits<
+type _DivModDigits<
   A extends Digit[],
   D extends Digit[],
   M extends Digit[],
@@ -59,7 +59,7 @@ export type DivModDigits<
   Remainder: infer R extends Digit[];
 }
   ? A extends [infer A1 extends Digit, ...infer AR extends Digit[]]
-    ? DivModDigits<AR, TrimZeros<[...R, A1]>, M, [...Q, B]>
+    ? _DivModDigits<AR, TrimZeros<[...R, A1]>, M, [...Q, B]>
     : { Quotient: [...Q, B]; Remainder: R }
   : never;
 
@@ -67,12 +67,19 @@ export type DivDigits<N extends Digit[], M extends Digit[]> = TruncateWith<
   N,
   M
 > extends [infer A extends Digit[], infer D extends Digit[]]
-  ? DivModDigits<A, D, M>["Quotient"]
+  ? _DivModDigits<A, D, M>["Quotient"]
   : never;
 
 export type ModDigits<N extends Digit[], M extends Digit[]> = TruncateWith<
   N,
   M
 > extends [infer A extends Digit[], infer D extends Digit[]]
-  ? DivModDigits<A, D, M>["Remainder"]
+  ? _DivModDigits<A, D, M>["Remainder"]
+  : never;
+
+export type DivModDigits<N extends Digit[], M extends Digit[]> = TruncateWith<
+  N,
+  M
+> extends [infer A extends Digit[], infer D extends Digit[]]
+  ? _DivModDigits<A, D, M>
   : never;
