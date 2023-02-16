@@ -56,9 +56,7 @@ export type Btoa<S extends string, $Acc extends string = ""> =
   S extends `${infer $C1}${infer $C2}${infer $C3}${infer $Rest}`
     ? Btoa<
         $Rest,
-        `${$Acc}${BitShiftRight<latin[$C1], 2> extends infer $K extends number
-          ? D<$K>
-          : never}${(
+        `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${(
           BitOr<
             BitShiftLeft<latin[$C1], 4>,
             BitShiftRight<latin[$C2], 4>
@@ -81,19 +79,12 @@ export type Btoa<S extends string, $Acc extends string = ""> =
           : never}`
       >
     : S extends `${infer $C1}${infer $C2}`
-    ? `${$Acc}${BitShiftRight<latin[$C1], 2> extends infer $K extends number
-        ? D<$K>
-        : never}${(
-        [latin[$C1], latin[$C2]] extends [
-          infer $K1 extends number,
-          infer $K2 extends number
-        ]
-          ? BitOr<
-              BitShiftLeft<$K1, 4>,
-              BitShiftRight<$K2, 4>
-            > extends infer $K4 extends number
-            ? BitAnd<$K4, 63>
-            : never
+    ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${(
+        BitOr<
+          BitShiftLeft<latin[$C1], 4>,
+          BitShiftRight<latin[$C2], 4>
+        > extends infer $K4 extends number
+          ? BitAnd<$K4, 63>
           : never
       ) extends infer $K extends number
         ? D<$K>
@@ -105,9 +96,7 @@ export type Btoa<S extends string, $Acc extends string = ""> =
         : never}=`
     : S extends `${infer $C1}${infer $Rest}`
     ? latin[$C1] extends infer $CL1 extends number
-      ? `${$Acc}${BitShiftRight<$CL1, 2> extends infer $K1 extends number
-          ? D<$K1>
-          : never}${BitAnd<
+      ? `${$Acc}${D<BitShiftRight<$CL1, 2>>}${BitAnd<
           BitShiftLeft<$CL1, 4>,
           63
         > extends infer $K extends number
