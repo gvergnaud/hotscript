@@ -26,8 +26,18 @@ export namespace Strings {
    */
   export type Length<Str = unset> = Functions.PartialApply<LengthFn, [Str]>;
 
+  /**
+   * Get the length of a string.
+   * @warning - 🔥🔥🔥does not work with emojis since they are multiple characters🔥🔥🔥
+   * @param args[0] - The string to get the length of.
+   * @returns The length of the string.
+   * @example
+   * ```ts
+   * type T0 = Call<Strings.Length,"abc">; // 3
+   * ```
+   */
   export interface LengthFn extends Fn {
-    return: Impl.StringToTuple<this["arg0"]>["length"];
+    return: this["arg0"] extends string ? Impl.Length<this["arg0"]> : never;
   }
 
   /**
@@ -183,7 +193,7 @@ export namespace Strings {
    */
   export type Repeat<
     Times extends number | _ | unset = unset,
-    Str extends number | _ | unset = unset
+    Str extends string | _ | unset = unset
   > = Functions.PartialApply<RepeatFn, [Times, Str]>;
 
   interface RepeatFn extends Fn {
@@ -191,7 +201,7 @@ export namespace Strings {
       infer Times extends number,
       infer Str extends string
     ]
-      ? Impl.Repeat<Str, H.Iterator.Iterator<Times>>
+      ? Impl.Repeat<Str, Times>
       : never;
   }
 
