@@ -32,20 +32,15 @@ type dec = { [K in keyof enc as `${enc[K]}`]: K } & { [_: string]: 0 } & {
   [_: number]: 0;
 };
 
-// We need to split the bits up on the boundaries. However, we are better at
-// decimal-based arithemetic. Therefore, we will use multiplication and division
-// to compose each of the octets instead of summing all of the octets and using
-// bitwise operations.
-//
 // |---------------------------------------|
 // | 8 bytes    |  8 bytes    |    8 bytes |
 // | 6 bytes | 6 bytes | 6 bytes | 6 bytes |
 // |---------------------------------------|
 //
-// h1 = o1 * 2^2
-// h2 = (o2 * 2^2) + (o3 / 2^2)
-// h3 = (o3 * 2^2) + (o4 / 2^2)
-// h4 = o4 / 2^2
+// h1 = o1 >> 2
+// h2 = ((o1 << 4) | (o2 >> 4)) & 63
+// h3 = ((o2 << 2) | (o3 >> 6)) & 63
+// h4 = o3 & 63
 
 type D<S extends string | number> = S extends keyof dec ? dec[S] : never;
 
