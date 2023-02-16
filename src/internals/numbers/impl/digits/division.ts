@@ -49,7 +49,7 @@ type DivModByDigit<
  * @param Q the Quotient
  * @see https://en.wikipedia.org/wiki/Long_division#Algorithm_for_arbitrary_base
  */
-type _DivModDigits<
+export type _DivModDigits<
   A extends Digit[],
   D extends Digit[],
   M extends Digit[],

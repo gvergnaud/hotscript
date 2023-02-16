@@ -1,5 +1,5 @@
 import { Digit, TrimZeros } from "../utils";
-import { DivModDigits } from "./division";
+import { _DivModDigits } from "./division";
 import { MulDigits } from "./multiply";
 
 export type PowerDigits<
@@ -11,7 +11,7 @@ export type PowerDigits<
   : U extends [1]
   ? MulDigits<T, Acc>
   : U extends [infer UN extends Digit, ...infer UR extends Digit[]]
-  ? DivModDigits<UR, [UN], [2]> extends {
+  ? _DivModDigits<UR, [UN], [2]> extends {
       Quotient: infer Q extends Digit[];
       Remainder: infer R extends Digit[];
     }
