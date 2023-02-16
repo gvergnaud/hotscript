@@ -139,6 +139,136 @@ export namespace Numbers {
   }
 
   /**
+   * Shifts the first number n bits to the left.
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to shift the bits by
+   * @returns the result of the bit shift
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.BitShiftLeft<2, 3>>; // 16
+   * ```
+   */
+  export type BitShiftLeft<
+    n1 extends number | _ | unset = unset,
+    n2 extends number | _ | unset = unset
+  > = Functions.PartialApply<BitShiftLeftFn, [n1, n2]>;
+
+  interface BitShiftLeftFn extends Fn {
+    return: this["args"] extends [
+      infer a extends number,
+      infer b extends number,
+      ...any
+    ]
+      ? Impl.BitShiftLeft<a, b>
+      : never;
+  }
+
+  /**
+   * Shifts the first number n bits to the right.
+   * @description the two numbers can be of different types (bigint or number) and handle really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number to shift the bits by
+   * @returns the result of the bit shift
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.BitShiftRight<9, 1>>; // 4
+   * ```
+   */
+  export type BitShiftRight<
+    n1 extends number | _ | unset = unset,
+    n2 extends number | _ | unset = unset
+  > = Functions.PartialApply<BitShiftRightFn, [n1, n2]>;
+
+  interface BitShiftRightFn extends Fn {
+    return: this["args"] extends [
+      infer a extends number,
+      infer b extends number,
+      ...any
+    ]
+      ? Impl.BitShiftRight<a, b>
+      : never;
+  }
+
+  /**
+   * Computes the bitwise AND of the two numbers.
+   * @description the two numbers can be really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number
+   * @returns the result of a bitwise AND
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.BitAnd<7, 12>>; // 4
+   * ```
+   */
+  export type BitAnd<
+    n1 extends number | _ | unset = unset,
+    n2 extends number | _ | unset = unset
+  > = Functions.PartialApply<BitAndFn, [n1, n2]>;
+
+  interface BitAndFn extends Fn {
+    return: this["args"] extends [
+      infer a extends number,
+      infer b extends number,
+      ...any
+    ]
+      ? Impl.BitAnd<a, b>
+      : never;
+  }
+
+  /**
+   * Computes the bitwise OR of the two numbers.
+   * @description the two numbers can be really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number
+   * @returns the result of a bitwise OR
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.BitOr<7, 12>>; // 15
+   * ```
+   */
+  export type BitOr<
+    n1 extends number | _ | unset = unset,
+    n2 extends number | _ | unset = unset
+  > = Functions.PartialApply<BitOrFn, [n1, n2]>;
+
+  interface BitOrFn extends Fn {
+    return: this["args"] extends [
+      infer a extends number,
+      infer b extends number,
+      ...any
+    ]
+      ? Impl.BitOr<a, b>
+      : never;
+  }
+
+  /**
+   * Computes the bitwise XOR of the two numbers.
+   * @description the two numbers can be really large numbers
+   * @param n1 - the first number
+   * @param n2 - the second number
+   * @returns the result of a bitwise XOR
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.BitXor<7, 12>>; // 11
+   * ```
+   */
+  export type BitXor<
+    n1 extends number | _ | unset = unset,
+    n2 extends number | _ | unset = unset
+  > = Functions.PartialApply<BitXorFn, [n1, n2]>;
+
+  interface BitXorFn extends Fn {
+    return: this["args"] extends [
+      infer a extends number,
+      infer b extends number,
+      ...any
+    ]
+      ? Impl.BitXor<a, b>
+      : never;
+  }
+
+  /**
    * Negate a number
    * @description the number can be of different types (bigint or number) and handle really large numbers
    * @param n - the number to negate

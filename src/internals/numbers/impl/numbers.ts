@@ -1,6 +1,13 @@
 export type { Abs } from "./absolute";
 export type { Add } from "./addition";
 export type { Sub } from "./substraction";
+export type {
+  BitShiftLeft,
+  BitShiftRight,
+  BitAnd,
+  BitOr,
+  BitXor,
+} from "./bitwise";
 export type { Negate } from "./negate";
 export type { Mul } from "./multiply";
 export type { Div, Mod } from "./division";
