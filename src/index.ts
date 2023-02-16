@@ -8,6 +8,7 @@ import {
   PipeRight,
   _,
 } from "./internals/core/Core";
+import { Encodings } from "./internals/encodings/Encodings";
 import { Functions } from "./internals/functions/Functions";
 import { Numbers } from "./internals/numbers/Numbers";
 import { Objects } from "./internals/objects/Objects";
@@ -39,4 +40,5 @@ export {
   Numbers as N,
   Tuples as T,
   Functions as F,
+  Encodings as E,
 };
