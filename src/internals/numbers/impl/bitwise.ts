@@ -2,7 +2,6 @@ import { GreaterThan, GreaterThanOrEqual } from "./compare";
 import { Add } from "./addition";
 import { Div, Mod } from "./division";
 import { Mul } from "./multiply";
-import { Power } from "./power";
 import { Sub } from "./substraction";
 
 // prettier-ignore
