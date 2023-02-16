@@ -47,29 +47,34 @@ type dec = { [K in keyof enc as `${enc[K]}`]: K } & { [_: string]: 0 } & {
 // h3 = (o3 * 2^2) + (o4 / 2^2)
 // h4 = o4 / 2^2
 
-type D<S extends string> = D extends keyof dec ? dec[D] : never;
+type D<S extends string | number> = S extends keyof dec ? dec[S] : never;
 
 export type Btoa<S extends string, $Acc extends string = ""> =
   //
   S extends `${infer $C1}${infer $C2}${infer $C3}${infer $Rest}`
     ? Btoa<
         $Rest,
-        `${$Acc}${D<BitShiftRight<latin[$C1], 2>]}${dec[BitAnd<
-          BitOr<BitShiftLeft<latin[$C1], 4>, BitShiftRight<latin[$C2], 4>>,
-          63
-        >>}${D<BitAnd<
-          BitOr<BitShiftLeft<latin[$C2], 2>, BitShiftRight<latin[$C3], 6>>,
-          63
-        >>}${dec[BitAnd<latin[$C3], 63>]}`
+        `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${D<
+          BitAnd<
+            BitOr<BitShiftLeft<latin[$C1], 4>, BitShiftRight<latin[$C2], 4>>,
+            63
+          >
+        >}${D<
+          BitAnd<
+            BitOr<BitShiftLeft<latin[$C2], 2>, BitShiftRight<latin[$C3], 6>>,
+            63
+          >
+        >}${D<BitAnd<latin[$C3], 63>>}`
       >
     : S extends `${infer $C1}${infer $C2}`
-    ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>]}${dec[BitAnd<
-        BitOr<BitShiftLeft<latin[$C1], 4>, BitShiftRight<latin[$C2], 4>>,
-        63
-      >>}${D<BitAnd<BitShiftLeft<latin[$C2], 2>, 63>>}=`
+    ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${D<
+        BitAnd<
+          BitOr<BitShiftLeft<latin[$C1], 4>, BitShiftRight<latin[$C2], 4>>,
+          63
+        >
+      >}${D<BitAnd<BitShiftLeft<latin[$C2], 2>, 63>>}=`
     : S extends `${infer $C1}${infer $Rest}`
-    ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${D<BitAnd<
-        BitShiftLeft<latin[$C1], 4>,
-        63
-      >>}==`
+    ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${D<
+        BitAnd<BitShiftLeft<latin[$C1], 4>, 63>
+      >}==`
     : $Acc;
