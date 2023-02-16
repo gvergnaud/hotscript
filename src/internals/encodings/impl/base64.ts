@@ -78,7 +78,7 @@ export type Btoa<S extends string, $Acc extends string = ""> =
           ? D<$K>
           : never}`
       >
-    : S extends `${infer $C1}${infer $C2}`
+    : S extends `${infer $C1}${infer $C2}${string}`
     ? `${$Acc}${D<BitShiftRight<latin[$C1], 2>>}${(
         BitOr<
           BitShiftLeft<latin[$C1], 4>,
