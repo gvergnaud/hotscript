@@ -159,8 +159,15 @@ export namespace Tuples {
   > = Functions.PartialApply<MapFn, [fn, tuple]>;
 
   interface MapFn extends Fn {
-    return: ReduceImpl<this["arg1"], [], MapReducer<Extract<this["arg0"], Fn>>>;
+    return: this["arg1"] extends [...any[]]
+      ? MapFnImpl<this["arg1"], Extract<this["arg0"], Fn>>
+      : never;
   }
+
+  // This needs to be extracted out to show as a tuple type in editor tooling.
+  type MapFnImpl<a extends [...any[]], f extends Fn> = {
+    [K in keyof a]: Call<f, a[K]>;
+  };
 
   interface FlatMapReducer<fn extends Fn> extends Fn {
     return: this["args"] extends [infer acc extends any[], infer item]
