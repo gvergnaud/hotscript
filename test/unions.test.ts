@@ -1,4 +1,4 @@
-import { Pipe, Fn, B, U, F, Eval } from "../src/index";
+import { Pipe, Fn, B, U, F, Eval, Call, Unions, _ } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Unions", () => {
@@ -40,5 +40,23 @@ describe("Unions", () => {
     type res2 = Eval<U.Map<ToTuple, "a" | "b" | "c">>;
     //   ^?
     type tes2 = Expect<Equal<res2, ["a"] | ["b"] | ["c"]>>;
+  });
+
+  it("Range", () => {
+    type res0 = Call<Unions.Range<3>, 7>;
+    //    ^?
+    type test0 = Expect<Equal<res0, 3 | 4 | 5 | 6 | 7>>;
+
+    type res1 = Call<Unions.Range<_, 10>, 5>;
+    //    ^?
+    type test1 = Expect<Equal<res1, 5 | 6 | 7 | 8 | 9 | 10>>;
+
+    type res3 = Eval<Unions.Range<-2, 2>>;
+    //    ^?
+    type test3 = Expect<Equal<res3, -2 | -1 | 0 | 1 | 2>>;
+
+    type res4 = Eval<Unions.Range<-5, -2>>;
+    //    ^?
+    type test4 = Expect<Equal<res4, -5 | -4 | -3 | -2>>;
   });
 });
