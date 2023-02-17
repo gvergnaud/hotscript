@@ -720,7 +720,7 @@ export namespace Tuples {
     start extends number,
     length extends number,
     output extends any[] = []
-  > = output["length"] extends length
+  > = output["length"] extends length | 998 // stop at 1k recursion depth
     ? output
     : RangeImpl<
         start,
