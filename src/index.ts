@@ -41,5 +41,4 @@ export {
   Numbers as N,
   Tuples as T,
   Functions as F,
-  Encodings as E,
 };
