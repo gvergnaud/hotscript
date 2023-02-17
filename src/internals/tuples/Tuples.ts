@@ -136,12 +136,6 @@ export namespace Tuples {
     return: LastImpl<this["arg0"]>;
   }
 
-  interface MapReducer<fn extends Fn> extends Fn {
-    return: this["args"] extends [infer acc extends any[], infer item]
-      ? [...acc, Call<fn, item>]
-      : never;
-  }
-
   /**
    * Apply a function to each element of a tuple and return a new tuple with the results.
    * @params args[0] - A tuple of elements to be transformed.
@@ -159,8 +153,15 @@ export namespace Tuples {
   > = Functions.PartialApply<MapFn, [fn, tuple]>;
 
   interface MapFn extends Fn {
-    return: ReduceImpl<this["arg1"], [], MapReducer<Extract<this["arg0"], Fn>>>;
+    return: this["arg1"] extends unknown[]
+      ? MapFnImpl<this["arg1"], Extract<this["arg0"], Fn>>
+      : never;
   }
+
+  // This needs to be extracted out to show as a tuple type in editor tooling.
+  type MapFnImpl<tuple extends unknown[], fn extends Fn> = {
+    [K in keyof tuple]: Call<fn, tuple[K]>;
+  };
 
   interface FlatMapReducer<fn extends Fn> extends Fn {
     return: this["args"] extends [infer acc extends any[], infer item]
