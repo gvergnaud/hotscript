@@ -57,13 +57,13 @@ export namespace Functions {
    *
    * @example
    * ```ts
-   * type T0 = Call<Parameter<_,1>, (a: number, b: string) => void>; // number
+   * type T0 = Call<Parameter<1>, (a: number, b: string) => void>; // number
    * type T1 = Call2<Parameter, (a: number, b: string) => void, 1>; // string
    * type T2 = Eval<Parameter<(a: number, b: string) => void, 0>>; // number
    */
   export type Parameter<
-    fn extends ((...args: any[]) => any) | _ | unset = unset,
-    N extends number | _ | unset = unset
+    N extends number | _ | unset = unset,
+    fn extends ((...args: any[]) => any) | _ | unset = unset
   > = PartialApply<ParameterFn, [fn, N]>;
 
   type ReturnImpl<fn> = fn extends (...args: any[]) => infer ret ? ret : never;
@@ -142,7 +142,7 @@ export namespace Functions {
    *
    * @example
    * ```ts
-   * type T0 = Call<PartialApply<Parameter, [_, 1]> , (a: number, b: string) => void>; // [b: string]
+   * type T0 = Call<PartialApply<Parameter, [_, (a: number, b: string) => void]>, 1> ; // [b: string]
    */
   export interface PartialApply<fn extends Fn, partialArgs extends unknown[]>
     extends Fn {

@@ -2,6 +2,7 @@ import {
   Pipe,
   PipeRight,
   Call,
+  Call2,
   Numbers,
   Strings,
   Tuples,
@@ -37,6 +38,9 @@ describe("Functions", () => {
     type res1 = Call<F.Parameter<0>, (a: string, b: number) => void>;
     //   ^?
     type tes1 = Expect<Equal<res1, string>>;
+    type res2 = Call2<F.Parameter, (a: string, b: number) => void, 0>;
+    //   ^?
+    type tes2 = Expect<Equal<res2, string>>;
   });
 
   it("Return", () => {
