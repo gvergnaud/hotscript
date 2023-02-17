@@ -15,7 +15,7 @@ type MergeArgsRec<
   partialArgs extends any[],
   output extends any[] = []
 > = partialArgs extends [infer partialFirst, ...infer partialRest]
-  ? [partialFirst] extends [never]
+  ? IsNever<partialFirst> extends true
     ? MergeArgsRec<pipedArgs, partialRest, [...output, partialFirst]>
     : [partialFirst] extends [_]
     ? pipedArgs extends [infer pipedFirst, ...infer pipedRest]

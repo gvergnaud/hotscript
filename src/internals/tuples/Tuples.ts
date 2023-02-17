@@ -1,6 +1,8 @@
 import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
-import { Numbers as N } from "../numbers/Numbers";
+import { Numbers as N, Numbers } from "../numbers/Numbers";
+import * as NumbersImpl from "../numbers/impl/numbers";
+
 import { Apply, Call, Call2, Call3, Eval, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
@@ -683,4 +685,46 @@ export namespace Tuples {
     arr1 extends unknown[] | _ | unset = unset,
     arr2 extends unknown[] | _ | unset = unset
   > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
+
+  /**
+   * Range takes a `start` and an `end` integer and produces
+   * a tuple containing integer ranging from `start` to `end`
+   * @param start - the start of the range (included)
+   * @param end - the end of the range (included)
+   * @returns a tuple of integers
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Range<3>, 7>; // [3, 4, 5, 6, 7]
+   * type T1 = Eval<Tuples.Range<_, 10>, 5>; // [5, 6, 7, 8, 9, 10]
+   * type T3 = Eval<Tuples.Range< -2, 2>, 5>; // [-2, 1, 0, 1, 2]
+   * type T4 = Eval<Tuples.Range< -5, -2>, 5>; // [-5, -4, -3, -2]
+   * ```
+   */
+  export type Range<
+    start extends number | _ | unset = unset,
+    end extends number | _ | unset = unset
+  > = Functions.PartialApply<RangeFn, [start, end]>;
+
+  interface RangeFn extends Fn {
+    return: this["args"] extends [
+      infer start extends number,
+      infer end extends number
+    ]
+      ? NumbersImpl.LessThanOrEqual<start, end> extends true
+        ? RangeImpl<start, NumbersImpl.Add<1, NumbersImpl.Sub<end, start>>>
+        : never
+      : never;
+  }
+
+  type RangeImpl<
+    start extends number,
+    length extends number,
+    output extends any[] = []
+  > = output["length"] extends length | 998 // stop at 1k recursion depth
+    ? output
+    : RangeImpl<
+        start,
+        length,
+        [...output, NumbersImpl.Add<start, output["length"]>]
+      >;
 }
