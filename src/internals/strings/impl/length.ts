@@ -3,6 +3,18 @@
 import { Add } from "../../numbers/impl/addition";
 import { StringIterator } from "./utils";
 
+// Implementation of the following algorithm:
+//
+// function length(s, acc) {
+//   if (s === "") {
+//       return 0;
+//   } else if (s.indexOf(acc) === 0) {
+//       return acc.length + length(s.slice(acc.length), acc + acc);
+//   } else {
+//       return length(s, acc.slice(acc.length / 2));
+//   }
+// }
+
 type LengthUp<
   T extends string,
   $Length extends number | bigint = 0,
