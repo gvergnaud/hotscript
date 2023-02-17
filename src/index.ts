@@ -33,6 +33,7 @@ export {
   Numbers,
   Tuples,
   Functions,
+  Encodings,
   Booleans as B,
   Objects as O,
   Unions as U,
