@@ -1,52 +1,32 @@
+import { DivMod } from "../../numbers/impl/division";
 import { Sub } from "../../numbers/impl/substraction";
-import { Add } from "../../numbers/impl/addition";
 
-type TCache = [string, number | bigint];
+// The below algorithm is based on the following one :
+//
+// const repeat = (s: string, count: number, acc: string = ''): string => {
+//   if (count === 0) {
+//     return acc;
+//   } else if (count % 2 === 0) {
+//     return repeat(s + s, count / 2, acc);
+//   } else {
+//     return repeat(s, count - 1, acc + s);
+//   }
+// }
 
-type IsPositive<N extends number | bigint> =
-  //
-  `${N}` extends `-${string}` ? false : true;
+type RepeatX2<T extends string> = `${T}${T}`;
 
-export type Repeat<T extends string, N extends number | bigint> =
-  //
-  RepeatUp<T, N>;
-
-type RepeatUp<
+export type Repeat<
   T extends string,
-  N extends number | bigint,
-  $Acc extends string = "",
-  $Cache extends TCache[] = [[T, 1]]
-> =
-  //
-  $Cache extends [infer $FirstCache extends TCache, ...unknown[]]
-    ? Add<$FirstCache[1], $FirstCache[1]> extends infer $DoubleCache extends
-        | number
-        | bigint
-      ? Sub<N, $DoubleCache> extends infer $Rem extends number | bigint
-        ? IsPositive<$Rem> extends true
-          ? RepeatUp<
-              T,
-              $Rem,
-              `${$Acc}${$FirstCache[0]}${$FirstCache[0]}`,
-              [[`${$FirstCache[0]}${$FirstCache[0]}`, $DoubleCache], ...$Cache]
-            >
-          : RepeatDown<T, N, $Acc, $Cache>
-        : never
-      : never
-    : never;
-
-type RepeatDown<
-  T extends string,
-  N extends bigint | number,
-  $Acc extends string,
-  $Cache extends TCache[]
-> = $Cache extends [
-  infer $FirstCache extends TCache,
-  ...infer $RestCache extends TCache[]
-]
-  ? Sub<N, $FirstCache[1]> extends infer $Rem extends number | bigint
-    ? IsPositive<$Rem> extends true
-      ? RepeatDown<T, $Rem, `${$Acc}${$FirstCache[0]}`, $Cache>
-      : RepeatDown<T, N, $Acc, $RestCache>
-    : never
-  : $Acc;
+  N extends number,
+  Acc extends string = "",
+  Calc extends {
+    Quotient: number;
+    Remainder: number;
+  } = DivMod<N, 2>
+> = N extends 0
+  ? Acc
+  : N extends 1
+  ? `${Acc}${T}`
+  : Calc["Remainder"] extends 0
+  ? Repeat<RepeatX2<T>, Calc["Quotient"], Acc>
+  : Repeat<T, Sub<N, 1>, `${Acc}${T}`>;

@@ -1,6 +1,6 @@
 {
   "name": "hotscript",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Type-level madness",
   "type": "module",
   "source": "src/index.ts",
