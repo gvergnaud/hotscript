@@ -153,8 +153,11 @@ export namespace Tuples {
   > = Functions.PartialApply<MapFn, [fn, tuple]>;
 
   interface MapFn extends Fn {
-    return: this["arg1"] extends unknown[]
-      ? MapFnImpl<this["arg1"], Extract<this["arg0"], Fn>>
+    return: this["args"] extends [
+      infer fn extends Fn,
+      infer tuple extends unknown[]
+    ]
+      ? MapFnImpl<tuple, fn>
       : never;
   }
 
