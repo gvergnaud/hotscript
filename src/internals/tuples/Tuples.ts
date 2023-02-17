@@ -157,14 +157,9 @@ export namespace Tuples {
       infer fn extends Fn,
       infer tuple extends unknown[]
     ]
-      ? MapFnImpl<tuple, fn>
+      ? { [key in keyof tuple]: Call<fn, tuple[key]> }
       : never;
   }
-
-  // This needs to be extracted out to show as a tuple type in editor tooling.
-  type MapFnImpl<tuple extends unknown[], fn extends Fn> = {
-    [K in keyof tuple]: Call<fn, tuple[K]>;
-  };
 
   interface FlatMapReducer<fn extends Fn> extends Fn {
     return: this["args"] extends [infer acc extends any[], infer item]
