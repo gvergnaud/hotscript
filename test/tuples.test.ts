@@ -393,6 +393,24 @@ describe("Tuples", () => {
     type test3 = Expect<Equal<res3, [5, 7, 9]>>;
   });
 
+  it("Range", () => {
+    type res0 = Call<Tuples.Range<3>, 7>;
+    //    ^?
+    type test0 = Expect<Equal<res0, [3, 4, 5, 6, 7]>>;
+
+    type res1 = Call<Tuples.Range<_, 10>, 5>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [5, 6, 7, 8, 9, 10]>>;
+
+    type res3 = Eval<Tuples.Range<-2, 2>>;
+    //    ^?
+    type test3 = Expect<Equal<res3, [-2, -1, 0, 1, 2]>>;
+
+    type res4 = Eval<Tuples.Range<-5, -2>>;
+    //    ^?
+    type test4 = Expect<Equal<res4, [-5, -4, -3, -2]>>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
       return: [this["arg0"], this["arg0"]];
