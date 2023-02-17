@@ -14,6 +14,7 @@ describe("Strings", () => {
       Functions.Compose<[Strings.Length, Strings.Repeat<1001>]>,
       "a"
     >;
+    type test3 = Expect<Equal<res3, 1001>>;
   });
 
   it("TrimLeft", () => {
