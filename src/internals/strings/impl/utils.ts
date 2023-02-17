@@ -75,4 +75,16 @@ export namespace StringIterator {
         ? [[double, Mul<Value<It>, 2>], ...It]
         : never
       : never;
+
+  /**
+   * Cut the string at the iterator
+   *
+   * @param T - the string to cut
+   * @param It - the iterator to cut at
+   * @returns the rest of the string
+   */
+  export type CutAt<
+    T extends string,
+    It extends Iterator
+  > = `$${T}` extends `${String<It>}${infer $Rest}` ? $Rest : undefined;
 }

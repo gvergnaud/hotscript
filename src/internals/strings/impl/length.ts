@@ -16,29 +16,29 @@ import { StringIterator as StrIter } from "./utils";
 // }
 
 type LengthUp<
-  T extends string,
+  Str extends string,
   $Length extends number | bigint = 0,
   It extends StrIter.Iterator = StrIter.Init
 > = It extends []
   ? $Length
   : StrIter.Double<It> extends infer $DoubleIt extends StrIter.Iterator
-  ? `$${T}` extends `${StrIter.String<$DoubleIt>}${infer $Rest}`
+  ? StrIter.CutAt<Str, $DoubleIt> extends `${infer $Rest}`
     ? StrIter.Size<It> extends 12 // 2^13 is the last block size within the complexity limit
       ? LengthDown<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
       : LengthUp<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
-    : `$${T}` extends `${StrIter.String<It>}${infer $Rest}`
+    : StrIter.CutAt<Str, It> extends `${infer $Rest}`
     ? LengthUp<$Rest, Add<$Length, StrIter.Value<It>>, It>
-    : LengthDown<T, $Length, StrIter.Prev<It>>
+    : LengthDown<Str, $Length, StrIter.Prev<It>>
   : never;
 
 type LengthDown<
-  T extends string,
+  Str extends string,
   $Length extends number | bigint,
   It extends StrIter.Iterator
 > = It extends []
   ? $Length
-  : `$${T}` extends `${StrIter.String<It>}${infer $Rest}`
+  : StrIter.CutAt<Str, It> extends `${infer $Rest}`
   ? LengthDown<$Rest, Add<$Length, StrIter.Value<It>>, It>
-  : LengthDown<T, $Length, StrIter.Prev<It>>;
+  : LengthDown<Str, $Length, StrIter.Prev<It>>;
 
 export type Length<T extends string> = T extends "" ? 0 : LengthUp<T>;
