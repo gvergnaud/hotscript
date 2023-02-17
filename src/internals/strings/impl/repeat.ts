@@ -19,10 +19,7 @@ export type Repeat<
   T extends string,
   N extends number,
   Acc extends string = "",
-  Calc extends {
-    Quotient: number;
-    Remainder: number;
-  } = DivMod<N, 2>
+  Calc extends { Quotient: number; Remainder: number } = DivMod<N, 2>
 > = N extends 0
   ? Acc
   : N extends 1
