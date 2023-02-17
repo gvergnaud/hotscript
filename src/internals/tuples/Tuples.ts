@@ -1,9 +1,17 @@
-import { Booleans as B } from "../booleans/Booleans";
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N, Numbers } from "../numbers/Numbers";
-import * as NumbersImpl from "../numbers/impl/numbers";
 
-import { Apply, Call, Call2, Call3, Eval, Fn, unset, _ } from "../core/Core";
+import {
+  Apply,
+  Call,
+  Call2,
+  Call3,
+  Eval,
+  Fn,
+  Pipe,
+  unset,
+  _,
+} from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -710,9 +718,10 @@ export namespace Tuples {
       infer start extends number,
       infer end extends number
     ]
-      ? NumbersImpl.LessThanOrEqual<start, end> extends true
-        ? NumbersImpl.Abs<
-            NumbersImpl.Add<1, NumbersImpl.Sub<end, start>>
+      ? Call2<Numbers.LessThanOrEqual, start, end> extends true
+        ? Pipe<
+            start,
+            [Numbers.Sub<end, _>, Numbers.Add<1>, Numbers.Abs]
           > extends infer length extends number
           ? RangeImpl<start, length>
           : never
@@ -729,6 +738,6 @@ export namespace Tuples {
     : RangeImpl<
         start,
         length,
-        [...output, NumbersImpl.Add<start, output["length"]>]
+        [...output, Eval<Numbers.Add<start, output["length"]>>]
       >;
 }
