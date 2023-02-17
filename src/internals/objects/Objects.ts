@@ -213,7 +213,7 @@ export namespace Objects {
    * ]>
    * ```
    */
-  export type Match<
+  type MatchImpl<
     value,
     patterns extends With<any, any>[]
   > = patterns extends [
@@ -222,6 +222,13 @@ export namespace Objects {
   ]
     ? value extends match
       ? Call<fn, value>
-      : Match<value, restPatterns>
+      : MatchImpl<value, restPatterns>
     : never;
+
+	export interface MatchFn extends Fn {
+		return: MatchImpl<this['arg0'], this['arg1']>;
+	}
+
+	export type Match<value = unset, patterns extends With<unknown, any>[] | _ | unset = unset> =
+  Functions.PartialApply<MatchFn, [value, patterns]>;
 }
