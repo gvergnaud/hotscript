@@ -1,14 +1,11 @@
 // We store the data as pre-computed hashes - saves computation.
 
-import { Add } from "../../numbers/impl/addition";
 import {
   BitAnd,
   BitOr,
   BitShiftLeft,
   BitShiftRight,
 } from "../../numbers/impl/bitwise";
-import { Div, Mod } from "../../numbers/impl/division";
-import { Mul } from "../../numbers/impl/multiply";
 
 // prettier-ignore
 type latin = {
@@ -99,18 +96,3 @@ export type Btoa<S extends string, $Acc extends string = ""> =
           : never}==`
       : never
     : $Acc;
-
-type E<S extends string> = S extends keyof enc ? enc[S] : 0;
-
-// https://infra.spec.whatwg.org/#forgiving-base64-decode
-export type Atob<S extends string, $Acc extends string = ""> =
-  //
-  S extends `${infer $C1}${infer $C2}${infer $C3}${infer $Rest}`
-    ? [E<$C1>, E<$C2>, E<$C3>, $Rest]
-    : S extends `${infer $C1}${infer $C2}${string}`
-    ? [$C1, $C2]
-    : S extends infer $C1
-    ? true
-    : never;
-
-type A = Atob<"aGVsbG8=">;
