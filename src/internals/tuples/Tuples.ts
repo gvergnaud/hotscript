@@ -711,7 +711,11 @@ export namespace Tuples {
       infer end extends number
     ]
       ? NumbersImpl.LessThanOrEqual<start, end> extends true
-        ? RangeImpl<start, NumbersImpl.Add<1, NumbersImpl.Sub<end, start>>>
+        ? NumbersImpl.Abs<
+            NumbersImpl.Add<1, NumbersImpl.Sub<end, start>>
+          > extends infer length extends number
+          ? RangeImpl<start, length>
+          : never
         : never
       : never;
   }
