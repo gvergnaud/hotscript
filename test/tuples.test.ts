@@ -430,5 +430,18 @@ describe("Tuples", () => {
     >;
 
     type test = Expect<Equal<res, 39>>;
+
+    type Factorial<N extends number> = Pipe<
+      N,
+      [Tuples.Range<1, _>, Tuples.Reduce<Numbers.Mul, 1>]
+    >;
+
+    type res2 = Factorial<7>;
+    //    ^?
+    type test2 = Expect<Equal<res2, 5040>>;
+
+    type res3 = Factorial<9>;
+    //    ^?
+    type test3 = Expect<Equal<res3, 362880>>;
   });
 });
