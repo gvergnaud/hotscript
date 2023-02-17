@@ -19,26 +19,26 @@ type LengthUp<
   Str extends string,
   $Length extends number | bigint = 0,
   It extends StrIter.Iterator = StrIter.Init
-> = It extends []
-  ? $Length
-  : StrIter.Double<It> extends infer $DoubleIt extends StrIter.Iterator
-  ? StrIter.CutAt<Str, $DoubleIt> extends `${infer $Rest}`
-    ? StrIter.Size<It> extends 12 // 2^13 is the last block size within the complexity limit
-      ? LengthDown<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
-      : LengthUp<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
-    : StrIter.CutAt<Str, It> extends `${infer $Rest}`
-    ? LengthUp<$Rest, Add<$Length, StrIter.Value<It>>, It>
-    : LengthDown<Str, $Length, StrIter.Prev<It>>
-  : never;
+> = It extends StrIter.Iterator
+  ? StrIter.Double<It> extends infer $DoubleIt extends StrIter.Iterator
+    ? StrIter.CutAt<Str, $DoubleIt> extends `${infer $Rest}`
+      ? StrIter.Size<It> extends 12 // 2^13 is the last block size within the complexity limit
+        ? LengthDown<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
+        : LengthUp<$Rest, Add<$Length, StrIter.Value<$DoubleIt>>, $DoubleIt>
+      : StrIter.CutAt<Str, It> extends infer $Rest extends string
+      ? LengthUp<$Rest, Add<$Length, StrIter.Value<It>>, It>
+      : LengthDown<Str, $Length, StrIter.Prev<It>>
+    : never
+  : $Length;
 
 type LengthDown<
   Str extends string,
   $Length extends number | bigint,
-  It extends StrIter.Iterator
-> = It extends []
-  ? $Length
-  : StrIter.CutAt<Str, It> extends `${infer $Rest}`
-  ? LengthDown<$Rest, Add<$Length, StrIter.Value<It>>, It>
-  : LengthDown<Str, $Length, StrIter.Prev<It>>;
+  It
+> = It extends StrIter.Iterator
+  ? StrIter.CutAt<Str, It> extends infer $Rest extends string
+    ? LengthDown<$Rest, Add<$Length, StrIter.Value<It>>, It>
+    : LengthDown<Str, $Length, StrIter.Prev<It>>
+  : $Length;
 
 export type Length<T extends string> = T extends "" ? 0 : LengthUp<T>;

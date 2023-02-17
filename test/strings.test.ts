@@ -1,4 +1,4 @@
-import { _, Call, Call2, Strings } from "../src/index";
+import { _, Call, Call2, Strings, Functions } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
@@ -9,6 +9,11 @@ describe("Strings", () => {
     type res2 = Call<Strings.Length, "123">;
     //    ^?
     type test2 = Expect<Equal<res2, 3>>;
+    type res3 = Call<
+      //  ^?
+      Functions.Compose<[Strings.Length, Strings.Repeat<1001>]>,
+      "a"
+    >;
   });
 
   it("TrimLeft", () => {

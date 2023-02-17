@@ -2,13 +2,14 @@ import { Add } from "../../numbers/impl/addition";
 import { Mul } from "../../numbers/impl/multiply";
 
 export namespace StringIterator {
+  type Iter = [string, number | bigint];
   /**
    * Iterator over the string is a linked list of [string, number] pairs
    * where the string is the pattern to match any character in the string 'N' times
    * and the number is the value 'N' of the pattern
    * the linked list allows to easily add iterate and reverse iterate
    */
-  export type Iterator = [string, number | bigint][];
+  export type Iterator = [Iter, ...Iter[]];
   /**
    * The initial iterator is a list of one element
    *
@@ -58,7 +59,7 @@ export namespace StringIterator {
     ...infer Rest extends Iterator
   ]
     ? Rest
-    : never;
+    : undefined;
   /**
    * Double the iterator to match any character in the string '2N' times
    * This allows the algorithm to be O(log(N)) instead of O(N)
@@ -71,7 +72,7 @@ export namespace StringIterator {
    */
   export type Double<It extends Iterator> =
     `${String<It>}_` extends `$${infer pattern}`
-      ? `${String<It>}}${pattern}` extends `${infer double}_`
+      ? `${String<It>}${pattern}` extends `${infer double}_`
         ? [[double, Mul<Value<It>, 2>], ...It]
         : never
       : never;
