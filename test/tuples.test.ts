@@ -411,15 +411,14 @@ describe("Tuples", () => {
       return: [this["arg0"], this["arg0"]];
     }
 
-    // prettier-ignore
     type res = Pipe<
-    //    ^?
+      // ^?
       [1, 2, 3, 4, 5, 5, 6],
-        Tuples.FlatMap<Duplicate>,
-        Tuples.Map<Numbers.Add<3>>,
-        Tuples.Drop<3>,
-        Tuples.Take<6>,
-        Tuples.Sum
+      Tuples.FlatMap<Duplicate>,
+      Tuples.Map<Numbers.Add<3>>,
+      Tuples.Drop<3>,
+      Tuples.Take<6>,
+      Tuples.Sum
     >;
 
     type test = Expect<Equal<res, 39>>;

@@ -5,18 +5,15 @@ A lodash-like library for types, with support for type-level lambda functions.
 🚧 work in progress 🚧
 
 ```ts
-// prettier-ignore
 type res1 = Pipe<
   //  ^? 95
   [1, 2, 3, 4, 3, 4],
-  [
-    Tuples.Map<Numbers.Add<3>>,
-    Tuples.Join<".">,
-    Strings.Split<".">,
-    Tuples.Map<Strings.ToNumber>,
-    Tuples.Map<Numbers.Add<10>>,
-    Tuples.Sum
-  ]
+  Tuples.Map<Numbers.Add<3>>,
+  Tuples.Join<".">,
+  Strings.Split<".">,
+  Tuples.Map<Strings.ToNumber>,
+  Tuples.Map<Numbers.Add<10>>,
+  Tuples.Sum
 >;
 
 // This is a type-level "lambda"!
@@ -33,13 +30,12 @@ type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 // Let's compose some functions to transform an object type:
 type ToAPIPayload<T> = Pipe<
   T,
-  [
-    Objects.OmitBy<Booleans.Equals<symbol>>,
-    Objects.Assign<{ metadata: { newUser: true } }>,
-    Objects.SnakeCaseDeep,
-    Objects.Assign<{ id: string }>
-  ]
+  Objects.OmitBy<Booleans.Equals<symbol>>,
+  Objects.Assign<{ metadata: { newUser: true } }>,
+  Objects.SnakeCaseDeep,
+  Objects.Assign<{ id: string }>
 >;
+
 type T = ToAPIPayload<{
   id: symbol;
   firstName: string;
