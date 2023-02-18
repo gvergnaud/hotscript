@@ -21,9 +21,14 @@ import * as Impl from "./impl/match";
  * ```
  */
 export type Match<
-  value = unset,
-  withClauses extends Match.With<any, any>[] | _ | unset = unset
-> = Functions.PartialApply<MatchFn, [value, withClauses]>;
+  valueOrWithClauses = unset,
+  withClauses = unset
+> = Functions.PartialApply<
+  MatchFn,
+  withClauses extends unset
+    ? [unset, valueOrWithClauses]
+    : [valueOrWithClauses, withClauses]
+>;
 
 interface MatchFn extends Fn {
   return: Impl.Match<this["arg0"], this["arg1"]>;

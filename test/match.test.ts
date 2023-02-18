@@ -1,4 +1,12 @@
-import { Eval, Functions, Match, Numbers, Strings } from "../src";
+import {
+  Booleans,
+  Eval,
+  Functions,
+  Match,
+  Numbers,
+  Strings,
+  Tuples,
+} from "../src";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Match", () => {
@@ -98,5 +106,24 @@ describe("Match", () => {
     type res3 = MatchTest<{ x: "a"; y: "b" }>;
     //   ^?
     type test3 = Expect<Equal<res3, "ab">>;
+  });
+
+  it("Composition", () => {
+    type Transform<xs extends any[]> = Eval<
+      Tuples.Map<
+        Match<
+          [
+            Match.With<string, Strings.Replace<"0", "1">>,
+            Match.With<number, Numbers.Add<1>>,
+            Match.With<boolean, Booleans.Not>
+          ]
+        >,
+        xs
+      >
+    >;
+
+    type res1 = Transform<[1, 2, "101", true]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [2, 3, "111", false]>>;
   });
 });
