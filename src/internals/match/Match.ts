@@ -41,4 +41,8 @@ export namespace Match {
   export type arg1<Constraint = unknown> = Impl.arg<1, Constraint>;
   export type arg2<Constraint = unknown> = Impl.arg<2, Constraint>;
   export type arg3<Constraint = unknown> = Impl.arg<3, Constraint>;
+  export type arg<Index extends number, Constraint = unknown> = Impl.arg<
+    Index,
+    Constraint
+  >;
 }
