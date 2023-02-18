@@ -126,7 +126,7 @@ export namespace Numbers {
   export type Mod<
     n1 extends number | bigint | _ | unset = unset,
     n2 extends number | bigint | _ | unset = unset
-  > = Functions.PartialApply<ModFn, [n1, n2]>;
+  > = Functions.PartialApply<ModFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface ModFn extends Fn {
     return: this["args"] extends [
