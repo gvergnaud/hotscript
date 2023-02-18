@@ -14,15 +14,15 @@ import * as Impl from "./impl/match";
  * @example
  * ```ts
  * type Test<T> = Match<T, [
- *   With<{ msg: string }, F.ComposeLeft<[O.Get<"msg">, S.Prepend<"Message: ">]>>,
- *   With<string, S.Append<" <-- Message">>,
+ *   With<{ msg: Match.arg0 }, S.Prepend<"Message: ">>,
+ *   With<string, S.Append<": string">>,
  *   With<any, F.Constant<"default value">>
  * ]>
  * ```
  */
 export type Match<
   valueOrWithClauses = unset,
-  withClauses = unset
+  withClauses extends Impl.With<unknown, any>[] | unset | _ = unset
 > = Functions.PartialApply<
   MatchFn,
   withClauses extends unset

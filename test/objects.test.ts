@@ -1,11 +1,9 @@
 import { Booleans } from "../src/internals/booleans/Booleans";
 import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
 import { Strings } from "../src/internals/strings/Strings";
-import { Functions } from "../src/internals/functions/Functions";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
-import { Numbers } from "../src";
 
 describe("Objects", () => {
   it("FromEntries", () => {

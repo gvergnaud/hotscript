@@ -6,7 +6,7 @@ import {
   Numbers,
   Strings,
   Tuples,
-} from "../src";
+} from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Match", () => {
