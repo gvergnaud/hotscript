@@ -1,4 +1,4 @@
-import { Apply, Fn, unset, _ } from "../core/Core";
+import { Apply, Eval, Fn, unset, _ } from "../core/Core";
 import { MergeArgs } from "./impl/MergeArgs";
 
 export namespace Functions {
@@ -102,11 +102,29 @@ export namespace Functions {
    *
    * @example
    * ```ts
-   * type T0 = Call<Compose< [T.Join<'-'>,S.Split<'.'> ]>, 'a.b.c'>; // 'a-b-c'
+   * type T0 = Call<Compose<T.Join<'-'>, S.Split<'.'>>, 'a.b.c'>; // 'a-b-c'
    * ```
    */
-  export interface Compose<fns extends Fn[]> extends Fn {
-    return: ComposeImpl<fns, this["args"]>;
+  export type Compose<
+    fn0 extends Fn | unset | _ = unset,
+    fn1 extends Fn | unset | _ = unset,
+    fn2 extends Fn | unset | _ = unset,
+    fn3 extends Fn | unset | _ = unset,
+    fn4 extends Fn | unset | _ = unset,
+    fn5 extends Fn | unset | _ = unset,
+    fn6 extends Fn | unset | _ = unset,
+    fn7 extends Fn | unset | _ = unset,
+    fn8 extends Fn | unset | _ = unset,
+    fn9 extends Fn | unset | _ = unset,
+    value = unset
+  > = PartialApply<
+    ComposeFn,
+    [fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8, fn9, value]
+  >;
+  interface ComposeFn extends Fn {
+    return: this["args"] extends [...infer fns extends Fn[], infer value]
+      ? ComposeImpl<fns, [value]>
+      : never;
   }
 
   type ComposeLeftImpl<fns extends Fn[], args extends any[]> = fns extends [
@@ -128,8 +146,27 @@ export namespace Functions {
    * type T0 = Call<ComposeLeft< [S.Split<'.'>,T.Join<'-'> ]>, 'a.b.c'>; // 'a-b-c'
    * ```
    */
-  export interface ComposeLeft<fns extends Fn[]> extends Fn {
-    return: ComposeLeftImpl<fns, this["args"]>;
+  export type ComposeLeft<
+    fn0 extends Fn | unset | _ = unset,
+    fn1 extends Fn | unset | _ = unset,
+    fn2 extends Fn | unset | _ = unset,
+    fn3 extends Fn | unset | _ = unset,
+    fn4 extends Fn | unset | _ = unset,
+    fn5 extends Fn | unset | _ = unset,
+    fn6 extends Fn | unset | _ = unset,
+    fn7 extends Fn | unset | _ = unset,
+    fn8 extends Fn | unset | _ = unset,
+    fn9 extends Fn | unset | _ = unset,
+    value = unset
+  > = PartialApply<
+    ComposeLeftFn,
+    [fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8, fn9, value]
+  >;
+
+  interface ComposeLeftFn extends Fn {
+    return: this["args"] extends [...infer fns extends Fn[], infer value]
+      ? ComposeLeftImpl<fns, [value]>
+      : never;
   }
 
   /**
@@ -154,3 +191,33 @@ export namespace Functions {
       : never;
   }
 }
+
+/**
+ * Pipe a value through a list of functions.
+ * @description This is the same as the pipe operator in other languages.
+ * Evaluates the first function with the initial value, then passes the result to the second function, and so on.
+ *
+ * @param acc - The initial value to pass to the first function.
+ * @param xs - The list of functions to pipe the value through.
+ * @returns The result of the last function.
+ *
+ * @example
+ * ```ts
+ * type T0 = Pipe<1, [Numbers.Add<1>, Numbers.Negate]>; // -2
+ * ```
+ */
+export type Pipe<
+  input,
+  fn0 extends Fn | unset | _ = unset,
+  fn1 extends Fn | unset | _ = unset,
+  fn2 extends Fn | unset | _ = unset,
+  fn3 extends Fn | unset | _ = unset,
+  fn4 extends Fn | unset | _ = unset,
+  fn5 extends Fn | unset | _ = unset,
+  fn6 extends Fn | unset | _ = unset,
+  fn7 extends Fn | unset | _ = unset,
+  fn8 extends Fn | unset | _ = unset,
+  fn9 extends Fn | unset | _ = unset
+> = Eval<
+  Functions.ComposeLeft<fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8, fn9, input>
+>;

@@ -1,13 +1,6 @@
 import { Booleans } from "../src/internals/booleans/Booleans";
-import {
-  Apply,
-  Call,
-  Call2,
-  Eval,
-  Fn,
-  Pipe,
-  _,
-} from "../src/internals/core/Core";
+import { Pipe } from "../src/internals/functions/Functions";
+import { Apply, Call, Call2, Eval, Fn, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
@@ -306,7 +299,9 @@ describe("Tuples", () => {
     type res2 = Pipe<
       //    ^?
       [1, "a", 2, "b", 3, "c"],
-      [Tuples.Partition<Booleans.Extends<number>>, Tuples.At<0>, Tuples.At<2>]
+      Tuples.Partition<Booleans.Extends<number>>,
+      Tuples.At<0>,
+      Tuples.At<2>
     >;
     type test2 = Expect<Equal<res2, 3>>;
   });
@@ -388,7 +383,7 @@ describe("Tuples", () => {
     type res3 = Pipe<
       //    ^?
       [1, 2, 3],
-      [Tuples.ZipWith<Numbers.Add, [4, 5, 6]>]
+      Tuples.ZipWith<Numbers.Add, [4, 5, 6]>
     >;
     type test3 = Expect<Equal<res3, [5, 7, 9]>>;
   });
@@ -420,20 +415,19 @@ describe("Tuples", () => {
     type res = Pipe<
     //    ^?
       [1, 2, 3, 4, 5, 5, 6],
-      [
         Tuples.FlatMap<Duplicate>,
         Tuples.Map<Numbers.Add<3>>,
         Tuples.Drop<3>,
         Tuples.Take<6>,
         Tuples.Sum
-      ]
     >;
 
     type test = Expect<Equal<res, 39>>;
 
     type Factorial<N extends number> = Pipe<
       N,
-      [Tuples.Range<1, _>, Tuples.Reduce<Numbers.Mul, 1>]
+      Tuples.Range<1, _>,
+      Tuples.Reduce<Numbers.Mul, 1>
     >;
 
     type res2 = Factorial<7>;

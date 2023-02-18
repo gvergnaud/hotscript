@@ -1,14 +1,5 @@
-import {
-  Apply,
-  Call,
-  Call2,
-  Eval,
-  Fn,
-  Pipe,
-  PipeRight,
-  _,
-} from "./internals/core/Core";
-import { Functions } from "./internals/functions/Functions";
+import { Apply, Call, Call2, Eval, Fn, _ } from "./internals/core/Core";
+import { Functions, Pipe } from "./internals/functions/Functions";
 import { Numbers } from "./internals/numbers/Numbers";
 import { Objects } from "./internals/objects/Objects";
 import { Strings } from "./internals/strings/Strings";
@@ -21,7 +12,6 @@ export {
   _,
   Fn,
   Pipe,
-  PipeRight,
   Call,
   Call2,
   Apply,

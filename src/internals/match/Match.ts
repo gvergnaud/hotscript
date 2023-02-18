@@ -14,24 +14,63 @@ import * as Impl from "./impl/match";
  * @example
  * ```ts
  * type Test<T> = Match<T, [
- *   With<{ msg: string }, F.ComposeLeft<[O.Get<"msg">, S.Prepend<"Message: ">]>>,
+ *   With<{ msg: string }, F.ComposeLeft<O.Get<"msg">, S.Prepend<"Message: ">>>,
  *   With<string, S.Append<" <-- Message">>,
  *   With<any, F.Constant<"default value">>
  * ]>
  * ```
  */
 export type Match<
-  valueOrWithClauses = unset,
-  withClauses = unset
+  valueOrWith = unset,
+  with0 = unset,
+  with1 = unset,
+  with2 = unset,
+  with3 = unset,
+  with4 = unset,
+  with5 = unset,
+  with6 = unset,
+  with7 = unset,
+  with8 = unset,
+  with9 = unset
 > = Functions.PartialApply<
   MatchFn,
-  withClauses extends unset
-    ? [unset, valueOrWithClauses]
-    : [valueOrWithClauses, withClauses]
+  valueOrWith extends Impl.With<any, any>
+    ? [
+        unset,
+        valueOrWith,
+        with0,
+        with1,
+        with2,
+        with3,
+        with4,
+        with5,
+        with6,
+        with7,
+        with8,
+        with9
+      ]
+    : [
+        valueOrWith,
+        with0,
+        with1,
+        with2,
+        with3,
+        with4,
+        with5,
+        with6,
+        with7,
+        with8,
+        with9
+      ]
 >;
 
 interface MatchFn extends Fn {
-  return: Impl.Match<this["arg0"], this["arg1"]>;
+  return: this["args"] extends [
+    infer value,
+    ...infer clauses extends Impl.With<any, any>[]
+  ]
+    ? Impl.Match<value, clauses>
+    : never;
 }
 
 export namespace Match {

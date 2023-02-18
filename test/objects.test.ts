@@ -1,11 +1,10 @@
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
+import { Call, Eval, Fn } from "../src/internals/core/Core";
 import { Strings } from "../src/internals/strings/Strings";
-import { Functions } from "../src/internals/functions/Functions";
+import { Pipe } from "../src/internals/functions/Functions";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
-import { Numbers } from "../src";
 
 describe("Objects", () => {
   it("FromEntries", () => {
@@ -29,7 +28,8 @@ describe("Objects", () => {
   it("Entries >> FromEntries identity", () => {
     type res1 = Pipe<
       { a: string; b: number },
-      [Objects.Entries, Objects.FromEntries]
+      Objects.Entries,
+      Objects.FromEntries
     >;
     //   ^?
 
@@ -259,7 +259,7 @@ describe("Objects", () => {
       type res2 = Pipe<
         //  ^?
         { a: { b: { c: { d: string } } } },
-        [Objects.Get<"a.b.c.d">]
+        Objects.Get<"a.b.c.d">
       >;
       type test2 = Expect<Equal<res2, string>>;
     });
@@ -273,7 +273,7 @@ describe("Objects", () => {
       //    ^?
       type test1 = Expect<Equal<res1, string | number | undefined>>;
 
-      type res2 = Pipe<input, [Objects.Get<"a.b.c.d">]>;
+      type res2 = Pipe<input, Objects.Get<"a.b.c.d">>;
       //    ^?
       type test2 = Expect<Equal<res2, string | number | undefined>>;
     });
@@ -307,12 +307,10 @@ describe("Objects", () => {
     type APIUser = Pipe<
       //    ^?
       User,
-      [
-        Objects.OmitBy<Booleans.Equals<symbol>>,
-        Objects.Assign<{ metadata: { newUser: true } }>,
-        Objects.SnakeCaseDeep,
-        Objects.Assign<{ id: string }>
-      ]
+      Objects.OmitBy<Booleans.Equals<symbol>>,
+      Objects.Assign<{ metadata: { newUser: true } }>,
+      Objects.SnakeCaseDeep,
+      Objects.Assign<{ id: string }>
     >;
 
     type test1 = Expect<

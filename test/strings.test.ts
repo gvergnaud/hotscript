@@ -11,7 +11,7 @@ describe("Strings", () => {
     type test2 = Expect<Equal<res2, 3>>;
     type res3 = Call<
       //  ^?
-      Functions.Compose<[Strings.Length, Strings.Repeat<1001>]>,
+      Functions.Compose<Strings.Length, Strings.Repeat<1001>>,
       "a"
     >;
     type test3 = Expect<Equal<res3, 1001>>;

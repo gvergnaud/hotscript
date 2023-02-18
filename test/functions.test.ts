@@ -1,6 +1,5 @@
 import {
   Pipe,
-  PipeRight,
   Call,
   Call2,
   Numbers,
@@ -55,34 +54,15 @@ describe("Composition", () => {
     type res1 = Pipe<
       //  ^?
       [1, 2, 3, 4, 3, 4, 124678765435897587654478964568576n],
-      [
-        Tuples.Map<Numbers.Add<3>>,
-        Tuples.Join<".">,
-        Strings.Split<".">,
-        Tuples.Map<Strings.ToNumber>,
-        Tuples.Map<Numbers.Add<10>>,
-        Tuples.Map<Numbers.Sub<_, 1>>,
-        Tuples.Sum
-      ]
+      Tuples.Map<Numbers.Add<3>>,
+      Tuples.Join<".">,
+      Strings.Split<".">,
+      Tuples.Map<Strings.ToNumber>,
+      Tuples.Map<Numbers.Add<10>>,
+      Tuples.Map<Numbers.Sub<_, 1>>,
+      Tuples.Sum
     >;
     type tes1 = Expect<Equal<res1, 124678765435897587654478964568677n>>;
-  });
-
-  it("PipeRight", () => {
-    type res1 = PipeRight<
-      //  ^?
-      [
-        Tuples.Sum,
-        Tuples.Map<Numbers.Add<10>>,
-        Tuples.Map<Strings.ToNumber>,
-        Strings.Split<".">,
-        Tuples.Join<".">,
-        Tuples.Map<Numbers.Add<3>>
-      ],
-      [1, 2, 3, 4, 3, 4]
-    >;
-
-    type tes1 = Expect<Equal<res1, 95>>;
   });
 
   describe("MergeArgs", () => {

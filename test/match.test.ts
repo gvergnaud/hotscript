@@ -6,6 +6,7 @@ import {
   Numbers,
   Strings,
   Tuples,
+  _,
 } from "../src";
 import { Equal, Expect } from "../src/internals/helpers";
 
@@ -14,11 +15,9 @@ describe("Match", () => {
     type MatchTest<T> = Eval<
       Match<
         T,
-        [
-          Match.With<{ msg: string }, Functions.Constant<"a">>,
-          Match.With<string, Functions.Constant<"b">>,
-          Match.With<any, Functions.Constant<"c">>
-        ]
+        Match.With<{ msg: string }, Functions.Constant<"a">>,
+        Match.With<string, Functions.Constant<"b">>,
+        Match.With<any, Functions.Constant<"c">>
       >
     >;
 
@@ -40,19 +39,17 @@ describe("Match", () => {
     type MatchTest<T> = Eval<
       Match<
         T,
-        [
-          Match.With<
-            { nested: { value: Match.arg0 } },
-            Strings.Prepend<"nested.value === ">
-          >,
-          Match.With<{ x: Match.arg0; y: Match.arg1 }, Numbers.Add>,
-          Match.With<
-            { x: { y: [1, 2, Match.arg0] } },
-            Strings.Prepend<"x.y[2] === ">
-          >,
-          Match.With<string, Strings.Prepend<"string: ">>,
-          Match.With<any, Functions.Constant<"default value">>
-        ]
+        Match.With<
+          { nested: { value: Match.arg0 } },
+          Strings.Prepend<"nested.value === ">
+        >,
+        Match.With<{ x: Match.arg0; y: Match.arg1 }, Numbers.Add>,
+        Match.With<
+          { x: { y: [1, 2, Match.arg0] } },
+          Strings.Prepend<"x.y[2] === ">
+        >,
+        Match.With<string, Strings.Prepend<"string: ">>,
+        Match.With<any, Functions.Constant<"default value">>
       >
     >;
 
@@ -81,17 +78,15 @@ describe("Match", () => {
     type MatchTest<T> = Eval<
       Match<
         T,
-        [
-          Match.With<{ msg: Match.arg0<string> }, Strings.Prepend<"msg: ">>,
-          Match.With<
-            { x: Match.arg0<number>; y: Match.arg1<number> },
-            Numbers.Add
-          >,
-          Match.With<
-            { x: Match.arg0<string>; y: Match.arg1<string> },
-            Strings.Prepend
-          >
-        ]
+        Match.With<{ msg: Match.arg0<string> }, Strings.Prepend<"msg: ">>,
+        Match.With<
+          { x: Match.arg0<number>; y: Match.arg1<number> },
+          Numbers.Add
+        >,
+        Match.With<
+          { x: Match.arg0<string>; y: Match.arg1<string> },
+          Strings.Prepend
+        >
       >
     >;
 
@@ -112,11 +107,9 @@ describe("Match", () => {
     type Transform<xs extends any[]> = Eval<
       Tuples.Map<
         Match<
-          [
-            Match.With<string, Strings.Replace<"0", "1">>,
-            Match.With<number, Numbers.Add<1>>,
-            Match.With<boolean, Booleans.Not>
-          ]
+          Match.With<string, Strings.Replace<"0", "1">>,
+          Match.With<number, Numbers.Add<1>>,
+          Match.With<boolean, Booleans.Not>
         >,
         xs
       >

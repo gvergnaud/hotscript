@@ -156,7 +156,10 @@ export namespace Strings {
     start extends number | unset | _ = unset,
     end extends number | unset | _ = unset
   > = Functions.ComposeLeft<
-    [Strings.Split<"">, Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
+    Strings.Split<"">,
+    Tuples.Take<end>,
+    Tuples.Drop<start>,
+    Tuples.Join<"">
   >;
 
   /**

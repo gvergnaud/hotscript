@@ -37,11 +37,13 @@ export namespace Booleans {
   >;
 
   export type NotEqual<a = unset, b = unset> = Functions.Compose<
-    [Not, Functions.PartialApply<EqualsFn, [a, b]>]
+    Not,
+    Functions.PartialApply<EqualsFn, [a, b]>
   >;
 
   export type DoesNotExtend<a = unset, b = unset> = Functions.Compose<
-    [Not, Functions.PartialApply<ExtendsFn, [a, b]>]
+    Not,
+    Functions.PartialApply<ExtendsFn, [a, b]>
   >;
 
   interface AndFn extends Fn {

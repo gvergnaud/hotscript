@@ -1,17 +1,7 @@
-import { Functions as F, Functions } from "../functions/Functions";
+import { Functions as F, Functions, Pipe } from "../functions/Functions";
 import { Numbers as N, Numbers } from "../numbers/Numbers";
 
-import {
-  Apply,
-  Call,
-  Call2,
-  Call3,
-  Eval,
-  Fn,
-  Pipe,
-  unset,
-  _,
-} from "../core/Core";
+import { Apply, Call, Call2, Call3, Eval, Fn, unset, _ } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
 
 export namespace Tuples {
@@ -721,7 +711,9 @@ export namespace Tuples {
       ? Call2<Numbers.LessThanOrEqual, start, end> extends true
         ? Pipe<
             start,
-            [Numbers.Sub<end, _>, Numbers.Add<1>, Numbers.Abs]
+            Numbers.Sub<end, _>,
+            Numbers.Add<1>,
+            Numbers.Abs
           > extends infer length extends number
           ? RangeImpl<start, length>
           : never
