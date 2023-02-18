@@ -222,3 +222,12 @@ export type Stringifiable =
   | bigint
   | null
   | undefined;
+
+export type Primitive =
+  | string
+  | number
+  | boolean
+  | bigint
+  | null
+  | undefined
+  | symbol;

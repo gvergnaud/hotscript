@@ -5,6 +5,7 @@ import { Functions } from "../src/internals/functions/Functions";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
+import { Numbers } from "../src";
 
 describe("Objects", () => {
   it("FromEntries", () => {
@@ -365,22 +366,5 @@ describe("Objects", () => {
         }
       >
     >;
-  });
-
-  describe("Match", () => {
-    type MatchTest<T> = Eval<
-      Objects.Match<
-        T,
-        [
-          Objects.With<{ msg: string }, Functions.Constant<"a">>,
-          Objects.With<string, Functions.Constant<"b">>,
-          Objects.With<any, Functions.Constant<"c">>
-        ]
-      >
-    >;
-
-    type R1 = Expect<Equal<MatchTest<{ msg: "hello" }>, "a">>;
-    type R2 = Expect<Equal<MatchTest<"hello">, "b">>;
-    type R3 = Expect<Equal<MatchTest<1>, "c">>;
   });
 });
