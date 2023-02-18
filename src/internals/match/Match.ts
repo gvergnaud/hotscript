@@ -32,8 +32,8 @@ interface MatchFn extends Fn {
 export namespace Match {
   export type With<pattern, fn extends Fn> = Impl.With<pattern, fn>;
 
-  export type arg0 = Impl.arg0;
-  export type arg1 = Impl.arg1;
-  export type arg2 = Impl.arg2;
-  export type arg3 = Impl.arg3;
+  export type arg0<Constraint = unknown> = Impl.arg<0, Constraint>;
+  export type arg1<Constraint = unknown> = Impl.arg<1, Constraint>;
+  export type arg2<Constraint = unknown> = Impl.arg<2, Constraint>;
+  export type arg3<Constraint = unknown> = Impl.arg<3, Constraint>;
 }

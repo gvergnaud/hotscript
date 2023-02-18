@@ -68,4 +68,35 @@ describe("Match", () => {
     //   ^?
     type test5 = Expect<Equal<res5, "x.y[2] === 3">>;
   });
+
+  it("should work with constrained arguments", () => {
+    type MatchTest<T> = Eval<
+      Match<
+        T,
+        [
+          Match.With<{ msg: Match.arg0<string> }, Strings.Prepend<"msg: ">>,
+          Match.With<
+            { x: Match.arg0<number>; y: Match.arg1<number> },
+            Numbers.Add
+          >,
+          Match.With<
+            { x: Match.arg0<string>; y: Match.arg1<string> },
+            Strings.Prepend
+          >
+        ]
+      >
+    >;
+
+    type res1 = MatchTest<{ msg: "hello" }>;
+    //   ^?
+    type test1 = Expect<Equal<res1, "msg: hello">>;
+
+    type res2 = MatchTest<{ x: 1; y: 2 }>;
+    //   ^?
+    type test2 = Expect<Equal<res2, 3>>;
+
+    type res3 = MatchTest<{ x: "a"; y: "b" }>;
+    //   ^?
+    type test3 = Expect<Equal<res3, "ab">>;
+  });
 });

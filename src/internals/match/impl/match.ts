@@ -2,35 +2,34 @@ import { Eval, Fn, unset } from "../../core/Core";
 import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
 
-export type arg0 = "@hotscript/arg0";
-export type arg1 = "@hotscript/arg1";
-export type arg2 = "@hotscript/arg2";
-export type arg3 = "@hotscript/arg3";
+export type arg<Index extends number, Constraint = unknown> = {
+  tag: "@hotscript/arg";
+  index: Index;
+  constraint: Constraint;
+};
 
 type GetWithDefault<Obj, K, Def> = K extends keyof Obj ? Obj[K] : Def;
 
-type ReplaceArgsWithAny<pattern> = pattern extends arg0 | arg1 | arg2 | arg3
-  ? any
+type ReplaceArgsWithConstraint<pattern> = pattern extends arg<
+  any,
+  infer Constraint
+>
+  ? Constraint
   : pattern extends Primitive
   ? pattern
   : pattern extends [any, ...any]
-  ? { [key in keyof pattern]: ReplaceArgsWithAny<pattern[key]> }
+  ? { [key in keyof pattern]: ReplaceArgsWithConstraint<pattern[key]> }
   : pattern extends (infer V)[]
-  ? ReplaceArgsWithAny<V>[]
+  ? ReplaceArgsWithConstraint<V>[]
   : pattern extends object
-  ? { [key in keyof pattern]: ReplaceArgsWithAny<pattern[key]> }
+  ? { [key in keyof pattern]: ReplaceArgsWithConstraint<pattern[key]> }
   : pattern;
 
-type DoesMatch<value, pattern> = value extends ReplaceArgsWithAny<pattern>
-  ? true
-  : false;
+type DoesMatch<value, pattern> =
+  value extends ReplaceArgsWithConstraint<pattern> ? true : false;
 
-type ExtractArgObject<value, pattern> = pattern extends
-  | arg0
-  | arg1
-  | arg2
-  | arg3
-  ? { [K in pattern]: value }
+type ExtractArgObject<value, pattern> = pattern extends arg<infer N, any>
+  ? { [K in N]: value }
   : pattern extends []
   ? {}
   : [value, pattern] extends [
@@ -57,10 +56,10 @@ type WithDefaultArgs<Args extends any[], Def> = [Args[number]] extends [unset]
   : Args;
 
 type ArgObjectToArgs<T> = [
-  GetWithDefault<T, arg0, unset>,
-  GetWithDefault<T, arg1, unset>,
-  GetWithDefault<T, arg2, unset>,
-  GetWithDefault<T, arg3, unset>
+  GetWithDefault<T, 0, unset>,
+  GetWithDefault<T, 1, unset>,
+  GetWithDefault<T, 2, unset>,
+  GetWithDefault<T, 3, unset>
 ];
 
 type ExtractArgs<value, pattern> = WithDefaultArgs<
