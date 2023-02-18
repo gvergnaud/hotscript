@@ -196,38 +196,4 @@ export namespace Objects {
       ? GetFromPath<obj, path>
       : never;
   }
-
-  export type With<match, fn extends Fn> = { match: match; fn: fn };
-
-  /**
-   * Type-level pattern matching
-   * @param value the value to pattern match on
-   * @param patterns the possible patterns
-   *
-   * @example
-   * ```ts
-   * type Test<T> = Match<T, [
-   *   With<{ msg: string }, F.ComposeLeft<[O.Get<"msg">, S.Prepend<"Message: ">]>>,
-   *   With<string, S.Append<" <-- Message">>,
-   *   With<any, F.Constant<"default value">>
-   * ]>
-   * ```
-   */
-  type MatchImpl<value, patterns extends With<any, any>[]> = patterns extends [
-    With<infer match, infer fn extends Fn>,
-    ...infer restPatterns extends With<any, any>[]
-  ]
-    ? value extends match
-      ? Call<fn, value>
-      : MatchImpl<value, restPatterns>
-    : never;
-
-  export interface MatchFn extends Fn {
-    return: MatchImpl<this["arg0"], this["arg1"]>;
-  }
-
-  export type Match<
-    value = unset,
-    patterns extends With<any, any>[] | _ | unset = unset
-  > = Functions.PartialApply<MatchFn, [value, patterns]>;
 }
