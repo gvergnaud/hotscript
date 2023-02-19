@@ -67,4 +67,18 @@ export namespace Booleans {
   }
 
   export type Or<a = unset, b = unset> = Functions.PartialApply<OrFn, [a, b]>;
+
+  interface XOrFn extends Fn {
+    return: this["args"] extends [
+      infer first extends boolean,
+      infer second extends boolean,
+      ...any
+    ]
+      ? first extends second
+        ? false
+        : true
+      : never;
+  }
+
+  export type XOr<a = unset, b = unset> = Functions.PartialApply<XOrFn, [a, b]>;
 }
