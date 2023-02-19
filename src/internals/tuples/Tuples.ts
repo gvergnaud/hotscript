@@ -88,6 +88,23 @@ export namespace Tuples {
     [tuple]
   >;
 
+  interface ToUnionFn extends Fn {
+    return: this["arg0"][number];
+  }
+
+  /**
+   * Convert a tuple to a union of its elements.
+   * @param tuple - The tuple to convert.
+   * @returns A union of the tuple's elements.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.ToUnion, [1, 2, 3]>; // 1 | 2 | 3
+   * type T1 = Eval<Tuples.ToUnion<[1, 2, 3]>>; // 1 | 2 | 3
+   * ```
+   */
+  export type ToUnion<tuple extends readonly any[] | _ | unset = unset> =
+    Functions.PartialApply<ToUnionFn, [tuple]>;
+
   /**
    * Returns the first element of a tuple.
    * @params args[0] - A tuple.

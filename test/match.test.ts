@@ -7,6 +7,7 @@ import {
   Strings,
   Tuples,
 } from "../src/index";
+import { arg0, arg1 } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Match", () => {
@@ -42,12 +43,12 @@ describe("Match", () => {
         T,
         [
           Match.With<
-            { nested: { value: Match.arg0 } },
+            { nested: { value: arg0 } },
             Strings.Prepend<"nested.value === ">
           >,
-          Match.With<{ x: Match.arg0; y: Match.arg1 }, Numbers.Add>,
+          Match.With<{ x: arg0; y: arg1 }, Numbers.Add>,
           Match.With<
-            { x: { y: [1, 2, Match.arg0] } },
+            { x: { y: [1, 2, arg0] } },
             Strings.Prepend<"x.y[2] === ">
           >,
           Match.With<string, Strings.Prepend<"string: ">>,
@@ -82,15 +83,9 @@ describe("Match", () => {
       Match<
         T,
         [
-          Match.With<{ msg: Match.arg0<string> }, Strings.Prepend<"msg: ">>,
-          Match.With<
-            { x: Match.arg0<number>; y: Match.arg1<number> },
-            Numbers.Add
-          >,
-          Match.With<
-            { x: Match.arg0<string>; y: Match.arg1<string> },
-            Strings.Prepend
-          >
+          Match.With<{ msg: arg0<string> }, Strings.Prepend<"msg: ">>,
+          Match.With<{ x: arg0<number>; y: arg1<number> }, Numbers.Add>,
+          Match.With<{ x: arg0<string>; y: arg1<string> }, Strings.Prepend>
         ]
       >
     >;
