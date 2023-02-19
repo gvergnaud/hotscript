@@ -89,6 +89,14 @@ type T = {
   - [x] Every
   - [x] Some
 - [ ] Object
+  - [ ] Readonly
+  - [ ] Mutable
+  - [ ] Required
+  - [ ] Partial
+  - [ ] ReadonlyDeep
+  - [ ] MutableDeep
+  - [ ] RequiredDeep
+  - [ ] PartialDeep
   - [x] Get
   - [x] FromEntries
   - [x] Entries
