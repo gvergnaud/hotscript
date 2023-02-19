@@ -160,6 +160,7 @@ type T = {
 - [ ] Boolean
   - [x] And
   - [x] Or
+  - [x] XOr
   - [x] Not
   - [x] Extends
   - [x] Equals

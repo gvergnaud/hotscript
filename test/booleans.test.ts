@@ -66,6 +66,38 @@ describe("Booleans", () => {
     });
   });
 
+  describe("XOr", () => {
+    it("can be called without any pre-filled arguments", () => {
+      type res1 = Call<Tuples.Reduce<Booleans.XOr, true>, [false, true, false]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, false>>;
+    });
+
+    it("can be called with one pre-filled argument", () => {
+      type res1 = Call<Tuples.Map<Booleans.XOr<true>>, [true, false, true]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, [false, true, false]>>;
+    });
+
+    it("can be called with 2 pre-filled arguments", () => {
+      type res1 = Eval<Booleans.XOr<true, true>>;
+      //    ^?
+      type test1 = Expect<Equal<res1, false>>;
+
+      type res2 = Eval<Booleans.XOr<false, false>>;
+      //    ^?
+      type test2 = Expect<Equal<res2, false>>;
+
+      type res3 = Eval<Booleans.XOr<true, false>>;
+      //    ^?
+      type test3 = Expect<Equal<res3, true>>;
+
+      type res4 = Eval<Booleans.XOr<false, true>>;
+      //    ^?
+      type test4 = Expect<Equal<res4, true>>;
+    });
+  });
+
   it("Not", () => {
     type res1 = Call<Booleans.Not, true>;
     //    ^?
