@@ -13,4 +13,6 @@ export type {
   LessThanOrEqual,
   GreaterThan,
   GreaterThanOrEqual,
+  Max,
+  Min,
 } from "./compare";

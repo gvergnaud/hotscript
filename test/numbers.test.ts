@@ -188,6 +188,62 @@ describe("Numbers", () => {
     });
   });
 
+  describe("Min", () => {
+    it("can be called without any pre-filled arguments", () => {
+      type res1 = Call<Tuples.Reduce<Numbers.Min, 2>, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, 1>>;
+
+      type res2 = Call2<Numbers.Min, 2, 3>;
+      //    ^?
+      type test2 = Expect<Equal<res2, 2>>;
+
+      type res3 = Call2<Numbers.Min, 2, -3>;
+      //    ^?
+      type test3 = Expect<Equal<res3, -3>>;
+    });
+
+    it("can be called with one pre-filled arguments", () => {
+      type res1 = Call<Tuples.Map<Numbers.Min<_, 2>>, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, [1, 2, 2]>>;
+    });
+
+    it("can be called with 1 pre-filled arguments", () => {
+      type res1 = Eval<Numbers.Min<2, 3>>;
+      //    ^?
+      type test1 = Expect<Equal<res1, 2>>;
+    });
+  });
+
+  describe("Max", () => {
+    it("can be called without any pre-filled arguments", () => {
+      type res1 = Call<Tuples.Reduce<Numbers.Max, 2>, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, 3>>;
+
+      type res2 = Call2<Numbers.Max, 2, 3>;
+      //    ^?
+      type test2 = Expect<Equal<res2, 3>>;
+
+      type res3 = Call2<Numbers.Max, 2, -3>;
+      //    ^?
+      type test3 = Expect<Equal<res3, 2>>;
+    });
+
+    it("can be called with one pre-filled arguments", () => {
+      type res1 = Call<Tuples.Map<Numbers.Max<_, 2>>, [1, 2, 3]>;
+      //    ^?
+      type test1 = Expect<Equal<res1, [2, 2, 3]>>;
+    });
+
+    it("can be called with 1 pre-filled arguments", () => {
+      type res1 = Eval<Numbers.Max<2, 3>>;
+      //    ^?
+      type test1 = Expect<Equal<res1, 3>>;
+    });
+  });
+
   describe("Compare", () => {
     it("can be called without any pre-filled arguments", () => {
       type res1 = Call2<Numbers.Compare, 3, 2>;
