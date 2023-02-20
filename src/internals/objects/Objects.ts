@@ -216,10 +216,11 @@ export namespace Objects {
       : never;
   }
 
-  type CreateImpl<pattern, args extends unknown[]> = pattern extends arg<
-    infer N extends number
-  >
-    ? args[N]
+  type CreateImpl<
+    pattern,
+    args extends unknown[]
+  > = pattern extends infer p extends Fn
+    ? Apply<p, args>
     : pattern extends Primitive
     ? pattern
     : pattern extends [any, ...any]

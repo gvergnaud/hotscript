@@ -1,6 +1,9 @@
+import { Objects } from "../src";
 import { Booleans } from "../src/internals/booleans/Booleans";
 import {
   Apply,
+  arg0,
+  args,
   Call,
   Call2,
   Eval,
@@ -14,16 +17,6 @@ import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 
 describe("Tuples", () => {
-  it("Create", () => {
-    type res1 = Apply<Tuples.Create, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]>;
-    //   ^?
-    type tes1 = Expect<Equal<res1, [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]>>;
-
-    type res2 = Eval<Tuples.Create<1, 2, 3, 4, 5>>;
-    //   ^?
-    type tes2 = Expect<Equal<res2, [1, 2, 3, 4, 5]>>;
-  });
-
   it("Head", () => {
     type res1 = Call<Tuples.Head, [1, 2, 3]>;
     //   ^?

@@ -3,6 +3,7 @@ import { Numbers as N, Numbers } from "../numbers/Numbers";
 
 import {
   Apply,
+  args,
   Call,
   Call2,
   Call3,
@@ -44,28 +45,6 @@ export namespace Tuples {
   }
 
   type IsEmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
-
-  interface CreateFn extends Fn {
-    return: this["args"];
-  }
-
-  /**
-   * Create a tuple from a list of arguments.
-   * @param args - The arguments to create a tuple from.
-   * @returns A tuple containing the arguments.
-   * @example
-   * ```ts
-   * type T0 = Call3<Tuples.Create, 1, 2, 3>; // [1, 2, 3]
-   * type T1 = Eval<Tuples.Create<1, 2, 3>>; // [1, 2, 3]
-   * ```
-   */
-  export type Create<
-    arg1 = unset,
-    arg2 = unset,
-    arg3 = unset,
-    arg4 = unset,
-    arg5 = unset
-  > = Functions.PartialApply<CreateFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface IsEmptyFn extends Fn {
     return: IsEmptyImpl<Extract<this["arg0"], unknown[]>>;
@@ -686,7 +665,7 @@ export namespace Tuples {
   export type Zip<
     arr1 extends unknown[] | _ | unset = unset,
     arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<CreateFn>, [arr1, arr2]>;
+  > = Functions.PartialApply<ZipWithFn<args>, [arr1, arr2]>;
 
   /**
    * Zip two tuples together using a function.
@@ -700,8 +679,8 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.ZipWith<Tuples.Create>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
-   * type T1 = Eval<Tuples.ZipWith<Tuples.Create, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T0 = Call2<Tuples.ZipWith<args>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.ZipWith<args, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * type T3 = Call2<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
    * ```
    */
