@@ -11,10 +11,13 @@ import {
   Pipe,
   _,
 } from "../src/internals/core/Core";
+import { Functions } from "../src/internals/functions/Functions";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
+import { Unions } from "../src/internals/unions/Unions";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
+import { Match } from "../src/internals/match/Match";
 
 describe("Objects", () => {
   it("Create", () => {
@@ -327,6 +330,26 @@ describe("Objects", () => {
     });
   });
 
+  it("Record", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Record<"a" | "b">,
+      number
+    >;
+    type tes1 = Expect<Equal<res1, { a: number; b: number }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Record<"a" | "b", number>
+    >;
+    type tes2 = Expect<Equal<res2, { a: number; b: number }>>;
+    type res3 = Apply<
+      //   ^?
+      Objects.Record,
+      ["a" | "b", number]
+    >;
+    type tes3 = Expect<Equal<res3, { a: number; b: number }>>;
+  });
+
   describe("Composition", () => {
     type User = {
       id: symbol;
@@ -359,24 +382,36 @@ describe("Objects", () => {
       >
     >;
 
+    // prettier-ignore
     type res5 = Pipe<
       //    ^?
-      "/api/v1/users/:id/posts/:postId/comments/:commentId",
+      "/users/<id:string>/posts/<index:number>",
       [
         Strings.Split<"/">,
-        Tuples.Filter<Strings.StartsWith<":">>,
-        Tuples.Map<Strings.Replace<":", "">>,
+        Tuples.Filter<Strings.StartsWith<"<">>,
+        Tuples.Map<
+          Functions.ComposeLeft<[
+            Strings.Replace<"<", "">,
+            Strings.Replace<">", "">,
+            Strings.Split<":">
+          ]>
+        >,
         Tuples.ToUnion,
-        Objects.Record<_, string | number>
+        Objects.FromEntries,
+        Objects.MapValues<
+          Match<[
+            Match.With<"string", Functions.Constant<string>>,
+            Match.With<"number", Functions.Constant<number>>
+          ]>
+        >
       ]
     >;
     type test5 = Expect<
       Equal<
         res5,
         {
-          id: string | number;
-          postId: string | number;
-          commentId: string | number;
+          id: string;
+          index: number;
         }
       >
     >;
