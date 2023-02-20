@@ -92,6 +92,15 @@ describe("Objects", () => {
     type tes1 = Expect<Equal<res1, { a: 1 }>>;
   });
 
+  it("Readonly", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Readonly,
+      { a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { readonly a: 1; readonly b: true }>>;
+  });
+
   it("Omit", () => {
     type res1 = Call<
       //   ^?

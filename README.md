@@ -90,7 +90,7 @@ type T = {
   - [x] Some
   - [x] ToUnion
 - [ ] Object
-  - [ ] Readonly
+  - [x] Readonly
   - [ ] Mutable
   - [ ] Required
   - [ ] Partial
