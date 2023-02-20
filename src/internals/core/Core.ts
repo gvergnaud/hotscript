@@ -34,11 +34,16 @@ export type unset = "@hotscript/unset";
  */
 export type _ = "@hotscript/placeholder";
 
-export type arg<Index extends number, Constraint = unknown> = {
-  tag: "@hotscript/arg";
-  index: Index;
-  constraint: Constraint;
-};
+export interface arg<Index extends number, Constraint = unknown> extends Fn {
+  return: this["args"][Index] extends infer arg extends Constraint
+    ? arg
+    : never;
+}
+
+export interface args<Constraint extends unknown[] = unknown[]> extends Fn {
+  return: this["args"] extends infer args extends Constraint ? args : never;
+}
+
 export type arg0<Constraint = unknown> = arg<0, Constraint>;
 export type arg1<Constraint = unknown> = arg<1, Constraint>;
 export type arg2<Constraint = unknown> = arg<2, Constraint>;
