@@ -7,4 +7,5 @@ export namespace Std {
   export type _Lowercase<a extends string> = Lowercase<a>;
   export type _Capitalize<a extends string> = Capitalize<a>;
   export type _Uncapitalize<a extends string> = Uncapitalize<a>;
+  export type _Record<k extends PropertyKey, v> = Record<k, v>;
 }

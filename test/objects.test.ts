@@ -9,6 +9,7 @@ import {
   Eval,
   Fn,
   Pipe,
+  _,
 } from "../src/internals/core/Core";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
@@ -354,6 +355,28 @@ describe("Objects", () => {
           };
           first_name: string;
           last_name: string;
+        }
+      >
+    >;
+
+    type res5 = Pipe<
+      //    ^?
+      "/api/v1/users/:id/posts/:postId/comments/:commentId",
+      [
+        Strings.Split<"/">,
+        Tuples.Filter<Strings.StartsWith<":">>,
+        Tuples.Map<Strings.Replace<":", "">>,
+        Tuples.ToUnion,
+        Objects.Record<_, string | number>
+      ]
+    >;
+    type test5 = Expect<
+      Equal<
+        res5,
+        {
+          id: string | number;
+          postId: string | number;
+          commentId: string | number;
         }
       >
     >;

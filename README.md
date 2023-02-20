@@ -98,6 +98,7 @@ type T = {
   - [ ] MutableDeep
   - [ ] RequiredDeep
   - [ ] PartialDeep
+  - [x] Record
   - [x] Create
   - [x] Get
   - [x] FromEntries
@@ -137,7 +138,6 @@ type T = {
   - [x] ToTuple
   - [x] ToNumber
   - [x] ToString
-  - [x] ToRecord
   - [x] Prepend
   - [x] Append
   - [x] Uppercase

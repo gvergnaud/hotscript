@@ -237,4 +237,27 @@ export namespace Objects {
     arg2 = unset,
     arg3 = unset
   > = Functions.PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
+
+  interface RecordFn extends Fn {
+    return: this["args"] extends [infer union extends string, infer value]
+      ? Std._Record<union, value>
+      : never;
+  }
+
+  /**
+   * Create a record from a union of strings and a value type
+   * @description This function is used to create a record from a union of strings
+   * @param union - The union of strings to create the record from
+   * @param value - The value to assign to each property
+   * @returns The record created from the union of strings
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<O.Record<'a' | 'b' | 'c'>, 1>; // { a: 1, b: 1, c: 1 }
+   * ```
+   */
+  export type Record<
+    union extends string | _ | unset = unset,
+    value = unset
+  > = Functions.PartialApply<RecordFn, [union, value]>;
 }
