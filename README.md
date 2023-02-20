@@ -88,6 +88,7 @@ type T = {
   - [x] ReduceRight
   - [x] Every
   - [x] Some
+  - [x] ToUnion
 - [ ] Object
   - [ ] Readonly
   - [ ] Mutable
@@ -97,6 +98,7 @@ type T = {
   - [ ] MutableDeep
   - [ ] RequiredDeep
   - [ ] PartialDeep
+  - [x] Create
   - [x] Get
   - [x] FromEntries
   - [x] Entries
@@ -135,6 +137,7 @@ type T = {
   - [x] ToTuple
   - [x] ToNumber
   - [x] ToString
+  - [x] ToRecord
   - [x] Prepend
   - [x] Append
   - [x] Uppercase

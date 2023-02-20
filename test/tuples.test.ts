@@ -411,6 +411,12 @@ describe("Tuples", () => {
     type test4 = Expect<Equal<res4, [-5, -4, -3, -2]>>;
   });
 
+  it("ToUnion", () => {
+    type res1 = Eval<Tuples.ToUnion<[1, "a", 2, "b", 3, "c"]>>;
+    //    ^?
+    type test1 = Expect<Equal<res1, 1 | "a" | 2 | "b" | 3 | "c">>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
       return: [this["arg0"], this["arg0"]];

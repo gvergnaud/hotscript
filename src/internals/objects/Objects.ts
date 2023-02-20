@@ -2,9 +2,10 @@ import {
   GetFromPath,
   IsArrayStrict,
   Prettify,
+  Primitive,
   UnionToIntersection,
 } from "../helpers";
-import { Call, Call2, Fn, unset, _ } from "../core/Core";
+import { Apply, arg, Call, Call2, Fn, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
 import { Functions } from "../functions/Functions";
@@ -196,4 +197,44 @@ export namespace Objects {
       ? GetFromPath<obj, path>
       : never;
   }
+
+  /**
+   * Create an object from parameters
+   * @description This function is used to make an object from parameters
+   * And allows to place the parameters in any object property
+   * @param args - The parameters to make the object from
+   * @returns The object made from the parameters
+   *
+   * @example
+   * ```ts
+   * type T0 = Apply<O.Create<{ a: arg0, b: arg1 }>, [1, 2]>; // { a: 1, b: 2 }
+   * ```
+   */
+  interface CreateFn extends Fn {
+    return: this["args"] extends [infer match, ...infer args]
+      ? CreateImpl<match, args>
+      : never;
+  }
+
+  type CreateImpl<match, args extends unknown[]> = match extends arg<
+    infer N extends number
+  >
+    ? args[N]
+    : match extends Primitive
+    ? match
+    : match extends [any, ...any]
+    ? { [key in keyof match]: CreateImpl<match[key], args> }
+    : match extends (infer V)[]
+    ? CreateImpl<V, args>[]
+    : match extends object
+    ? { [key in keyof match]: CreateImpl<match[key], args> }
+    : match;
+
+  export type Create<
+    match = unset,
+    arg0 = unset,
+    arg1 = unset,
+    arg2 = unset,
+    arg3 = unset
+  > = Functions.PartialApply<CreateFn, [match, arg0, arg1, arg2, arg3]>;
 }

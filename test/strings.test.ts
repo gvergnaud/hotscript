@@ -1,4 +1,15 @@
-import { _, Call, Call2, Strings, Functions } from "../src/index";
+import {
+  _,
+  Call,
+  Call2,
+  Strings,
+  Functions,
+  Pipe,
+  Tuples,
+  Unions,
+  Objects,
+} from "../src/index";
+import { Apply, arg0, Eval } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
@@ -120,6 +131,28 @@ describe("Strings", () => {
     type res4 = Call<Strings.StartsWith<"">, "">;
     //    ^?
     type test4 = Expect<Equal<res4, true>>;
+
+    type res5 = Pipe<
+      //    ^?
+      "/api/v1/users/:id/posts/:postId/comments/:commentId",
+      [
+        Strings.Split<"/">,
+        Tuples.Filter<Strings.StartsWith<":">>,
+        Tuples.Map<Strings.Replace<":", "">>,
+        Tuples.ToUnion,
+        Strings.ToRecord<_, string | number>
+      ]
+    >;
+    type test5 = Expect<
+      Equal<
+        res5,
+        {
+          id: string | number;
+          postId: string | number;
+          commentId: string | number;
+        }
+      >
+    >;
   });
 
   it("EndsWith", () => {
@@ -135,6 +168,26 @@ describe("Strings", () => {
     type res4 = Call<Strings.EndsWith<"">, "">;
     //    ^?
     type test4 = Expect<Equal<res4, true>>;
+  });
+
+  it("ToRecord", () => {
+    type res1 = Call<
+      //   ^?
+      Strings.ToRecord<"a" | "b">,
+      number
+    >;
+    type tes1 = Expect<Equal<res1, { a: number; b: number }>>;
+    type res2 = Eval<
+      //   ^?
+      Strings.ToRecord<"a" | "b", number>
+    >;
+    type tes2 = Expect<Equal<res2, { a: number; b: number }>>;
+    type res3 = Apply<
+      //   ^?
+      Strings.ToRecord,
+      ["a" | "b", number]
+    >;
+    type tes3 = Expect<Equal<res3, { a: number; b: number }>>;
   });
 
   it("ToTuple", () => {

@@ -34,6 +34,16 @@ export type unset = "@hotscript/unset";
  */
 export type _ = "@hotscript/placeholder";
 
+export type arg<Index extends number, Constraint = unknown> = {
+  tag: "@hotscript/arg";
+  index: Index;
+  constraint: Constraint;
+};
+export type arg0<Constraint = unknown> = arg<0, Constraint>;
+export type arg1<Constraint = unknown> = arg<1, Constraint>;
+export type arg2<Constraint = unknown> = arg<2, Constraint>;
+export type arg3<Constraint = unknown> = arg<3, Constraint>;
+
 /**
  * Call a HOTScript function with the given arguments.
  *

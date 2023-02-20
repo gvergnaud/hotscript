@@ -1,11 +1,42 @@
 import { Booleans } from "../src/internals/booleans/Booleans";
-import { Call, Eval, Fn, Pipe } from "../src/internals/core/Core";
+import {
+  Apply,
+  arg0,
+  arg1,
+  arg2,
+  arg3,
+  Call,
+  Eval,
+  Fn,
+  Pipe,
+} from "../src/internals/core/Core";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Objects", () => {
+  it("Create", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Create,
+      { a: string; b: number }
+    >;
+    type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+    type res2 = Apply<
+      //   ^?
+      Objects.Create<{ a: arg0; b: arg1 }>,
+      [1, 2]
+    >;
+    type tes2 = Expect<Equal<res2, { a: 1; b: 2 }>>;
+    type res3 = Apply<
+      //   ^?
+      Objects.Create<{ a: arg0; b: [arg1, arg2]; c: { d: arg3 } }>,
+      [1, 2, 3, 4]
+    >;
+    type tes3 = Expect<Equal<res3, { a: 1; b: [2, 3]; c: { d: 4 } }>>;
+  });
+
   it("FromEntries", () => {
     type res1 = Call<
       //   ^?

@@ -1,12 +1,6 @@
-import { Eval, Fn, unset } from "../../core/Core";
+import { arg, Eval, Fn, unset } from "../../core/Core";
 import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
-
-export type arg<Index extends number, Constraint = unknown> = {
-  tag: "@hotscript/arg";
-  index: Index;
-  constraint: Constraint;
-};
 
 type GetWithDefault<Obj, K, Def> = K extends keyof Obj ? Obj[K] : Def;
 
