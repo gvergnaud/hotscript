@@ -283,13 +283,17 @@ export namespace Objects {
     arg3 = unset
   > = PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
 
-  type MutableImpl<obj, keys, union = {
-    [key in keyof obj]: obj[key];
-  } & {
-    -readonly [key in Extract<keyof obj, keys>]: obj[key];
-  }> = {
+  type MutableImpl<
+    obj,
+    keys,
+    union = {
+      [key in keyof obj]: obj[key];
+    } & {
+      -readonly [key in Extract<keyof obj, keys>]: obj[key];
+    }
+  > = {
     [key in keyof union]: union[key];
-  }
+  };
 
   /**
    * Make all properties (or a specific set) of a record mutable
@@ -305,7 +309,10 @@ export namespace Objects {
    * ```
    */
   export interface Mutable extends Fn {
-    return: MutableImpl<this["arg0"], this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]>;
+    return: MutableImpl<
+      this["arg0"],
+      this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]
+    >;
   }
 
   interface RecordFn extends Fn {
