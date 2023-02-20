@@ -226,30 +226,53 @@ export namespace Objects {
    * ```
    */
   interface CreateFn extends Fn {
-    return: this["args"] extends [infer match, ...infer args]
-      ? CreateImpl<match, args>
+    return: this["args"] extends [infer pattern, ...infer args]
+      ? CreateImpl<pattern, args>
       : never;
   }
 
-  type CreateImpl<match, args extends unknown[]> = match extends arg<
+  type CreateImpl<pattern, args extends unknown[]> = pattern extends arg<
     infer N extends number
   >
     ? args[N]
-    : match extends Primitive
-    ? match
-    : match extends [any, ...any]
-    ? { [key in keyof match]: CreateImpl<match[key], args> }
-    : match extends (infer V)[]
+    : pattern extends Primitive
+    ? pattern
+    : pattern extends [any, ...any]
+    ? { [key in keyof pattern]: CreateImpl<pattern[key], args> }
+    : pattern extends (infer V)[]
     ? CreateImpl<V, args>[]
-    : match extends object
-    ? { [key in keyof match]: CreateImpl<match[key], args> }
-    : match;
+    : pattern extends object
+    ? { [key in keyof pattern]: CreateImpl<pattern[key], args> }
+    : pattern;
 
   export type Create<
-    match = unset,
+    pattern = unset,
     arg0 = unset,
     arg1 = unset,
     arg2 = unset,
     arg3 = unset
-  > = Functions.PartialApply<CreateFn, [match, arg0, arg1, arg2, arg3]>;
+  > = Functions.PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
+
+  interface RecordFn extends Fn {
+    return: this["args"] extends [infer union extends string, infer value]
+      ? Std._Record<union, value>
+      : never;
+  }
+
+  /**
+   * Create a record from a union of strings and a value type
+   * @description This function is used to create a record from a union of strings
+   * @param union - The union of strings to create the record from
+   * @param value - The value to assign to each property
+   * @returns The record created from the union of strings
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<O.Record<'a' | 'b' | 'c'>, 1>; // { a: 1, b: 1, c: 1 }
+   * ```
+   */
+  export type Record<
+    union extends string | _ | unset = unset,
+    value = unset
+  > = Functions.PartialApply<RecordFn, [union, value]>;
 }
