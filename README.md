@@ -158,7 +158,7 @@ type res5 = Pipe<
   - [x] Concat
 - [ ] Object
   - [x] Readonly
-  - [ ] Mutable
+  - [x] Mutable
   - [x] Required
   - [x] Partial
   - [ ] ReadonlyDeep

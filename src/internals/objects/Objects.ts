@@ -283,6 +283,18 @@ export namespace Objects {
     arg3 = unset
   > = PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
 
+  type MutableImpl<obj, keys extends keyof obj = keyof obj, union = {
+    [key in keyof obj]: obj[key];
+  } & {
+    -readonly [key in Extract<keyof obj, keys>]: obj[key];
+  }> = {
+    [key in keyof union]: union[key];
+  }
+
+  export interface Mutable extends Fn {
+    return: MutableImpl<this["arg0"], this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]>;
+  }
+
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]
       ? Std._Record<union, value>

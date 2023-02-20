@@ -496,6 +496,22 @@ describe("Objects", () => {
     });
   });
 
+  it("Mutable", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Mutable,
+      { readonly a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
+
+    type res2 = Apply<
+    //   ^?
+      Objects.Mutable,
+      [{ a: 1; readonly b: true, readonly c: 'cc' },
+      "a" | "c"]>
+      type tes2 = Expect<Equal<res2, { a: 1; readonly b: true, c: 'cc' }>>;
+  });
+
   it("Record", () => {
     type res1 = Call<
       //   ^?
