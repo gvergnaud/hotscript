@@ -14,6 +14,8 @@ import {
   _,
 } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
+import { Objects } from "../objects/Objects";
+import { ToNumber } from "../numbers/impl/utils";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
@@ -154,7 +156,7 @@ export namespace Tuples {
    * ```
    */
   export type Map<
-    fn extends Fn,
+    fn extends Fn | unset | _ = unset,
     tuple extends readonly any[] | unset = unset
   > = Functions.PartialApply<MapFn, [fn, tuple]>;
 
@@ -629,24 +631,25 @@ export namespace Tuples {
     >;
   }
 
-  type ZipWithImpl<
-    arr1 extends unknown[],
-    arr2 extends unknown[],
-    fn extends Fn,
-    acc extends unknown[] = []
-  > = [arr1, arr2] extends [
-    [infer item1, ...infer rest1],
-    [infer item2, ...infer rest2]
-  ]
-    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call2<fn, item1, item2>]>
-    : acc;
+  interface ZipWithMapper<fn extends Fn, arrs extends unknown[][]> extends Fn {
+    return: this["args"] extends [infer Index extends number, ...any]
+      ? Apply<fn, Eval<Tuples.Map<Tuples.At<Index>, arrs>>>
+      : never;
+  }
 
   interface ZipWithFn<fn extends Fn> extends Fn {
-    return: ZipWithImpl<
-      Extract<this["arg0"], unknown[]>,
-      Extract<this["arg1"], unknown[]>,
-      fn
-    >;
+    return: this["args"] extends infer arrays extends unknown[][]
+      ? Pipe<
+          arrays,
+          [
+            Tuples.Map<Objects.Get<"length">>,
+            Tuples.Reduce<Numbers.Min, 9999>, // a length of 9999 is the longest possible tuple
+            Numbers.Sub<_, 1>,
+            Tuples.Range<0, _>,
+            Tuples.Map<ZipWithMapper<fn, arrays>>
+          ]
+        >
+      : never;
   }
 
   /**
@@ -663,9 +666,20 @@ export namespace Tuples {
    * ```
    */
   export type Zip<
+    arr0 extends unknown[] | _ | unset = unset,
     arr1 extends unknown[] | _ | unset = unset,
-    arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<args>, [arr1, arr2]>;
+    arr2 extends unknown[] | _ | unset = unset,
+    arr3 extends unknown[] | _ | unset = unset,
+    arr4 extends unknown[] | _ | unset = unset,
+    arr5 extends unknown[] | _ | unset = unset,
+    arr6 extends unknown[] | _ | unset = unset,
+    arr7 extends unknown[] | _ | unset = unset,
+    arr8 extends unknown[] | _ | unset = unset,
+    arr9 extends unknown[] | _ | unset = unset
+  > = Functions.PartialApply<
+    ZipWith<args>,
+    [arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, arr9]
+  >;
 
   /**
    * Zip two tuples together using a function.
@@ -686,9 +700,20 @@ export namespace Tuples {
    */
   export type ZipWith<
     fn extends Fn,
+    arr0 extends unknown[] | _ | unset = unset,
     arr1 extends unknown[] | _ | unset = unset,
-    arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
+    arr2 extends unknown[] | _ | unset = unset,
+    arr3 extends unknown[] | _ | unset = unset,
+    arr4 extends unknown[] | _ | unset = unset,
+    arr5 extends unknown[] | _ | unset = unset,
+    arr6 extends unknown[] | _ | unset = unset,
+    arr7 extends unknown[] | _ | unset = unset,
+    arr8 extends unknown[] | _ | unset = unset,
+    arr9 extends unknown[] | _ | unset = unset
+  > = Functions.PartialApply<
+    ZipWithFn<fn>,
+    [arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, arr9]
+  >;
 
   /**
    * Range takes a `start` and an `end` integer and produces

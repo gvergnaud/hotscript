@@ -135,7 +135,8 @@ export namespace Strings {
     return: this["args"] extends [
       infer From extends string,
       infer To extends string,
-      infer Str
+      infer Str,
+      ...any
     ]
       ? Impl.Replace<Str, From, To>
       : never;
@@ -176,7 +177,7 @@ export namespace Strings {
   > = Functions.PartialApply<SplitFn, [Sep, Str]>;
 
   export interface SplitFn extends Fn {
-    return: this["args"] extends [infer Sep extends string, infer Str]
+    return: this["args"] extends [infer Sep extends string, infer Str, ...any]
       ? Impl.Split<Str, Sep>
       : never;
   }
