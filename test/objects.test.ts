@@ -110,7 +110,7 @@ describe("Objects", () => {
       Objects.Readonly,
       { a: 1; b: true }
     >;
-    type tes2 = Expect<Equal<res1, { readonly a: 1; readonly b: true }>>;
+    type tes2 = Expect<Equal<res2, { readonly a: 1; readonly b: true }>>;
   });
 
   it("Omit", () => {
