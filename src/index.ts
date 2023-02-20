@@ -7,6 +7,11 @@ import {
   Pipe,
   PipeRight,
   _,
+  arg,
+  arg0,
+  arg1,
+  arg2,
+  arg3,
 } from "./internals/core/Core";
 import { Functions } from "./internals/functions/Functions";
 import { Numbers } from "./internals/numbers/Numbers";
@@ -19,6 +24,11 @@ import { Match } from "./internals/match/Match";
 
 export {
   _,
+  arg,
+  arg0,
+  arg1,
+  arg2,
+  arg3,
   Fn,
   Pipe,
   PipeRight,

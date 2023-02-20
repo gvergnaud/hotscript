@@ -435,29 +435,6 @@ export namespace Strings {
     return: H.KebabCase<this["arg0"]>;
   }
 
-  interface ToRecordFn extends Fn {
-    return: this["args"] extends [infer union extends string, infer value]
-      ? Record<union, value>
-      : never;
-  }
-
-  /**
-   * Create a record from a union of strings
-   * @description This function is used to create a record from a union of strings
-   * @param union - The union of strings to create the record from
-   * @param value - The value to assign to each property
-   * @returns The record created from the union of strings
-   *
-   * @example
-   * ```ts
-   * type T0 = Call<ToRecord<'a' | 'b' | 'c'>, 1>; // { a: 1, b: 1, c: 1 }
-   * ```
-   */
-  export type ToRecord<
-    union extends string | _ | unset = unset,
-    value = unset
-  > = Functions.PartialApply<ToRecordFn, [union, value]>;
-
   /**
    * Compare two strings. (only works with ascii extended characters)
    * @param args[0] - The first string to compare.
