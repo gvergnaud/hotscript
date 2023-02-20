@@ -104,3 +104,17 @@ export type GreaterThanOrEqual<
   T extends number | bigint,
   U extends number | bigint
 > = Compare<T, U> extends 1 | 0 ? true : false;
+
+export type Max<T extends number | bigint, U extends number | bigint> = Compare<
+  T,
+  U
+> extends 1 | 0
+  ? T
+  : U;
+
+export type Min<T extends number | bigint, U extends number | bigint> = Compare<
+  T,
+  U
+> extends 1 | 0
+  ? U
+  : T;

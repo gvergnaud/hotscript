@@ -179,6 +179,50 @@ export namespace Numbers {
   }
 
   /**
+   * Returns the max between 2 numbers.
+   * @param n1 - first number or bigint
+   * @param n2 - second number or bigint
+   * @returns the maximum values between the two
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Max<1, 2>>; // 2
+   * ```
+   */
+  export type Max<
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
+  > = Functions.PartialApply<MaxFn, [n1, n2]>;
+
+  export interface MaxFn extends Fn {
+    return: Impl.Max<
+      Extract<this["arg0"], number | bigint>,
+      Extract<this["arg1"], number | bigint>
+    >;
+  }
+
+  /**
+   * Returns the min between 2 numbers.
+   * @param n1 - first number or bigint
+   * @param n2 - second number or bigint
+   * @returns the minimum values between the two
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.Min<1, 2>>; // 1
+   * ```
+   */
+  export type Min<
+    n1 extends number | bigint | _ | unset = unset,
+    n2 extends number | bigint | _ | unset = unset
+  > = Functions.PartialApply<MinFn, [n1, n2]>;
+
+  export interface MinFn extends Fn {
+    return: Impl.Min<
+      Extract<this["arg0"], number | bigint>,
+      Extract<this["arg1"], number | bigint>
+    >;
+  }
+
+  /**
    * Power of a number
    * @description the number can be of different types (bigint or number) and handle really large numbers
    * @param n1 - the base number

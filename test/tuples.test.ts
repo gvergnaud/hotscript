@@ -361,6 +361,14 @@ describe("Tuples", () => {
       Tuples.Zip<[1, 2, 3], ["a", "b", "c"]>
     >;
     type test3 = Expect<Equal<res3, [[1, "a"], [2, "b"], [3, "c"]]>>;
+
+    type res4 = Eval<
+      //    ^?
+      Tuples.Zip<[1, 2, 3], ["a", "b", "c"], [true, false, true]>
+    >;
+    type test4 = Expect<
+      Equal<res4, [[1, "a", true], [2, "b", false], [3, "c", true]]>
+    >;
   });
 
   it("ZipWith", () => {
