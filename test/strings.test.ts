@@ -1,15 +1,4 @@
-import {
-  _,
-  Call,
-  Call2,
-  Strings,
-  Functions,
-  Pipe,
-  Tuples,
-  Unions,
-  Objects,
-} from "../src/index";
-import { Apply, arg0, Eval } from "../src/internals/core/Core";
+import { Call, Call2, Functions, Strings, _ } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
@@ -314,5 +303,61 @@ describe("Strings", () => {
     type res4 = Call2<Strings.GreaterThanOrEqual, "a", "aa">;
     //    ^?
     type test4 = Expect<Equal<res4, false>>;
+  });
+
+  it("encodeURIComponent", () => {
+    type res1 = Call<Strings.EncodeURIComponent, "a b">;
+    //    ^?
+    type test1 = Expect<Equal<res1, "a%20b">>;
+
+    type res2 = Call<Strings.EncodeURIComponent, "a+b">;
+    //    ^?
+    type test2 = Expect<Equal<res2, "a%2Bb">>;
+
+    type res3 = Call<Strings.EncodeURIComponent, "a%20b">;
+    //    ^?
+    type test3 = Expect<Equal<res3, "a%2520b">>;
+
+    type res4 = Call<
+      Strings.EncodeURIComponent,
+      "ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö"
+    >;
+    //    ^?
+    type test4 = Expect<
+      Equal<
+        res4,
+        "%C3%98%C3%99%C3%9A%C3%9B%C3%9C%C3%9D%C3%9E%C3%9F%C3%A0%C3%A1%C3%A2%C3%A3%C3%A4%C3%A5%C3%A6%C3%A7%C3%A8%C3%A9%C3%AA%C3%AB%C3%AC%C3%AD%C3%AE%C3%AF%C3%B0%C3%B1%C3%B2%C3%B3%C3%B4%C3%B5%C3%B6"
+      >
+    >;
+    // encodeUriComponent doen't encode the reserved characters  encodeURIComponent("!") === "!"
+    type res5 = Call<Strings.EncodeURIComponent, "! : _ {} asd ">;
+    //    ^?
+    type test5 = Expect<Equal<res5, "!%20%3A%20_%20%7B%7D%20asd%20">>;
+  });
+  it("decodeURIComponent", () => {
+    type res1 = Call<Strings.DecodeURIComponent, "a%20b">;
+    //    ^?
+    type test1 = Expect<Equal<res1, "a b">>;
+
+    type res2 = Call<Strings.DecodeURIComponent, "a%2Bb">;
+    //    ^?
+    type test2 = Expect<Equal<res2, "a+b">>;
+
+    type res3 = Call<Strings.DecodeURIComponent, "a%2520b">;
+    //    ^?
+    type test3 = Expect<Equal<res3, "a%20b">>;
+
+    type res4 = Call<
+      Strings.DecodeURIComponent,
+      "%C3%98%C3%99%C3%9A%C3%9B%C3%9C%C3%9D%C3%9E%C3%9F%C3%A0%C3%A1%C3%A2%C3%A3%C3%A4%C3%A5%C3%A6%C3%A7%C3%A8%C3%A9%C3%AA%C3%AB%C3%AC%C3%AD%C3%AE%C3%AF%C3%B0%C3%B1%C3%B2%C3%B3%C3%B4%C3%B5%C3%B6"
+    >;
+    //    ^?
+    type test4 = Expect<Equal<res4, "ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö">>;
+    type res5 = Call<
+      Strings.DecodeURIComponent,
+      "!%20%3A%20_%20%7B%7D%20asd%20%21"
+    >;
+    //    ^?
+    type test5 = Expect<Equal<res5, "! : _ {} asd !">>;
   });
 });
