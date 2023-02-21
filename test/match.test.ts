@@ -170,7 +170,7 @@ describe("Match", () => {
               [
                 Strings.Trim<"<" | ">">,
                 Strings.Split<":">,
-                // new function (a over lens)
+                // new function
                 Objects.Update<
                   "[1]",
                   Match<
