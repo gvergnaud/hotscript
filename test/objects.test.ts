@@ -110,7 +110,15 @@ describe("Objects", () => {
       Objects.Entries,
       { a: string; b: number }
     >;
+
     type test1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+
+    type res2 = Call<
+      //   ^?
+      Objects.Entries,
+      ["a", "b"]
+    >;
+    type test2 = Expect<Equal<res2, [0, "a"] | [1, "b"]>>;
   });
 
   it("Entries >> FromEntries identity", () => {
@@ -507,5 +515,109 @@ describe("Objects", () => {
         }
       >
     >;
+  });
+
+  it("Keys", () => {
+    type res0 = Call<Objects.Keys, [3, 4, 5]>;
+    //   ^?
+    type test0 = Expect<Equal<res0, 0 | 1 | 2>>;
+
+    type res1 = Call<Objects.Keys, boolean[]>;
+    //   ^?
+    type test1 = Expect<Equal<res1, number>>;
+
+    type res2 = Call<Objects.Keys, { type: string; src: { value: string } }>;
+    //   ^?
+    type test2 = Expect<Equal<res2, "type" | "src">>;
+
+    type res3 = Call<Objects.Keys, unknown>;
+    //   ^?
+    type test3 = Expect<Equal<res3, never>>;
+
+    type res4 = Call<Objects.Keys, Record<string, boolean>>;
+    //   ^?
+    type test4 = Expect<Equal<res4, string>>;
+  });
+
+  it("Values", () => {
+    type res0 = Call<Objects.Values, [3, 4, 5]>;
+    //   ^?
+    type test0 = Expect<Equal<res0, 3 | 4 | 5>>;
+
+    type res1 = Call<Objects.Values, boolean[]>;
+    //   ^?
+    type test1 = Expect<Equal<res1, boolean>>;
+
+    type res2 = Call<Objects.Values, { type: string; src: { value: string } }>;
+    //   ^?
+    type test2 = Expect<Equal<res2, string | { value: string }>>;
+
+    type res3 = Call<Objects.Values, unknown>;
+    //   ^?
+    type test3 = Expect<Equal<res3, never>>;
+
+    type res4 = Call<Objects.Values, Record<string, boolean>>;
+    //   ^?
+    type test4 = Expect<Equal<res4, boolean>>;
+  });
+
+  describe("AllPaths", () => {
+    type res1 = Call<
+      // ^?
+      Objects.AllPaths,
+      {
+        shallow: string;
+        object: {
+          nested: boolean;
+        };
+        constant: true;
+        tuple: [0, 1];
+        union:
+          | { flag: true; ordinal: number }
+          | { flag: false; cardinal: string };
+        array: { inner: number }[];
+        conditional?: number;
+      }
+    >;
+    type test1 = Expect<
+      Equal<
+        res1,
+        | "object.nested"
+        | "object"
+        | "shallow"
+        | "constant"
+        | "tuple"
+        | "tuple[0]"
+        | "tuple[1]"
+        | "union"
+        | "union.flag"
+        | "union.ordinal"
+        | "union.cardinal"
+        | "array"
+        | `array[${number}]`
+        | `array[${number}].inner`
+        | "conditional"
+      >
+    >;
+
+    type res2 = Call<Objects.AllPaths, unknown>;
+    //   ^?
+    type test2 = Expect<Equal<res2, string>>;
+
+    type res3 = Call<Objects.AllPaths, any>;
+    //   ^?
+    type test3 = Expect<Equal<res3, string>>;
+
+    type res4 = Call<Objects.AllPaths, { f: any }>;
+    //   ^?
+    type test4 = Expect<Equal<res4, "f" | `f.${string}`>>;
+
+    type res5 = Call<Objects.AllPaths, [0, 1]>;
+    //   ^?
+    type test5 = Expect<Equal<res5, "[0]" | "[1]">>;
+
+    type res6 = Call<Objects.AllPaths, boolean[]>;
+    //   ^?
+    type test6 = Expect<Equal<res6, `[${number}]`>>;
   });
 });

@@ -217,4 +217,45 @@ export namespace Objects {
     union extends string | _ | unset = unset,
     value = unset
   > = PartialApply<RecordFn, [union, value]>;
+
+  /**
+   * Smarter version of keyof that also works with tuples
+   * @params args[0] - The type to extract keys from
+   * @returns An union of all the types's keys
+   * @example
+   * ```ts
+   * type T0 = Call<O.Keys, ['a', 'b', 'c']>; // 0 | 1 | 2
+   * ```
+   */
+  export interface Keys extends Fn {
+    return: Impl.Keys<this["arg0"]>;
+  }
+
+  /**
+   * Smarter version of Values that also works with tuples
+   * @params args[0] - The type to extract values from
+   * @returns An union of all the types's values
+   * @example
+   * ```ts
+   * type T0 = Call<O.Values, ['a', 'b', 'c']>; // 'a' | 'b' | 'c'
+   * ```
+   */
+  export interface Values extends Fn {
+    return: Impl.Values<this["arg0"]>;
+  }
+
+  /**
+   * Create a union of all deep paths the object has
+   * @description This function is used to create a union from an object with keys
+   * @param obj - The object from which the union will be generated
+   * @returns An union with all the possible deep paths
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<O.AllPaths, { a: { b: number } }>; // 'a' | 'a.b'
+   * ```
+   */
+  export interface AllPaths extends Fn {
+    return: Impl.AllPaths<this["arg0"]>;
+  }
 }
