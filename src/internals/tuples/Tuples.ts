@@ -1,6 +1,5 @@
 import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N, Numbers } from "../numbers/Numbers";
-import { Strings } from "../strings/Strings";
 
 import {
   Apply,
