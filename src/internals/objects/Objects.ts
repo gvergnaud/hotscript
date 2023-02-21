@@ -158,8 +158,7 @@ export namespace Objects {
   > = Functions.PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface AssignFn extends Fn {
-    return: Assign
-    Impl<this["args"]>;
+    return: AssignImpl<this["args"]>;
   }
 
   type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
