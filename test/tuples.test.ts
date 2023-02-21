@@ -1,16 +1,5 @@
-import { Objects } from "../src";
 import { Booleans } from "../src/internals/booleans/Booleans";
-import {
-  Apply,
-  arg0,
-  args,
-  Call,
-  Call2,
-  Eval,
-  Fn,
-  Pipe,
-  _,
-} from "../src/internals/core/Core";
+import { Call, Call2, Eval, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
 import { Strings } from "../src/internals/strings/Strings";
