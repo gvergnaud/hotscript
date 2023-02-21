@@ -14,6 +14,7 @@ import {
 import { Functions } from "../src/internals/functions/Functions";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
+import { Unions } from "../src/internals/unions/Unions";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Match } from "../src/internals/match/Match";
