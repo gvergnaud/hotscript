@@ -611,5 +611,13 @@ describe("Objects", () => {
     type res4 = Call<Objects.AllPaths, { f: any }>;
     //   ^?
     type test4 = Expect<Equal<res4, "f" | `f.${string}`>>;
+
+    type res5 = Call<Objects.AllPaths, [0, 1]>;
+    //   ^?
+    type test5 = Expect<Equal<res5, "[0]" | "[1]">>;
+
+    type res6 = Call<Objects.AllPaths, boolean[]>;
+    //   ^?
+    type test6 = Expect<Equal<res6, `[${number}]`>>;
   });
 });

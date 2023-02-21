@@ -116,22 +116,28 @@ export type Create<
   ? { [key in keyof pattern]: Create<pattern[key], args> }
   : pattern;
 
-type JoinPath<A extends string, B extends string> = [A] extends [never]
+type JoinPath<A extends string, B extends string, Sep extends string = ""> = [
+  A
+] extends [never]
   ? B
   : [B] extends [never]
   ? A
-  : `${A}.${B}`;
+  : `${A}${Sep}${B}`;
 
 export type AllPaths<T, ParentPath extends string = never> = T extends Primitive
   ? ParentPath
   : unknown extends T
-  ? JoinPath<ParentPath, string>
+  ? JoinPath<ParentPath, string, ".">
   : T extends any[]
   ? Keys<T> extends infer key extends string | number
-    ? `${ParentPath}[${key}]` | AllPaths<T[number], `${ParentPath}[${key}]`>
+    ?
+        | JoinPath<ParentPath, `[${key}]`>
+        | AllPaths<T[number], JoinPath<ParentPath, `[${key}]`>>
     : never
   : keyof T extends infer key extends keyof T & string
   ? key extends any
-    ? JoinPath<ParentPath, key> | AllPaths<T[key], JoinPath<ParentPath, key>>
+    ?
+        | JoinPath<ParentPath, key, ".">
+        | AllPaths<T[key], JoinPath<ParentPath, key, ".">>
     : never
   : ParentPath;
