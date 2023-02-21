@@ -1,4 +1,4 @@
-import { Call, Eval, Fn, unset, _ } from "../core/Core";
+import { Call, Eval, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Functions } from "../functions/Functions";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
@@ -7,7 +7,7 @@ export namespace Unions {
   export type Extract<
     unionOrExtracted = unset,
     extracted = unset
-  > = Functions.PartialApply<
+  > = PartialApply<
     ExtractFn,
     extracted extends unset
       ? [unset, unionOrExtracted]
@@ -28,10 +28,7 @@ export namespace Unions {
     return: ExtractByImpl<this["arg0"], predicate>;
   }
 
-  export type Exclude<
-    unionOrExcluded = unset,
-    excluded = unset
-  > = Functions.PartialApply<
+  export type Exclude<unionOrExcluded = unset, excluded = unset> = PartialApply<
     ExcludeFn,
     excluded extends unset
       ? [unset, unionOrExcluded]
@@ -56,10 +53,7 @@ export namespace Unions {
     ? Call<fn, union>
     : never;
 
-  export type Map<fn extends Fn, u = unset> = Functions.PartialApply<
-    MapFn,
-    [fn, u]
-  >;
+  export type Map<fn extends Fn, u = unset> = PartialApply<MapFn, [fn, u]>;
   interface MapFn extends Fn {
     return: this["args"] extends [infer fn extends Fn, infer u]
       ? MapImpl<fn, u>
@@ -83,7 +77,7 @@ export namespace Unions {
   export type Range<
     start extends number | _ | unset = unset,
     end extends number | _ | unset = unset
-  > = Functions.PartialApply<RangeFn, [start, end]>;
+  > = PartialApply<RangeFn, [start, end]>;
 
   interface RangeFn extends Fn {
     return: this["args"] extends [

@@ -1,4 +1,4 @@
-import { Fn, unset, _ } from "../core/Core";
+import { ComposeLeft, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 import * as H from "../helpers";
@@ -24,7 +24,7 @@ export namespace Strings {
    * type T0 = Call<Strings.Length,"abc">; // 3
    * ```
    */
-  export type Length<Str = unset> = Functions.PartialApply<LengthFn, [Str]>;
+  export type Length<Str = unset> = PartialApply<LengthFn, [Str]>;
 
   /**
    * Get the length of a string.
@@ -53,7 +53,7 @@ export namespace Strings {
   export type TrimLeft<
     Sep extends string | _ = " ",
     Str = unset
-  > = Functions.PartialApply<TrimLeftFn, [Sep, Str]>;
+  > = PartialApply<TrimLeftFn, [Sep, Str]>;
 
   interface TrimLeftFn extends Fn {
     return: this["args"] extends [
@@ -78,7 +78,7 @@ export namespace Strings {
   export type TrimRight<
     Sep extends string | _ = " ",
     Str = unset
-  > = Functions.PartialApply<TrimRightFn, [Sep, Str]>;
+  > = PartialApply<TrimRightFn, [Sep, Str]>;
 
   interface TrimRightFn extends Fn {
     return: this["args"] extends [
@@ -100,10 +100,10 @@ export namespace Strings {
    * type T0 = Call<Strings.Trim,"  abc  ">; // "abc"
    * ```
    */
-  export type Trim<
-    Sep extends string | _ = " ",
-    Str = unset
-  > = Functions.PartialApply<TrimFn, [Sep, Str]>;
+  export type Trim<Sep extends string | _ = " ", Str = unset> = PartialApply<
+    TrimFn,
+    [Sep, Str]
+  >;
 
   interface TrimFn extends Fn {
     return: this["args"] extends [
@@ -129,7 +129,7 @@ export namespace Strings {
     from extends string | unset | _ = unset,
     to extends string | unset | _ = unset,
     str = unset
-  > = Functions.PartialApply<ReplaceFn, [from, to, str]>;
+  > = PartialApply<ReplaceFn, [from, to, str]>;
 
   interface ReplaceFn extends Fn {
     return: this["args"] extends [
@@ -156,7 +156,7 @@ export namespace Strings {
   export type Slice<
     start extends number | unset | _ = unset,
     end extends number | unset | _ = unset
-  > = Functions.ComposeLeft<
+  > = ComposeLeft<
     [Strings.Split<"">, Tuples.Take<end>, Tuples.Drop<start>, Tuples.Join<"">]
   >;
 
@@ -174,7 +174,7 @@ export namespace Strings {
   export type Split<
     Sep extends string | unset | _ = unset,
     Str extends string | unset | _ = unset
-  > = Functions.PartialApply<SplitFn, [Sep, Str]>;
+  > = PartialApply<SplitFn, [Sep, Str]>;
 
   export interface SplitFn extends Fn {
     return: this["args"] extends [infer Sep extends string, infer Str, ...any]
@@ -195,7 +195,7 @@ export namespace Strings {
   export type Repeat<
     Times extends number | _ | unset = unset,
     Str extends string | _ | unset = unset
-  > = Functions.PartialApply<RepeatFn, [Times, Str]>;
+  > = PartialApply<RepeatFn, [Times, Str]>;
 
   interface RepeatFn extends Fn {
     return: this["args"] extends [
@@ -220,7 +220,7 @@ export namespace Strings {
   export type StartsWith<
     Start extends string | _ | unset = unset,
     Str extends string | _ | unset = unset
-  > = Functions.PartialApply<StartsWithFn, [Start, Str]>;
+  > = PartialApply<StartsWithFn, [Start, Str]>;
 
   interface StartsWithFn extends Fn {
     return: this["args"] extends [infer Start extends string, infer Str]
@@ -244,7 +244,7 @@ export namespace Strings {
   export type EndsWith<
     End extends string | _ | unset = unset,
     Str extends string | _ | unset = unset
-  > = Functions.PartialApply<EndsWithFn, [End, Str]>;
+  > = PartialApply<EndsWithFn, [End, Str]>;
 
   interface EndsWithFn extends Fn {
     return: this["args"] extends [infer End extends string, infer Str]
@@ -312,7 +312,7 @@ export namespace Strings {
   export type Prepend<
     Start extends string | _ | unset = unset,
     Str extends string | _ | unset = unset
-  > = Functions.PartialApply<PrependFn, [Start, Str]>;
+  > = PartialApply<PrependFn, [Start, Str]>;
 
   interface PrependFn extends Fn {
     return: `${Extract<this["arg0"], Strings.Stringifiable>}${Extract<
@@ -334,7 +334,7 @@ export namespace Strings {
   export type Append<
     End extends string | _ | unset = unset,
     Str extends string | _ | unset = unset
-  > = Functions.PartialApply<AppendFn, [End, Str]>;
+  > = PartialApply<AppendFn, [End, Str]>;
 
   interface AppendFn extends Fn {
     return: `${Extract<this["arg1"], Strings.Stringifiable>}${Extract<
@@ -453,10 +453,7 @@ export namespace Strings {
   export type Compare<
     n1 extends string | _ | unset = unset,
     n2 extends string | _ | unset = unset
-  > = Functions.PartialApply<
-    CompareFn,
-    n2 extends unset ? [unset, n1] : [n1, n2]
-  >;
+  > = PartialApply<CompareFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface CompareFn extends Fn {
     return: this["args"] extends [
@@ -485,10 +482,7 @@ export namespace Strings {
   export type LessThan<
     n1 extends string | _ | unset = unset,
     n2 extends string | _ | unset = unset
-  > = Functions.PartialApply<
-    LessThanFn,
-    n2 extends unset ? [unset, n1] : [n1, n2]
-  >;
+  > = PartialApply<LessThanFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface LessThanFn extends Fn {
     return: this["args"] extends [
@@ -516,7 +510,7 @@ export namespace Strings {
   export type LessThanOrEqual<
     n1 extends string | _ | unset = unset,
     n2 extends string | _ | unset = unset
-  > = Functions.PartialApply<
+  > = PartialApply<
     LessThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
   >;
@@ -548,10 +542,7 @@ export namespace Strings {
   export type GreaterThan<
     n1 extends string | _ | unset = unset,
     n2 extends string | _ | unset = unset
-  > = Functions.PartialApply<
-    GreaterThanFn,
-    n2 extends unset ? [unset, n1] : [n1, n2]
-  >;
+  > = PartialApply<GreaterThanFn, n2 extends unset ? [unset, n1] : [n1, n2]>;
 
   interface GreaterThanFn extends Fn {
     return: this["args"] extends [
@@ -580,7 +571,7 @@ export namespace Strings {
   export type GreaterThanOrEqual<
     n1 extends string | _ | unset = unset,
     n2 extends string | _ | unset = unset
-  > = Functions.PartialApply<
+  > = PartialApply<
     GreaterThanOrEqualFn,
     n2 extends unset ? [unset, n1] : [n1, n2]
   >;

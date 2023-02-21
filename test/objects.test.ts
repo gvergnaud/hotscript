@@ -6,6 +6,8 @@ import {
   arg2,
   arg3,
   Call,
+  ComposeLeft,
+  Constant,
   Eval,
   Fn,
   Pipe,
@@ -53,7 +55,7 @@ describe("Objects", () => {
           addition: Numbers.Add<10, _>;
           division: Numbers.Div<_, 2>;
           nested: [Numbers.GreaterThan<0>];
-          recursion: Functions.ComposeLeft<
+          recursion: ComposeLeft<
             [
               Objects.Create<{
                 label: Strings.Prepend<"number: ">;
@@ -442,7 +444,7 @@ describe("Objects", () => {
         Strings.Split<"/">,
         Tuples.Filter<Strings.StartsWith<"<">>,
         Tuples.Map<
-          Functions.ComposeLeft<[
+          ComposeLeft<[
             Strings.Replace<"<", "">,
             Strings.Replace<">", "">,
             Strings.Split<":">
@@ -452,8 +454,8 @@ describe("Objects", () => {
         Objects.FromEntries,
         Objects.MapValues<
           Match<[
-            Match.With<"string", Functions.Constant<string>>,
-            Match.With<"number", Functions.Constant<number>>
+            Match.With<"string", Constant<string>>,
+            Match.With<"number", Constant<number>>
           ]>
         >
       ]

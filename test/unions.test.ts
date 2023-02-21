@@ -1,4 +1,5 @@
 import { Pipe, Fn, B, U, F, Eval, Call, Unions, _ } from "../src/index";
+import { Compose } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Unions", () => {
@@ -23,7 +24,7 @@ describe("Unions", () => {
     type res1 = Pipe<
       //  ^?
       "a" | "b" | "c",
-      [U.ExtractBy<F.Compose<[B.Not, B.Extends<"a">]>>]
+      [U.ExtractBy<Compose<[B.Not, B.Extends<"a">]>>]
     >;
     type tes1 = Expect<Equal<res1, "b" | "c">>;
   });

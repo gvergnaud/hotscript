@@ -98,6 +98,7 @@ type T = {
   - [ ] MutableDeep
   - [ ] RequiredDeep
   - [ ] PartialDeep
+  - [ ] `Update<Path, Fn | Type, Obj>`
   - [x] Record
   - [x] Create
   - [x] Get

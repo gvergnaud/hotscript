@@ -2,28 +2,27 @@ import {
   Pipe,
   PipeRight,
   Call,
-  Call2,
   Numbers,
   Strings,
   Tuples,
   F,
   _,
 } from "../src/index";
-import { unset } from "../src/internals/core/Core";
+import { Call2, Identity, unset } from "../src/internals/core/Core";
 import { MergeArgs } from "../src/internals/functions/impl/MergeArgs";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Functions", () => {
   it("Identity", () => {
     // check primitives
-    type res1 = Call<F.Identity, string>;
+    type res1 = Call<Identity, string>;
     //   ^?
     type tes1 = Expect<Equal<res1, string>>;
-    type res2 = Call<F.Identity, undefined>;
+    type res2 = Call<Identity, undefined>;
     //   ^?
     type tes2 = Expect<Equal<res2, undefined>>;
     // check unions
-    type res3 = Call<F.Identity, string | number>;
+    type res3 = Call<Identity, string | number>;
     //   ^?
     type tes3 = Expect<Equal<res3, string | number>>;
   });
