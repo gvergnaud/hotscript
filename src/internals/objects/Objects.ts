@@ -5,7 +5,7 @@ import {
   Primitive,
   UnionToIntersection,
 } from "../helpers";
-import { Apply, arg, Call, Call2, Fn, unset, _ } from "../core/Core";
+import { arg, Call, Call2, Fn, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
 import { Functions } from "../functions/Functions";
