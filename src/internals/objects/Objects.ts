@@ -94,19 +94,8 @@ export namespace Objects {
     return: PickImpl<this["arg1"], this["arg0"]>;
   }
 
-  type ReadonlyImpl<obj, keys extends keyof obj> = Prettify<
-    {
-      readonly [key in keys]: obj[key];
-    } & { [key in Exclude<keyof obj, keys>]: obj[key] }
-  >;
-
-  export type Readonly<key = unset, obj = unset> = Functions.PartialApply<
-    ReadonlyFn,
-    [key, obj]
-  >;
-
-  interface ReadonlyFn extends Fn {
-    return: ReadonlyImpl<this["arg1"], this["arg0"]>;
+  export interface Readonly extends Fn {
+    return: Std._Readonly<this["arg0"]>;
   }
 
   type OmitImpl<obj, keys> = {
@@ -169,7 +158,8 @@ export namespace Objects {
   > = Functions.PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface AssignFn extends Fn {
-    return: AssignImpl<this["args"]>;
+    return: Assign
+    Impl<this["args"]>;
   }
 
   type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
