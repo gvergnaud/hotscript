@@ -104,6 +104,9 @@ type T = {
   - [ ] PartialDeep
   - [x] Update
   - [x] Record
+  - [x] Keys
+  - [x] Values
+  - [x] AllPaths
   - [x] Create
   - [x] Get
   - [x] FromEntries
