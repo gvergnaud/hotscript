@@ -1,9 +1,10 @@
-import { Fn, unset, _ } from "../core/Core";
+import { Fn, Pipe, unset, _ } from "../core/Core";
+import { Functions } from "../functions/Functions";
+import * as H from "../helpers";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
-import * as H from "../helpers";
 import * as Impl from "./impl/strings";
-import { Functions } from "../functions/Functions";
+import { DecodeURIComponentFn, EncodeAsciiCharFn } from "./impl/uri";
 
 export namespace Strings {
   export type Stringifiable =
@@ -594,4 +595,44 @@ export namespace Strings {
       ? Impl.GreaterThanOrEqual<a, b>
       : never;
   }
+
+  /**
+   * Encode a string using the URI component encoding scheme.
+   * @param args[0] - From which encoding to encode.
+   * @param args[1] - To which encoding to encode.
+   * @param args[2] - The string to encode.
+   * @returns The encoded string.
+   *
+   **/
+  export interface EncodeAsciiFn extends Fn {
+    return: this["args"] extends [
+      infer from extends keyof ascii[number],
+      infer to extends keyof ascii[number],
+      infer stringToEncode extends string,
+      ...any
+    ]
+      ? EncodeAscii<stringToEncode, from, to>
+      : never;
+  }
+
+  /**
+   * Encode a string using the URI component encoding scheme.
+   * @param args[0] - The string to encode.
+   * @returns The encoded string.
+   */
+  export interface EncodeURIComponent extends Fn {
+    return: this["arg0"] extends string
+      ? Pipe<
+          this["arg0"],
+          [Strings.Split<"">, Tuples.Map<EncodeAsciiCharFn>, Tuples.Join<"">]
+        >
+      : never;
+  }
+
+  /**
+   * Encode a string using the URI component encoding scheme.
+   * @param args[0] - The string to encode.
+   * @returns The encoded string.
+   */
+  export interface DecodeURIComponent extends DecodeURIComponentFn {}
 }
