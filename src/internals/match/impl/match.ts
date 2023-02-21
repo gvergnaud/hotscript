@@ -1,4 +1,4 @@
-import { arg, Eval, Fn, unset } from "../../core/Core";
+import { arg, Eval, Fn, PartialApply, unset } from "../../core/Core";
 import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
 
@@ -61,16 +61,15 @@ type ExtractArgs<value, pattern> = WithDefaultArgs<
   [value]
 >;
 
-export type Match<
-  value,
-  patterns extends With<unknown, any>[]
-> = patterns extends [
-  With<infer pattern, infer fn extends Fn>,
-  ...infer restPatterns extends With<unknown, Fn>[]
+export type Match<value, patterns extends With<any, any>[]> = patterns extends [
+  With<infer pattern, infer handler>,
+  ...infer restPatterns extends With<any, any>[]
 ]
   ? DoesMatch<value, pattern> extends true
-    ? Eval<Functions.PartialApply<fn, ExtractArgs<value, pattern>>>
+    ? handler extends Fn
+      ? Eval<PartialApply<Extract<handler, Fn>, ExtractArgs<value, pattern>>>
+      : handler
     : Match<value, restPatterns>
   : never;
 
-export type With<pattern, fn extends Fn> = { pattern: pattern; fn: fn };
+export type With<pattern, handler> = { pattern: pattern; handler: handler };

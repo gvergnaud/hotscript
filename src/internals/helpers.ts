@@ -40,6 +40,10 @@ export type UnionToIntersection<union> = (
 
 export type Prettify<T> = { [K in keyof T]: T[K] } | never;
 
+export type RecursivePrettify<T> = IsArrayStrict<T> extends true
+  ? RecursivePrettify<Extract<T, readonly any[]>[number]>[]
+  : { [K in keyof T]: RecursivePrettify<T[K]> };
+
 export type AnyTuple = readonly [any, ...any];
 
 export namespace Iterator {
@@ -187,34 +191,6 @@ export type Split<
   ? Split<U, Sep, [...Acc, T]>
   : [...Acc, Str];
 
-export type GetFromPath<Obj, Path> = RecursiveGet<Obj, ParsePath<Path>>;
-
-type ParsePath<
-  Path,
-  Output extends string[] = [],
-  CurrentChunk extends string = ""
-> = Path extends number
-  ? [`${Path}`]
-  : Path extends `${infer First}${infer Rest}`
-  ? First extends "." | "[" | "]"
-    ? ParsePath<
-        Rest,
-        [...Output, ...(CurrentChunk extends "" ? [] : [CurrentChunk])],
-        ""
-      >
-    : ParsePath<Rest, Output, `${CurrentChunk}${First}`>
-  : [...Output, ...(CurrentChunk extends "" ? [] : [CurrentChunk])];
-
-type RecursiveGet<Obj, PathList> = Obj extends any
-  ? PathList extends [infer First, ...infer Rest]
-    ? First extends keyof Obj
-      ? RecursiveGet<Obj[First], Rest>
-      : [First, Obj] extends [`${number}`, any[]]
-      ? RecursiveGet<Extract<Obj, any[]>[number], Rest>
-      : undefined
-    : Obj
-  : never;
-
 export type Stringifiable =
   | string
   | number
@@ -231,3 +207,5 @@ export type Primitive =
   | null
   | undefined
   | symbol;
+
+export type Head<xs> = xs extends [infer first, ...any] ? first : never;

@@ -1,5 +1,5 @@
 import { Equal, Every, Some } from "../helpers";
-import { Fn, unset } from "../core/Core";
+import { Compose, Fn, PartialApply, unset } from "../core/Core";
 
 import { Functions } from "../functions/Functions";
 
@@ -12,7 +12,7 @@ export namespace Booleans {
       : never;
   }
 
-  export type Extends<a = unset, b = unset> = Functions.PartialApply<
+  export type Extends<a = unset, b = unset> = PartialApply<
     ExtendsFn,
     b extends unset ? [unset, a] : [a, b]
   >;
@@ -23,7 +23,7 @@ export namespace Booleans {
     return: this["args"] extends [infer first, ...any] ? NotImpl<first> : never;
   }
 
-  export type Not<a = unset> = Functions.PartialApply<NotFn, [a]>;
+  export type Not<a = unset> = PartialApply<NotFn, [a]>;
 
   interface EqualsFn extends Fn {
     return: this["args"] extends [infer a, infer b, ...any]
@@ -31,17 +31,14 @@ export namespace Booleans {
       : never;
   }
 
-  export type Equals<a = unset, b = unset> = Functions.PartialApply<
-    EqualsFn,
-    [a, b]
+  export type Equals<a = unset, b = unset> = PartialApply<EqualsFn, [a, b]>;
+
+  export type NotEqual<a = unset, b = unset> = Compose<
+    [Not, PartialApply<EqualsFn, [a, b]>]
   >;
 
-  export type NotEqual<a = unset, b = unset> = Functions.Compose<
-    [Not, Functions.PartialApply<EqualsFn, [a, b]>]
-  >;
-
-  export type DoesNotExtend<a = unset, b = unset> = Functions.Compose<
-    [Not, Functions.PartialApply<ExtendsFn, [a, b]>]
+  export type DoesNotExtend<a = unset, b = unset> = Compose<
+    [Not, PartialApply<ExtendsFn, [a, b]>]
   >;
 
   interface AndFn extends Fn {
@@ -54,7 +51,7 @@ export namespace Booleans {
       : never;
   }
 
-  export type And<a = unset, b = unset> = Functions.PartialApply<AndFn, [a, b]>;
+  export type And<a = unset, b = unset> = PartialApply<AndFn, [a, b]>;
 
   interface OrFn extends Fn {
     return: this["args"] extends [
@@ -66,7 +63,7 @@ export namespace Booleans {
       : never;
   }
 
-  export type Or<a = unset, b = unset> = Functions.PartialApply<OrFn, [a, b]>;
+  export type Or<a = unset, b = unset> = PartialApply<OrFn, [a, b]>;
 
   interface XOrFn extends Fn {
     return: this["args"] extends [
@@ -80,5 +77,5 @@ export namespace Booleans {
       : never;
   }
 
-  export type XOr<a = unset, b = unset> = Functions.PartialApply<XOrFn, [a, b]>;
+  export type XOr<a = unset, b = unset> = PartialApply<XOrFn, [a, b]>;
 }

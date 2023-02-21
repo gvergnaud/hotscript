@@ -1,3 +1,6 @@
+import { MergeArgs } from "./impl/MergeArgs";
+import { Head } from "../helpers";
+
 declare const rawArgs: unique symbol;
 type rawArgs = typeof rawArgs;
 
@@ -34,11 +37,16 @@ export type unset = "@hotscript/unset";
  */
 export type _ = "@hotscript/placeholder";
 
-export type arg<Index extends number, Constraint = unknown> = {
-  tag: "@hotscript/arg";
-  index: Index;
-  constraint: Constraint;
-};
+export interface arg<Index extends number, Constraint = unknown> extends Fn {
+  return: this["args"][Index] extends infer arg extends Constraint
+    ? arg
+    : never;
+}
+
+export interface args<Constraint extends unknown[] = unknown[]> extends Fn {
+  return: this["args"] extends infer args extends Constraint ? args : never;
+}
+
 export type arg0<Constraint = unknown> = arg<0, Constraint>;
 export type arg1<Constraint = unknown> = arg<1, Constraint>;
 export type arg2<Constraint = unknown> = arg<2, Constraint>;
@@ -190,3 +198,91 @@ export type PipeRight<xs extends Fn[], acc> = xs extends [
 ]
   ? PipeRight<rest, Call<last, acc>>
   : acc;
+
+/**
+ * Returns the the function's first argument.
+ *
+ * @param arg0 - The function to extract the first argument from.
+ * @returns The first argument of the function.
+ */
+export interface Identity extends Fn {
+  return: this["arg0"];
+}
+
+/**
+ * A function that returns it's generic parameter.
+ *
+ * @param T - The type to return.
+ * @returns The type `T`.
+ */
+export interface Constant<T> extends Fn {
+  return: T;
+}
+
+/**
+ * Composes a list of functions into a single function that passes the result of each function to the next.
+ * Executes the functions from right to left.
+ *
+ * @param fns - The list of functions to compose.
+ * @returns The composed function.
+ *
+ * @example
+ * ```ts
+ * type T0 = Call<Compose< [T.Join<'-'>,S.Split<'.'> ]>, 'a.b.c'>; // 'a-b-c'
+ * ```
+ */
+export interface Compose<fns extends Fn[]> extends Fn {
+  return: ComposeImpl<fns, this["args"]>;
+}
+
+type ComposeImpl<fns extends Fn[], args extends any[]> = fns extends [
+  ...infer rest extends Fn[],
+  infer last extends Fn
+]
+  ? ComposeImpl<rest, [Apply<last, args>]>
+  : Head<args>;
+
+/**
+ * Composes a list of functions into a single function that passes the result of each function to the next.
+ * Executes the functions from left to right.
+ *
+ * @param fns - The list of functions to compose.
+ * @returns The composed function.
+ *
+ * @example
+ * ```ts
+ * type T0 = Call<ComposeLeft< [S.Split<'.'>,T.Join<'-'> ]>, 'a.b.c'>; // 'a-b-c'
+ * ```
+ */
+export interface ComposeLeft<fns extends Fn[]> extends Fn {
+  return: ComposeLeftImpl<fns, this["args"]>;
+}
+
+type ComposeLeftImpl<fns extends Fn[], args extends any[]> = fns extends [
+  infer first extends Fn,
+  ...infer rest extends Fn[]
+]
+  ? ComposeLeftImpl<rest, [Apply<first, args>]>
+  : Head<args>;
+
+/**
+ * Partially applies the passed arguments to the function and returns a new function.
+ * The new function will have the applied arguments passed to the original function
+ *
+ * @param fn - The function to partially apply.
+ * @param partialArgs - The arguments to partially apply.
+ * @returns The partially applied function.
+ *
+ * @example
+ * ```ts
+ * type T0 = Call<PartialApply<Parameter, [_, (a: number, b: string) => void]>, 1> ; // [b: string]
+ */
+export interface PartialApply<fn extends Fn, partialArgs extends unknown[]>
+  extends Fn {
+  return: MergeArgs<
+    this["args"],
+    partialArgs
+  > extends infer args extends unknown[]
+    ? Apply<fn, args>
+    : never;
+}

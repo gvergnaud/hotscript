@@ -6,6 +6,8 @@ import {
   arg2,
   arg3,
   Call,
+  ComposeLeft,
+  Constant,
   Eval,
   Fn,
   Pipe,
@@ -14,31 +16,83 @@ import {
 import { Functions } from "../src/internals/functions/Functions";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
-import { Unions } from "../src/internals/unions/Unions";
 import { Tuples } from "../src/internals/tuples/Tuples";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Match } from "../src/internals/match/Match";
+import { Numbers } from "../src/internals/numbers/Numbers";
 
 describe("Objects", () => {
-  it("Create", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Create,
-      { a: string; b: number }
-    >;
-    type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
-    type res2 = Apply<
-      //   ^?
-      Objects.Create<{ a: arg0; b: arg1 }>,
-      [1, 2]
-    >;
-    type tes2 = Expect<Equal<res2, { a: 1; b: 2 }>>;
-    type res3 = Apply<
-      //   ^?
-      Objects.Create<{ a: arg0; b: [arg1, arg2]; c: { d: arg3 } }>,
-      [1, 2, 3, 4]
-    >;
-    type tes3 = Expect<Equal<res3, { a: 1; b: [2, 3]; c: { d: 4 } }>>;
+  describe("Create", () => {
+    it("should support regular objects and output them as is", () => {
+      type res1 = Call<
+        //   ^?
+        Objects.Create,
+        { a: string; b: number }
+      >;
+      type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+    });
+
+    it("should interpolate arguments", () => {
+      type res2 = Apply<
+        //   ^?
+        Objects.Create<{ a: arg0; b: arg1 }>,
+        [1, 2]
+      >;
+      type test2 = Expect<Equal<res2, { a: 1; b: 2 }>>;
+
+      type res3 = Apply<
+        //   ^?
+        Objects.Create<{ a: arg0; b: [arg1, arg2]; c: { d: arg3 } }>,
+        [1, 2, 3, 4]
+      >;
+      type test3 = Expect<Equal<res3, { a: 1; b: [2, 3]; c: { d: 4 } }>>;
+    });
+
+    it("should support arbitrary functions", () => {
+      type res1 = Call<
+        //   ^?
+        Objects.Create<{
+          addition: Numbers.Add<10, _>;
+          division: Numbers.Div<_, 2>;
+          nested: [Numbers.GreaterThan<0>];
+          recursion: ComposeLeft<
+            [
+              Objects.Create<{
+                label: Strings.Prepend<"number: ">;
+                content: Strings.Append<" is the number we got!">;
+              }>,
+              Objects.Create<{
+                post: arg0;
+              }>
+            ]
+          >;
+        }>,
+        10
+      >;
+      type test2 = Expect<
+        Equal<
+          res1,
+          {
+            addition: 20;
+            division: 5;
+            nested: [true];
+            recursion: {
+              post: {
+                label: "number: 10";
+                content: "10 is the number we got!";
+              };
+            };
+          }
+        >
+      >;
+
+      type res3 = Apply<
+        //   ^?
+        Objects.Create<{ a: arg0; b: [arg1, arg2]; c: { d: arg3 } }>,
+        [1, 2, 3, 4]
+      >;
+      type test3 = Expect<Equal<res3, { a: 1; b: [2, 3]; c: { d: 4 } }>>;
+    });
   });
 
   it("FromEntries", () => {
@@ -47,7 +101,7 @@ describe("Objects", () => {
       Objects.FromEntries,
       ["a", string] | ["b", number]
     >;
-    type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
   });
 
   it("Entries", () => {
@@ -56,7 +110,7 @@ describe("Objects", () => {
       Objects.Entries,
       { a: string; b: number }
     >;
-    type tes1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+    type test1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
   });
 
   it("Entries >> FromEntries identity", () => {
@@ -66,7 +120,7 @@ describe("Objects", () => {
     >;
     //   ^?
 
-    type tes1 = Expect<Equal<res1, { a: string; b: number }>>;
+    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
   });
 
   it("MapValues", () => {
@@ -75,7 +129,7 @@ describe("Objects", () => {
       Objects.MapValues<Strings.ToString>,
       { a: 1; b: true }
     >;
-    type tes1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
+    type test1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
   });
 
   it("MapKeys", () => {
@@ -84,7 +138,7 @@ describe("Objects", () => {
       Objects.MapKeys<Strings.Prepend<"get_">>,
       { a: 1; b: true }
     >;
-    type tes1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
+    type test1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
   });
 
   it("Pick", () => {
@@ -93,7 +147,7 @@ describe("Objects", () => {
       Objects.Pick<"a">,
       { a: 1; b: true }
     >;
-    type tes1 = Expect<Equal<res1, { a: 1 }>>;
+    type test1 = Expect<Equal<res1, { a: 1 }>>;
   });
 
   it("Readonly", () => {
@@ -116,7 +170,7 @@ describe("Objects", () => {
       Objects.Omit<"a">,
       { a: 1; b: true }
     >;
-    type tes1 = Expect<Equal<res1, { b: true }>>;
+    type test1 = Expect<Equal<res1, { b: true }>>;
   });
 
   it("PickBy", () => {
@@ -125,7 +179,7 @@ describe("Objects", () => {
       Objects.PickBy<Booleans.Extends<1>>,
       { a: 1; b: true; c: 1 }
     >;
-    type tes1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
+    type test1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
   });
 
   it("OmitBy", () => {
@@ -134,7 +188,7 @@ describe("Objects", () => {
       Objects.OmitBy<Booleans.Extends<1>>,
       { a: 1; b: true; c: 1 }
     >;
-    type tes1 = Expect<Equal<res1, { b: true }>>;
+    type test1 = Expect<Equal<res1, { b: true }>>;
   });
 
   describe("Assign", () => {
@@ -144,14 +198,14 @@ describe("Objects", () => {
         Tuples.Reduce<Objects.Assign, {}>,
         [{ a: 1 }, { b: true }, { c: 1 }]
       >;
-      type tes1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
+      type test1 = Expect<Equal<res1, { a: 1; b: true; c: 1 }>>;
 
       type res2 = Call<
         //   ^?
         Tuples.Reduce<Objects.Assign, {}>,
         [{ a: 2 }, { b: true }, { c: 2 }]
       >;
-      type tes2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
+      type test2 = Expect<Equal<res2, { a: 2; b: true; c: 2 }>>;
     });
 
     it("can be called with one pre-filled argument", () => {
@@ -404,7 +458,7 @@ describe("Objects", () => {
         Strings.Split<"/">,
         Tuples.Filter<Strings.StartsWith<"<">>,
         Tuples.Map<
-          Functions.ComposeLeft<[
+          ComposeLeft<[
             Strings.Replace<"<", "">,
             Strings.Replace<">", "">,
             Strings.Split<":">
@@ -414,8 +468,8 @@ describe("Objects", () => {
         Objects.FromEntries,
         Objects.MapValues<
           Match<[
-            Match.With<"string", Functions.Constant<string>>,
-            Match.With<"number", Functions.Constant<number>>
+            Match.With<"string", Constant<string>>,
+            Match.With<"number", Constant<number>>
           ]>
         >
       ]

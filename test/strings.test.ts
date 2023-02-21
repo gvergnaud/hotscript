@@ -9,7 +9,7 @@ import {
   Unions,
   Objects,
 } from "../src/index";
-import { Apply, arg0, Eval } from "../src/internals/core/Core";
+import { Apply, arg0, Compose, Eval } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Strings", () => {
@@ -22,7 +22,7 @@ describe("Strings", () => {
     type test2 = Expect<Equal<res2, 3>>;
     type res3 = Call<
       //  ^?
-      Functions.Compose<[Strings.Length, Strings.Repeat<1001>]>,
+      Compose<[Strings.Length, Strings.Repeat<1001>]>,
       "a"
     >;
     type test3 = Expect<Equal<res3, 1001>>;

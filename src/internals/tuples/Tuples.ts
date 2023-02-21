@@ -3,16 +3,20 @@ import { Numbers as N, Numbers } from "../numbers/Numbers";
 
 import {
   Apply,
+  args,
   Call,
   Call2,
   Call3,
   Eval,
   Fn,
+  PartialApply,
   Pipe,
   unset,
   _,
 } from "../core/Core";
 import { Iterator, Stringifiable } from "../helpers";
+import { Objects } from "../objects/Objects";
+import { ToNumber } from "../numbers/impl/utils";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
@@ -34,7 +38,7 @@ export namespace Tuples {
   export type At<
     index extends number | _ | unset = unset,
     tuple = unset
-  > = Functions.PartialApply<AtFn, [index, tuple]>;
+  > = PartialApply<AtFn, [index, tuple]>;
 
   interface AtFn extends Fn {
     return: Extract<this["arg1"], readonly any[]>[Extract<
@@ -44,28 +48,6 @@ export namespace Tuples {
   }
 
   type IsEmptyImpl<tuple extends unknown[]> = [] extends tuple ? true : false;
-
-  interface CreateFn extends Fn {
-    return: this["args"];
-  }
-
-  /**
-   * Create a tuple from a list of arguments.
-   * @param args - The arguments to create a tuple from.
-   * @returns A tuple containing the arguments.
-   * @example
-   * ```ts
-   * type T0 = Call3<Tuples.Create, 1, 2, 3>; // [1, 2, 3]
-   * type T1 = Eval<Tuples.Create<1, 2, 3>>; // [1, 2, 3]
-   * ```
-   */
-  export type Create<
-    arg1 = unset,
-    arg2 = unset,
-    arg3 = unset,
-    arg4 = unset,
-    arg5 = unset
-  > = Functions.PartialApply<CreateFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface IsEmptyFn extends Fn {
     return: IsEmptyImpl<Extract<this["arg0"], unknown[]>>;
@@ -83,10 +65,7 @@ export namespace Tuples {
    * type T2 = Eval<Tuples.IsEmpty<[]>>; // true
    * ```
    */
-  export type IsEmpty<tuple = unset> = Functions.PartialApply<
-    IsEmptyFn,
-    [tuple]
-  >;
+  export type IsEmpty<tuple = unset> = PartialApply<IsEmptyFn, [tuple]>;
 
   interface ToUnionFn extends Fn {
     return: this["arg0"][number];
@@ -103,7 +82,7 @@ export namespace Tuples {
    * ```
    */
   export type ToUnion<tuple extends readonly any[] | _ | unset = unset> =
-    Functions.PartialApply<ToUnionFn, [tuple]>;
+    PartialApply<ToUnionFn, [tuple]>;
 
   /**
    * Returns the first element of a tuple.
@@ -116,8 +95,10 @@ export namespace Tuples {
    * type T2 = Call<T.Head,[1]>; // 1
    * ```
    */
-  export type Head<tuple extends readonly any[] | unset = unset> =
-    Functions.PartialApply<HeadFn, [tuple]>;
+  export type Head<tuple extends readonly any[] | unset = unset> = PartialApply<
+    HeadFn,
+    [tuple]
+  >;
 
   interface HeadFn extends Fn {
     return: HeadImpl<this["arg0"]>;
@@ -136,8 +117,10 @@ export namespace Tuples {
    * type T2 = Call<T.Tail,[1]>; // []
    * ```
    */
-  export type Tail<tuple extends readonly any[] | unset = unset> =
-    Functions.PartialApply<TailFn, [tuple]>;
+  export type Tail<tuple extends readonly any[] | unset = unset> = PartialApply<
+    TailFn,
+    [tuple]
+  >;
 
   export interface TailFn extends Fn {
     return: TailImpl<this["arg0"]>;
@@ -156,8 +139,10 @@ export namespace Tuples {
    * type T2 = Call<T.Last,[1]>; // 1
    * ```
    */
-  export type Last<tuple extends readonly any[] | unset = unset> =
-    Functions.PartialApply<LastFn, [tuple]>;
+  export type Last<tuple extends readonly any[] | unset = unset> = PartialApply<
+    LastFn,
+    [tuple]
+  >;
 
   export interface LastFn extends Fn {
     return: LastImpl<this["arg0"]>;
@@ -175,9 +160,9 @@ export namespace Tuples {
    * ```
    */
   export type Map<
-    fn extends Fn,
+    fn extends Fn | unset | _ = unset,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<MapFn, [fn, tuple]>;
+  > = PartialApply<MapFn, [fn, tuple]>;
 
   interface MapFn extends Fn {
     return: this["args"] extends [
@@ -208,7 +193,7 @@ export namespace Tuples {
   export type FlatMap<
     fn extends Fn,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<FlatMapFn, [fn, tuple]>;
+  > = PartialApply<FlatMapFn, [fn, tuple]>;
 
   interface FlatMapFn extends Fn {
     return: ReduceImpl<
@@ -241,7 +226,7 @@ export namespace Tuples {
     fn extends Fn,
     init = unset,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<ReduceFn, [fn, init, tuple]>;
+  > = PartialApply<ReduceFn, [fn, init, tuple]>;
 
   interface ReduceFn extends Fn {
     return: ReduceImpl<this["arg2"], this["arg1"], Extract<this["arg0"], Fn>>;
@@ -270,7 +255,7 @@ export namespace Tuples {
     fn extends Fn,
     init = unset,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<ReduceRightFn, [fn, init, tuple]>;
+  > = PartialApply<ReduceRightFn, [fn, init, tuple]>;
 
   interface ReduceRightFn extends Fn {
     return: ReduceRightImpl<
@@ -302,7 +287,7 @@ export namespace Tuples {
   export type Filter<
     fn extends Fn,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<FilterFn, [fn, tuple]>;
+  > = PartialApply<FilterFn, [fn, tuple]>;
 
   export interface FilterFn extends Fn {
     return: ReduceImpl<
@@ -335,7 +320,7 @@ export namespace Tuples {
   export type Find<
     fn extends Fn,
     tuple extends readonly any[] | unset = unset
-  > = Functions.PartialApply<FindFn, [fn, tuple]>;
+  > = PartialApply<FindFn, [fn, tuple]>;
 
   export interface FindFn extends Fn {
     return: FindImpl<this["arg1"], Extract<this["arg0"], Fn>>;
@@ -351,8 +336,10 @@ export namespace Tuples {
    * type T1 = Call<T.Sum,[]>; // 0
    * ```
    */
-  export type Sum<tuple extends readonly any[] | unset = unset> =
-    Functions.PartialApply<SumFn, [tuple]>;
+  export type Sum<tuple extends readonly any[] | unset = unset> = PartialApply<
+    SumFn,
+    [tuple]
+  >;
 
   interface SumFn extends Fn {
     return: ReduceImpl<this["arg0"], 0, N.Add>;
@@ -382,7 +369,7 @@ export namespace Tuples {
   export type Drop<
     n extends number | unset | _ = unset,
     tuple = unset
-  > = Functions.PartialApply<DropFn, [n, tuple]>;
+  > = PartialApply<DropFn, [n, tuple]>;
 
   export interface DropFn extends Fn {
     return: this["args"] extends [
@@ -418,7 +405,7 @@ export namespace Tuples {
   export type Take<
     n extends number | unset | _ = unset,
     tuple = unset
-  > = Functions.PartialApply<TakeFn, [n, tuple]>;
+  > = PartialApply<TakeFn, [n, tuple]>;
 
   interface TakeFn extends Fn {
     return: this["args"] extends [
@@ -451,7 +438,7 @@ export namespace Tuples {
    * type T1 = Call<T.TakeWhile<B.Extends<number>>,["1", 2]>; // []
    * ```
    */
-  export type TakeWhile<fn extends Fn, tuple = unset> = Functions.PartialApply<
+  export type TakeWhile<fn extends Fn, tuple = unset> = PartialApply<
     TakeWhileFn,
     [fn, tuple]
   >;
@@ -474,7 +461,7 @@ export namespace Tuples {
    * type T1 = Call<T.Some<B.Extends<number>>,["1", "2"]>; // false
    * ```
    */
-  export type Some<fn extends Fn, tuple = unset> = Functions.PartialApply<
+  export type Some<fn extends Fn, tuple = unset> = PartialApply<
     SomeFn,
     [fn, tuple]
   >;
@@ -499,7 +486,7 @@ export namespace Tuples {
    * type T2 = Call<T.Every<B.Extends<number>>,[1, 2]>; // true
    * ```
    */
-  export type Every<fn extends Fn, tuple = unset> = Functions.PartialApply<
+  export type Every<fn extends Fn, tuple = unset> = PartialApply<
     EveryFn,
     [fn, tuple]
   >;
@@ -517,7 +504,7 @@ export namespace Tuples {
     ...infer tail
   ]
     ? Eval<
-        Tuples.Partition<F.PartialApply<predicateFn, [_, head]>, tail>
+        Tuples.Partition<PartialApply<predicateFn, [_, head]>, tail>
       > extends [infer left extends any[], infer right extends any[]]
       ? [...SortImpl<left, predicateFn>, head, ...SortImpl<right, predicateFn>]
       : never
@@ -564,7 +551,7 @@ export namespace Tuples {
   export type Join<
     Sep extends string | _ | unset = unset,
     Tuple = unset
-  > = Functions.PartialApply<JoinFn, [Sep, Tuple]>;
+  > = PartialApply<JoinFn, [Sep, Tuple]>;
 
   interface JoinFn extends Fn {
     return: this["args"] extends [infer Sep extends string, infer Tuple]
@@ -582,7 +569,7 @@ export namespace Tuples {
    * type T0 = Call<Tuples.Prepend<"new">, ["a", "b", "c"]>; // ["new", "a", "b", "c"]
    * ```
    */
-  export type Prepend<element = unset, tuple = unset> = Functions.PartialApply<
+  export type Prepend<element = unset, tuple = unset> = PartialApply<
     PrependFn,
     [element, tuple]
   >;
@@ -602,7 +589,7 @@ export namespace Tuples {
    * type T0 = Call<Tuples.Append<"new">, ["a", "b", "c"]>; // ["a", "b", "c", "new"]
    * ```
    */
-  export type Append<element = unset, tuple = unset> = Functions.PartialApply<
+  export type Append<element = unset, tuple = unset> = PartialApply<
     AppendFn,
     [element, tuple]
   >;
@@ -627,7 +614,7 @@ export namespace Tuples {
    * //   ^? [[1, 2, 3], ["a", "b", "c"]]
    * ```
    */
-  export type Partition<fn extends Fn, tuple = unset> = Functions.PartialApply<
+  export type Partition<fn extends Fn, tuple = unset> = PartialApply<
     PartitionFn,
     [fn, tuple]
   >;
@@ -650,24 +637,25 @@ export namespace Tuples {
     >;
   }
 
-  type ZipWithImpl<
-    arr1 extends unknown[],
-    arr2 extends unknown[],
-    fn extends Fn,
-    acc extends unknown[] = []
-  > = [arr1, arr2] extends [
-    [infer item1, ...infer rest1],
-    [infer item2, ...infer rest2]
-  ]
-    ? ZipWithImpl<rest1, rest2, fn, [...acc, Call2<fn, item1, item2>]>
-    : acc;
+  interface ZipWithMapper<fn extends Fn, arrs extends unknown[][]> extends Fn {
+    return: this["args"] extends [infer Index extends number, ...any]
+      ? Apply<fn, Eval<Tuples.Map<Tuples.At<Index>, arrs>>>
+      : never;
+  }
 
   interface ZipWithFn<fn extends Fn> extends Fn {
-    return: ZipWithImpl<
-      Extract<this["arg0"], unknown[]>,
-      Extract<this["arg1"], unknown[]>,
-      fn
-    >;
+    return: this["args"] extends infer arrays extends unknown[][]
+      ? Pipe<
+          arrays,
+          [
+            Tuples.Map<Objects.Get<"length">>,
+            Tuples.Reduce<Numbers.Min, 9999>, // a length of 9999 is the longest possible tuple
+            Numbers.Sub<_, 1>,
+            Tuples.Range<0, _>,
+            Tuples.Map<ZipWithMapper<fn, arrays>>
+          ]
+        >
+      : never;
   }
 
   /**
@@ -684,9 +672,20 @@ export namespace Tuples {
    * ```
    */
   export type Zip<
+    arr0 extends unknown[] | _ | unset = unset,
     arr1 extends unknown[] | _ | unset = unset,
-    arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<CreateFn>, [arr1, arr2]>;
+    arr2 extends unknown[] | _ | unset = unset,
+    arr3 extends unknown[] | _ | unset = unset,
+    arr4 extends unknown[] | _ | unset = unset,
+    arr5 extends unknown[] | _ | unset = unset,
+    arr6 extends unknown[] | _ | unset = unset,
+    arr7 extends unknown[] | _ | unset = unset,
+    arr8 extends unknown[] | _ | unset = unset,
+    arr9 extends unknown[] | _ | unset = unset
+  > = PartialApply<
+    ZipWith<args>,
+    [arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, arr9]
+  >;
 
   /**
    * Zip two tuples together using a function.
@@ -700,16 +699,27 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.ZipWith<Tuples.Create>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
-   * type T1 = Eval<Tuples.ZipWith<Tuples.Create, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T0 = Call2<Tuples.ZipWith<args>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Eval<Tuples.ZipWith<args, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * type T3 = Call2<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
    * ```
    */
   export type ZipWith<
     fn extends Fn,
+    arr0 extends unknown[] | _ | unset = unset,
     arr1 extends unknown[] | _ | unset = unset,
-    arr2 extends unknown[] | _ | unset = unset
-  > = Functions.PartialApply<ZipWithFn<fn>, [arr1, arr2]>;
+    arr2 extends unknown[] | _ | unset = unset,
+    arr3 extends unknown[] | _ | unset = unset,
+    arr4 extends unknown[] | _ | unset = unset,
+    arr5 extends unknown[] | _ | unset = unset,
+    arr6 extends unknown[] | _ | unset = unset,
+    arr7 extends unknown[] | _ | unset = unset,
+    arr8 extends unknown[] | _ | unset = unset,
+    arr9 extends unknown[] | _ | unset = unset
+  > = PartialApply<
+    ZipWithFn<fn>,
+    [arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, arr9]
+  >;
 
   /**
    * Range takes a `start` and an `end` integer and produces
@@ -728,7 +738,7 @@ export namespace Tuples {
   export type Range<
     start extends number | _ | unset = unset,
     end extends number | _ | unset = unset
-  > = Functions.PartialApply<RangeFn, [start, end]>;
+  > = PartialApply<RangeFn, [start, end]>;
 
   interface RangeFn extends Fn {
     return: this["args"] extends [

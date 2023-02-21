@@ -1,4 +1,4 @@
-import { Fn, unset, _ } from "../core/Core";
+import { Fn, PartialApply, unset, _ } from "../core/Core";
 import { Functions } from "../functions/Functions";
 import * as Impl from "./impl/match";
 
@@ -22,8 +22,8 @@ import * as Impl from "./impl/match";
  */
 export type Match<
   valueOrWithClauses = unset,
-  withClauses extends Impl.With<unknown, any>[] | unset | _ = unset
-> = Functions.PartialApply<
+  withClauses extends Impl.With<any, any>[] | unset | _ = unset
+> = PartialApply<
   MatchFn,
   withClauses extends unset
     ? [unset, valueOrWithClauses]
@@ -35,5 +35,5 @@ interface MatchFn extends Fn {
 }
 
 export namespace Match {
-  export type With<pattern, fn extends Fn> = Impl.With<pattern, fn>;
+  export type With<pattern, handler> = Impl.With<pattern, handler>;
 }

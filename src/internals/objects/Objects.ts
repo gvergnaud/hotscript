@@ -1,30 +1,16 @@
-import {
-  GetFromPath,
-  IsArrayStrict,
-  Prettify,
-  Primitive,
-  UnionToIntersection,
-} from "../helpers";
-import { Apply, arg, Call, Call2, Fn, unset, _ } from "../core/Core";
+import { IsArrayStrict, Prettify } from "../helpers";
+import { Call, Call2, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
-import { Functions } from "../functions/Functions";
+import * as Impl from "./impl/objects";
 
 export namespace Objects {
-  type FromEntriesImpl<entries extends [PropertyKey, any]> = {
-    [entry in entries as entry[0]]: entry[1];
-  };
-
   export interface FromEntries extends Fn {
-    return: FromEntriesImpl<Extract<this["arg0"], [PropertyKey, any]>>;
+    return: Impl.FromEntries<Extract<this["arg0"], [PropertyKey, any]>>;
   }
 
-  type EntriesImpl<T> = {
-    [K in keyof T]: [K, T[K]];
-  }[keyof T];
-
   export interface Entries extends Fn {
-    return: EntriesImpl<this["arg0"]>;
+    return: Impl.Entries<this["arg0"]>;
   }
 
   type MapValuesImpl<T, fn extends Fn> = {
@@ -85,10 +71,7 @@ export namespace Objects {
     [key in Extract<keyof obj, keys>]: obj[key];
   };
 
-  export type Pick<key = unset, obj = unset> = Functions.PartialApply<
-    PickFn,
-    [key, obj]
-  >;
+  export type Pick<key = unset, obj = unset> = PartialApply<PickFn, [key, obj]>;
 
   interface PickFn extends Fn {
     return: PickImpl<this["arg1"], this["arg0"]>;
@@ -107,10 +90,7 @@ export namespace Objects {
     [key in Exclude<keyof obj, keys>]: obj[key];
   };
 
-  export type Omit<key = unset, obj = unset> = Functions.PartialApply<
-    OmitFn,
-    [key, obj]
-  >;
+  export type Omit<key = unset, obj = unset> = PartialApply<OmitFn, [key, obj]>;
 
   interface OmitFn extends Fn {
     return: OmitImpl<this["arg1"], this["arg0"]>;
@@ -125,8 +105,8 @@ export namespace Objects {
       : never
     : never;
 
-  type PickByImpl<T, fn extends Fn> = FromEntriesImpl<
-    PickEntriesImpl<EntriesImpl<T>, fn>
+  type PickByImpl<T, fn extends Fn> = Impl.FromEntries<
+    PickEntriesImpl<Impl.Entries<T>, fn>
   >;
 
   export interface PickBy<fn extends Fn> extends Fn {
@@ -142,17 +122,13 @@ export namespace Objects {
       : entries
     : never;
 
-  type OmitByImpl<T, fn extends Fn> = FromEntriesImpl<
-    OmitEntriesImpl<EntriesImpl<T>, fn>
+  type OmitByImpl<T, fn extends Fn> = Impl.FromEntries<
+    OmitEntriesImpl<Impl.Entries<T>, fn>
   >;
 
   export interface OmitBy<fn extends Fn> extends Fn {
     return: OmitByImpl<this["arg0"], fn>;
   }
-
-  type AssignImpl<xs extends readonly any[]> = Prettify<
-    UnionToIntersection<xs[number]>
-  >;
 
   export type Assign<
     arg1 = unset,
@@ -160,42 +136,20 @@ export namespace Objects {
     arg3 = unset,
     arg4 = unset,
     arg5 = unset
-  > = Functions.PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
+  > = PartialApply<AssignFn, [arg1, arg2, arg3, arg4, arg5]>;
 
   interface AssignFn extends Fn {
-    return: AssignImpl<this["args"]>;
+    return: Impl.Assign<this["args"]>;
   }
 
-  type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
-    infer first,
-    ...infer rest
-  ]
-    ? Call<fn, first> extends infer key extends PropertyKey
-      ? GroupByImplRec<
-          rest,
-          fn,
-          Std._Omit<acc, key> & {
-            [K in key]: [
-              ...(key extends keyof acc
-                ? Extract<acc[key], readonly any[]>
-                : []),
-              first
-            ];
-          }
-        >
-      : never
-    : acc;
-
-  type GroupByImpl<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
-
   export interface GroupBy<fn extends Fn> extends Fn {
-    return: GroupByImpl<this["arg0"], fn>;
+    return: Impl.GroupBy<this["arg0"], fn>;
   }
 
   export type Get<
     path extends string | number | _ | unset = unset,
     obj = unset
-  > = Functions.PartialApply<GetFn, [path, obj]>;
+  > = PartialApply<GetFn, [path, obj]>;
 
   export interface GetFn extends Fn {
     return: this["args"] extends [
@@ -203,7 +157,24 @@ export namespace Objects {
       infer obj,
       ...any
     ]
-      ? GetFromPath<obj, path>
+      ? Impl.GetFromPath<obj, path>
+      : never;
+  }
+
+  export type Update<
+    path extends string | number | _ | unset = unset,
+    fnOrValue = unset,
+    obj = unset
+  > = PartialApply<UpdateFn, [path, fnOrValue, obj]>;
+
+  export interface UpdateFn extends Fn {
+    return: this["args"] extends [
+      infer path extends string | number,
+      infer fnOrValue,
+      infer obj,
+      ...any
+    ]
+      ? Impl.Update<obj, path, fnOrValue>
       : never;
   }
 
@@ -221,23 +192,9 @@ export namespace Objects {
    */
   interface CreateFn extends Fn {
     return: this["args"] extends [infer pattern, ...infer args]
-      ? CreateImpl<pattern, args>
+      ? Impl.Create<pattern, args>
       : never;
   }
-
-  type CreateImpl<pattern, args extends unknown[]> = pattern extends arg<
-    infer N extends number
-  >
-    ? args[N]
-    : pattern extends Primitive
-    ? pattern
-    : pattern extends [any, ...any]
-    ? { [key in keyof pattern]: CreateImpl<pattern[key], args> }
-    : pattern extends (infer V)[]
-    ? CreateImpl<V, args>[]
-    : pattern extends object
-    ? { [key in keyof pattern]: CreateImpl<pattern[key], args> }
-    : pattern;
 
   export type Create<
     pattern = unset,
@@ -245,7 +202,7 @@ export namespace Objects {
     arg1 = unset,
     arg2 = unset,
     arg3 = unset
-  > = Functions.PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
+  > = PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
 
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]
@@ -268,5 +225,5 @@ export namespace Objects {
   export type Record<
     union extends string | _ | unset = unset,
     value = unset
-  > = Functions.PartialApply<RecordFn, [union, value]>;
+  > = PartialApply<RecordFn, [union, value]>;
 }
