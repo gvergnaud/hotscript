@@ -56,7 +56,7 @@ type T = {
 
 ## TODO
 
-- [ ] Function
+- [ ] Core
   - [x] Pipe
   - [x] PipeRight
   - [x] Call
@@ -64,6 +64,10 @@ type T = {
   - [x] PartialApply
   - [x] Compose
   - [x] ComposeLeft
+- [ ] Function
+  - [x] ReturnType
+  - [x] Parameters
+  - [x] Parameter n
 - [ ] Tuples
   - [x] Create
   - [x] Partition
@@ -98,7 +102,7 @@ type T = {
   - [ ] MutableDeep
   - [ ] RequiredDeep
   - [ ] PartialDeep
-  - [ ] `Update<Path, Fn | Type, Obj>`
+  - [x] Update
   - [x] Record
   - [x] Create
   - [x] Get
