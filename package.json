@@ -12,7 +12,7 @@
     "test": "jest",
     "clear-test": "jest --clearCache",
     "perf": "tsc --project test/tsconfig.json --noEmit --extendedDiagnostics",
-    "fmt": "prettier ./src/** ./tests/** -w",
+    "fmt": "prettier ./src/** ./test/** -w",
     "check": "tsc --strict --noEmit --extendedDiagnostics"
   },
   "files": [
