@@ -81,10 +81,7 @@ export namespace Objects {
     return: this["args"] extends [infer value] ? Std._Readonly<value> : never;
   }
 
-  export type Readonly<value = unset> = Functions.PartialApply<
-    ReadonlyFn,
-    [value]
-  >;
+  export type Readonly<value = unset> = PartialApply<ReadonlyFn, [value]>;
 
   type OmitImpl<obj, keys> = {
     [key in Exclude<keyof obj, keys>]: obj[key];
