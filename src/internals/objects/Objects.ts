@@ -94,9 +94,14 @@ export namespace Objects {
     return: PickImpl<this["arg1"], this["arg0"]>;
   }
 
-  export interface Readonly extends Fn {
-    return: Std._Readonly<this["arg0"]>;
+  interface ReadonlyFn extends Fn {
+    return: this["args"] extends [infer value] ? Std._Readonly<value> : never;
   }
+
+  export type Readonly<value = unset> = Functions.PartialApply<
+    ReadonlyFn,
+    [value]
+  >;
 
   type OmitImpl<obj, keys> = {
     [key in Exclude<keyof obj, keys>]: obj[key];
