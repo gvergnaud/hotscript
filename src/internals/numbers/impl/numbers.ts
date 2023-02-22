@@ -5,6 +5,7 @@ export type { Negate } from "./negate";
 export type { Mul } from "./multiply";
 export type { Div, Mod } from "./division";
 export type { Power } from "./power";
+export type { Prime } from "./prime";
 export type {
   Compare,
   Equal,

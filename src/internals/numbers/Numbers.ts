@@ -26,8 +26,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Add<a, b>
-      : never;
+    ? Impl.Add<a, b>
+    : never;
   }
 
   /**
@@ -53,8 +53,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Sub<a, b>
-      : never;
+    ? Impl.Sub<a, b>
+    : never;
   }
 
   /**
@@ -80,8 +80,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Mul<a, b>
-      : never;
+    ? Impl.Mul<a, b>
+    : never;
   }
 
   /**
@@ -107,8 +107,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Div<a, b>
-      : never;
+    ? Impl.Div<a, b>
+    : never;
   }
 
   /**
@@ -134,8 +134,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Mod<a, b>
-      : never;
+    ? Impl.Mod<a, b>
+    : never;
   }
 
   /**
@@ -154,8 +154,8 @@ export namespace Numbers {
 
   interface NegateFn extends Fn {
     return: this["args"] extends [infer a extends number | bigint, ...any]
-      ? Impl.Negate<a>
-      : never;
+    ? Impl.Negate<a>
+    : never;
   }
 
   /**
@@ -176,8 +176,8 @@ export namespace Numbers {
 
   export interface AbsFn extends Fn {
     return: this["args"] extends [infer a extends number | bigint, ...any]
-      ? Impl.Abs<a>
-      : never;
+    ? Impl.Abs<a>
+    : never;
   }
 
   /**
@@ -246,8 +246,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Power<a, b>
-      : never;
+    ? Impl.Power<a, b>
+    : never;
   }
 
   /**
@@ -274,8 +274,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Compare<a, b>
-      : never;
+    ? Impl.Compare<a, b>
+    : never;
   }
 
   /**
@@ -301,8 +301,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.Equal<a, b>
-      : never;
+    ? Impl.Equal<a, b>
+    : never;
   }
 
   /**
@@ -328,8 +328,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.NotEqual<a, b>
-      : never;
+    ? Impl.NotEqual<a, b>
+    : never;
   }
 
   /**
@@ -356,8 +356,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.LessThan<a, b>
-      : never;
+    ? Impl.LessThan<a, b>
+    : never;
   }
 
   /**
@@ -387,8 +387,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.LessThanOrEqual<a, b>
-      : never;
+    ? Impl.LessThanOrEqual<a, b>
+    : never;
   }
 
   /**
@@ -415,8 +415,8 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.GreaterThan<a, b>
-      : never;
+    ? Impl.GreaterThan<a, b>
+    : never;
   }
 
   /**
@@ -446,7 +446,29 @@ export namespace Numbers {
       infer b extends number | bigint,
       ...any
     ]
-      ? Impl.GreaterThanOrEqual<a, b>
-      : never;
+    ? Impl.GreaterThanOrEqual<a, b>
+    : never;
+  }
+
+  /**
+   * Check if a number is prime
+   * @description the number can be of type bigint or number and handle really large numbers
+   * @param n - the number to check
+   * @returns true if n is prime, false otherwise
+   * @example
+   * ```ts
+   * type T0 = Eval<Numbers.IsPrime<2>>; // true
+   * type T1 = Eval<Numbers.IsPrime<3>>; // true
+   * type T2 = Eval<Numbers.IsPrime<4>>; // false
+   * ```
+   * 
+   */
+  export type Prime<
+    n extends number | bigint | _ | unset = unset
+  > = PartialApply<PrimeFn, [n]>;
+
+  interface PrimeFn extends Fn {
+    return: this["args"] extends [infer a extends number | bigint, ...any]
+    ? Impl.Prime<a> extends true ? true : false : never;
   }
 }
