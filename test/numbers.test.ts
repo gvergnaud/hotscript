@@ -400,4 +400,38 @@ describe("Numbers", () => {
       type test1 = Expect<Equal<res1, false>>;
     });
   });
+
+  describe("Prime", () => {
+    it('should return true for prime numbers', () => {
+      type res1 = Eval<Numbers.Prime<2>>;
+      //    ^?
+      type test1 = Expect<Equal<res1, true>>;
+
+      type res2 = Eval<Numbers.Prime<3>>;
+      //    ^?
+      type test2 = Expect<Equal<res2, true>>;
+
+      type res3 = Eval<Numbers.Prime<5>>;
+      //    ^?
+      type test3 = Expect<Equal<res3, true>>;
+
+      type res4 = Eval<Numbers.Prime<7>>;
+      //    ^?
+      type test4 = Expect<Equal<res4, true>>;
+    });
+
+    it('should return false for non-prime numbers', () => {
+      type res1 = Eval<Numbers.Prime<1>>;
+      //    ^?
+      type test1 = Expect<Equal<res1, false>>;
+
+      type res2 = Eval<Numbers.Prime<4>>;
+      //    ^?
+      type test2 = Expect<Equal<res2, false>>;
+
+      type res3 = Eval<Numbers.Prime<6>>;
+      //    ^?
+      type test3 = Expect<Equal<res3, false>>;
+    });
+  });
 });
