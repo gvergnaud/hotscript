@@ -56,7 +56,7 @@ type T = {
 
 ## TODO
 
-- [ ] Core
+- [x] Core
   - [x] Pipe
   - [x] PipeRight
   - [x] Call
@@ -64,11 +64,11 @@ type T = {
   - [x] PartialApply
   - [x] Compose
   - [x] ComposeLeft
-- [ ] Function
+- [x] Function
   - [x] ReturnType
   - [x] Parameters
   - [x] Parameter n
-- [ ] Tuples
+- [x] Tuples
   - [x] Create
   - [x] Partition
   - [x] IsEmpty
@@ -125,13 +125,13 @@ type T = {
   - [x] SnakeCaseDeep
   - [x] KebabCase
   - [x] KebabCaseDeep
-- [ ] Union
+- [x] Union
   - [x] Map
   - [x] Extract
   - [x] ExtractBy
   - [x] Exclude
   - [x] ExcludeBy
-- [ ] String
+- [x] String
   - [x] Length
   - [x] TrimLeft
   - [x] TrimRight
@@ -162,7 +162,7 @@ type T = {
   - [x] LessThanOrEqual
   - [x] GreaterThan
   - [x] GreaterThanOrEqual
-- [ ] Number
+- [x] Number
   - [x] Add
   - [x] Multiply
   - [x] Subtract
@@ -176,7 +176,7 @@ type T = {
   - [x] GreaterThanOrEqual
   - [x] LessThan
   - [x] LessThanOrEqual
-- [ ] Boolean
+- [x] Boolean
   - [x] And
   - [x] Or
   - [x] XOr
