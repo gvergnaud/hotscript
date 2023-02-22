@@ -165,17 +165,14 @@ describe("Match", () => {
           Tuples.Filter<Strings.StartsWith<"<">>,
           Tuples.ToUnion,
           Unions.Map<
-            // move compose outside of functions. They are control flow utils.
             ComposeLeft<
               [
                 Strings.Trim<"<" | ">">,
                 Strings.Split<":">,
-                // new function
                 Objects.Update<
                   "[1]",
                   Match<
                     [
-                      // Match.With accept regular value
                       Match.With<"string", string>,
                       Match.With<"number", number>,
                       Match.With<"boolean", boolean>
@@ -191,6 +188,11 @@ describe("Match", () => {
 
       type res1 = RouteToParams<"/users/<id:string>/posts/<index:number>">;
       //    ^?
+      type test1 = Expect<Equal<res1, { id: string; index: number }>>;
+
+      type res2 = RouteToParams<"/dashboard/<dashId:string>">;
+      //    ^?
+      type test2 = Expect<Equal<res2, { dashId: string }>>;
     });
   });
 });
