@@ -95,6 +95,27 @@ describe("Objects", () => {
     });
   });
 
+  it("Update", () => {
+    type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
+    //    ^?
+    type test0 = Expect<Equal<res0, { a: 2; b: 1 }>>;
+
+    type res1 = Call<Objects.Update<"a[0]", 4>, { a: [1, 2, 3] }>;
+    //    ^?
+    type test1 = Expect<Equal<res1, { a: [4, 2, 3] }>>;
+
+    type res2 = Call<
+      //   ^?
+      Objects.Update<"a.b", Numbers.Add<1>>,
+      { a: { b: 1 }; c: "" }
+    >;
+    type test2 = Expect<Equal<res2, { a: { b: 2 }; c: "" }>>;
+
+    type res3 = Call<Objects.Update<"a.b", "Hello">, { a: { b: 1 } }>;
+    //    ^?
+    type test3 = Expect<Equal<res3, { a: { b: "Hello" } }>>;
+  });
+
   it("FromEntries", () => {
     type res1 = Call<
       //   ^?
