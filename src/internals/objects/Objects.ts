@@ -81,6 +81,17 @@ export namespace Objects {
     return: this["args"] extends [infer value] ? Std._Readonly<value> : never;
   }
 
+  /**
+   * Make all properties of an object readonly
+   * @description This function is used to make properties of an object readonly
+   * @param value - The object to make properties readonly
+   * @returns The object with its properties made readonly
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.Readonly, {a: 1; b: true }>; // { readonly a:1; readonly b: true}
+   * type T1 = Eval<Objects.Readonly<{ a: 1; b: true }>>; // { readonly a:1; readonly b: true}
+   * ```
+   */
   export type Readonly<value = unset> = PartialApply<ReadonlyFn, [value]>;
 
   type OmitImpl<obj, keys> = {
