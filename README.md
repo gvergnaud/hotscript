@@ -97,7 +97,7 @@ type T = {
   - [x] Readonly
   - [ ] Mutable
   - [x] Required
-  - [ ] Partial
+  - [x] Partial
   - [ ] ReadonlyDeep
   - [ ] MutableDeep
   - [ ] RequiredDeep

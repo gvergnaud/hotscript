@@ -186,6 +186,20 @@ describe("Objects", () => {
     type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
   });
 
+  it("Partial", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Partial,
+      { a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a?: 1; b?: true }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Partial<{ a: 1; b: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { a?: 1; b?: true }>>;
+  });
+
   it("Omit", () => {
     type res1 = Call<
       //   ^?

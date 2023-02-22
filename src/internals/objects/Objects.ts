@@ -111,6 +111,23 @@ export namespace Objects {
    */
   export type Required<value = unset> = PartialApply<RequiredFn, [value]>;
 
+  interface PartialFn extends Fn {
+    return: this["args"] extends [infer value] ? Std._Partial<value> : never;
+  }
+
+  /**
+   * Make all properties of an object optional
+   * @description This function is used to make properties of an object optional
+   * @param value - The object to make properties optional
+   * @returns The object with its properties made optional
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.Partial, {a: 1; b: true }>; // { a?:1; b?: true}
+   * type T1 = Eval<Objects.Partial<{ a: 1; b: true }>>; // { a?:1; b?: true}
+   * ```
+   */
+  export type Partial<value = unset> = PartialApply<PartialFn, [value]>;
+
   type OmitImpl<obj, keys> = {
     [key in Exclude<keyof obj, keys>]: obj[key];
   };
