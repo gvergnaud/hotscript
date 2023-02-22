@@ -94,6 +94,23 @@ export namespace Objects {
    */
   export type Readonly<value = unset> = PartialApply<ReadonlyFn, [value]>;
 
+  interface RequiredFn extends Fn {
+    return: this["args"] extends [infer value] ? Std._Required<value> : never;
+  }
+
+  /**
+   * Make all properties of an object required
+   * @description This function is used to make properties of an object required
+   * @param value - The object to make properties required
+   * @returns The object with its properties made required
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.Required, {a?: 1; b?: true }>; // { a:1; b: true}
+   * type T1 = Eval<Objects.Required<{ a?: 1; b?: true }>>; // { a:1; b: true}
+   * ```
+   */
+  export type Required<value = unset> = PartialApply<RequiredFn, [value]>;
+
   type OmitImpl<obj, keys> = {
     [key in Exclude<keyof obj, keys>]: obj[key];
   };

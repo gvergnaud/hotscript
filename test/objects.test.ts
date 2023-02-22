@@ -172,6 +172,20 @@ describe("Objects", () => {
     type tes2 = Expect<Equal<res2, { readonly a: 1; readonly b: true }>>;
   });
 
+  it("Required", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Required,
+      { a?: 1; b?: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Required<{ a?: 1; b?: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
+  });
+
   it("Omit", () => {
     type res1 = Call<
       //   ^?
