@@ -1,3 +1,5 @@
+import { Fn } from "../../core/Core";
+
 export type Replace<
   Str,
   From extends string,
@@ -7,3 +9,13 @@ export type Replace<
     ? Replace<`${Before}${To}${After}`, From, To>
     : Str
   : Str;
+
+export interface ReplaceReducer<To extends string> extends Fn {
+  return: this["args"] extends [
+    infer Str extends string,
+    infer From extends string,
+    ...any
+  ]
+    ? Replace<Str, From, To>
+    : never;
+}
