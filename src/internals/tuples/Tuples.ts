@@ -208,6 +208,8 @@ export namespace Tuples {
     ...infer rest
   ]
     ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
+    : xs extends readonly [infer first, ...infer rest]
+    ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
     : acc;
 
   /**
