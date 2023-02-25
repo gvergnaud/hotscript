@@ -45,10 +45,10 @@ export namespace Objects {
     ? MapKeysDeepImpl<Extract<T, readonly any[]>[number], fn>[]
     : T extends object
     ? {
-      [K in keyof T as Extract<Call<fn, K>, PropertyKey>]: Prettify<
-        MapKeysDeepImpl<T[K], fn>
-      >;
-    }
+        [K in keyof T as Extract<Call<fn, K>, PropertyKey>]: Prettify<
+          MapKeysDeepImpl<T[K], fn>
+        >;
+      }
     : T;
 
   export interface MapKeysDeep<fn extends Fn> extends Fn {
@@ -143,8 +143,8 @@ export namespace Objects {
     fn extends Fn
   > = entries extends any
     ? Call2<fn, entries[1], entries[0]> extends true
-    ? entries
-    : never
+      ? entries
+      : never
     : never;
 
   type PickByImpl<T, fn extends Fn> = Impl.FromEntries<
@@ -160,8 +160,8 @@ export namespace Objects {
     fn extends Fn
   > = entries extends any
     ? Call2<fn, entries[1], entries[0]> extends true
-    ? never
-    : entries
+      ? never
+      : entries
     : never;
 
   type OmitByImpl<T, fn extends Fn> = Impl.FromEntries<
@@ -199,8 +199,8 @@ export namespace Objects {
       infer obj,
       ...any
     ]
-    ? Impl.GetFromPath<obj, path>
-    : never;
+      ? Impl.GetFromPath<obj, path>
+      : never;
   }
 
   /**
@@ -208,7 +208,7 @@ export namespace Objects {
    * @description This function is used to make all levels of an object optional
    * @param obj - The object to make levels optional
    * @returns The object with its levels made optional
-   * 
+   *
    * @example
    * ```ts
    * type T0 = Call<Objects.PartialDeep, {a: 1; b: true }>; // { a?:1; b?: true}
@@ -253,8 +253,8 @@ export namespace Objects {
       infer obj,
       ...any
     ]
-    ? Impl.Update<obj, path, fnOrValue>
-    : never;
+      ? Impl.Update<obj, path, fnOrValue>
+      : never;
   }
 
   /**
@@ -271,8 +271,8 @@ export namespace Objects {
    */
   interface CreateFn extends Fn {
     return: this["args"] extends [infer pattern, ...infer args]
-    ? Impl.Create<pattern, args>
-    : never;
+      ? Impl.Create<pattern, args>
+      : never;
   }
 
   export type Create<
@@ -285,8 +285,8 @@ export namespace Objects {
 
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]
-    ? Std._Record<union, value>
-    : never;
+      ? Std._Record<union, value>
+      : never;
   }
 
   /**

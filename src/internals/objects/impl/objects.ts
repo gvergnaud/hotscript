@@ -5,12 +5,12 @@ import { Std } from "../../std/Std";
 
 export type Keys<src> = src extends unknown[]
   ? {
-    [key in keyof src]: key;
-  }[number] extends infer res
-  ? res extends string
-  ? Call<Strings.ToNumber, res> & keyof src
-  : res & keyof src
-  : never
+      [key in keyof src]: key;
+    }[number] extends infer res
+    ? res extends string
+      ? Call<Strings.ToNumber, res> & keyof src
+      : res & keyof src
+    : never
   : keyof src;
 
 export type Values<src> = Keys<src> extends infer keys extends keyof src
@@ -23,8 +23,8 @@ export type FromEntries<entries extends [PropertyKey, any]> = {
 
 export type Entries<T> = Keys<T> extends infer keys extends keyof T
   ? {
-    [K in keys]: [K, T[K]];
-  }[keys]
+      [K in keys]: [K, T[K]];
+    }[keys]
   : never;
 
 type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
@@ -32,17 +32,17 @@ type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
   ...infer rest
 ]
   ? Call<fn, first> extends infer key extends PropertyKey
-  ? GroupByImplRec<
-    rest,
-    fn,
-    Std._Omit<acc, key> & {
-      [K in key]: [
-        ...(key extends keyof acc ? Extract<acc[key], readonly any[]> : []),
-        first
-      ];
-    }
-  >
-  : never
+    ? GroupByImplRec<
+        rest,
+        fn,
+        Std._Omit<acc, key> & {
+          [K in key]: [
+            ...(key extends keyof acc ? Extract<acc[key], readonly any[]> : []),
+            first
+          ];
+        }
+      >
+    : never
   : acc;
 
 export type GroupBy<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
@@ -61,24 +61,23 @@ type ParsePath<
   ? [`${path}`]
   : path extends `${infer first}${infer rest}`
   ? first extends "." | "[" | "]"
-  ? ParsePath<
-    rest,
-    [...output, ...(currentChunk extends "" ? [] : [currentChunk])],
-    ""
-  >
-  : ParsePath<rest, output, `${currentChunk}${first}`>
+    ? ParsePath<
+        rest,
+        [...output, ...(currentChunk extends "" ? [] : [currentChunk])],
+        ""
+      >
+    : ParsePath<rest, output, `${currentChunk}${first}`>
   : [...output, ...(currentChunk extends "" ? [] : [currentChunk])];
 
 type RecursiveGet<Obj, pathList> = Obj extends any
   ? pathList extends [infer first, ...infer rest]
-  ? first extends keyof Obj
-  ? RecursiveGet<Obj[first], rest>
-  : [first, Obj] extends [`${number}` | "number", any[]]
-  ? RecursiveGet<Extract<Obj, any[]>[number], rest>
-  : undefined
-  : Obj
+    ? first extends keyof Obj
+      ? RecursiveGet<Obj[first], rest>
+      : [first, Obj] extends [`${number}` | "number", any[]]
+      ? RecursiveGet<Extract<Obj, any[]>[number], rest>
+      : undefined
+    : Obj
   : never;
-
 
 export type PartialDeep<Obj> = Obj extends any ? RecursivePartial<Obj> : never;
 
@@ -94,18 +93,18 @@ export type Update<obj, path, fnOrValue> = RecursiveUpdate<
 
 type RecursiveUpdate<obj, pathList, fnOrValue> = obj extends any
   ? pathList extends [infer first, ...infer rest]
-  ? first extends keyof obj
-  ? {
-    [K in keyof obj]: Equal<first, K> extends true
-    ? RecursiveUpdate<obj[K], rest, fnOrValue>
-    : obj[K];
-  }
-  : [first, obj] extends ["number", any[]]
-  ? RecursiveUpdate<Extract<obj, any[]>[number], rest, fnOrValue>[]
-  : undefined
-  : fnOrValue extends Fn
-  ? Call<Extract<fnOrValue, Fn>, obj>
-  : fnOrValue
+    ? first extends keyof obj
+      ? {
+          [K in keyof obj]: Equal<first, K> extends true
+            ? RecursiveUpdate<obj[K], rest, fnOrValue>
+            : obj[K];
+        }
+      : [first, obj] extends ["number", any[]]
+      ? RecursiveUpdate<Extract<obj, any[]>[number], rest, fnOrValue>[]
+      : undefined
+    : fnOrValue extends Fn
+    ? Call<Extract<fnOrValue, Fn>, obj>
+    : fnOrValue
   : never;
 
 export type Create<
@@ -137,14 +136,14 @@ export type AllPaths<T, ParentPath extends string = never> = T extends Primitive
   ? JoinPath<ParentPath, string, ".">
   : T extends any[]
   ? Keys<T> extends infer key extends string | number
-  ?
-  | JoinPath<ParentPath, `[${key}]`>
-  | AllPaths<T[number], JoinPath<ParentPath, `[${key}]`>>
-  : never
+    ?
+        | JoinPath<ParentPath, `[${key}]`>
+        | AllPaths<T[number], JoinPath<ParentPath, `[${key}]`>>
+    : never
   : keyof T extends infer key extends keyof T & string
   ? key extends any
-  ?
-  | JoinPath<ParentPath, key, ".">
-  | AllPaths<T[key], JoinPath<ParentPath, key, ".">>
-  : never
+    ?
+        | JoinPath<ParentPath, key, ".">
+        | AllPaths<T[key], JoinPath<ParentPath, key, ".">>
+    : never
   : ParentPath;
