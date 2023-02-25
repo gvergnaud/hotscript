@@ -1,5 +1,6 @@
 import { Call, Eval, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Functions } from "../functions/Functions";
+import { UnionToTuple } from "../helpers";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 
@@ -85,6 +86,24 @@ export namespace Unions {
       infer end extends number
     ]
       ? Eval<Tuples.Range<start, end>>[number]
+      : never;
+  }
+
+  /**
+   * `Unions.ToTuple` turns a union type into a tuple.
+   * Warning: the ordering of the output tuple is not stable.
+   * @param union - any union type.
+   * @returns a tuple containing each member of this union type.
+   * @example
+   * ```ts
+   * type T0 = Call<Unions.ToTuple, 1 | 2 | 3>; // [1, 2, 3]
+   * ```
+   */
+  export type ToTuple<union = unset> = PartialApply<ToTupleFn, [union]>;
+
+  interface ToTupleFn extends Fn {
+    return: this["args"] extends [infer union, ...any]
+      ? UnionToTuple<union>
       : never;
   }
 }
