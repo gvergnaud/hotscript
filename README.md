@@ -157,6 +157,7 @@ type T = {
   - [x] ExtractBy
   - [x] Exclude
   - [x] ExcludeBy
+  - [x] ToTuple
 - [ ] String
   - [x] Length
   - [x] TrimLeft
