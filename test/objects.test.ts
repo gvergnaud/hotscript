@@ -95,6 +95,20 @@ describe("Objects", () => {
     });
   });
 
+  it('PartialDeep', () => {
+    type res0 = Call<Objects.PartialDeep, { a: 1, b: 2 }>;
+    //    ^?
+    type test0 = Expect<Equal<res0, { a?: 1, b?: 2 }>>;
+
+    type res1 = Call<Objects.PartialDeep, { a: 1, b: { c: 2 } }>;
+    //    ^?
+    type test1 = Expect<Equal<res1, { a?: 1, b?: { c?: 2 } }>>;
+
+    type res2 = Call<Objects.PartialDeep, { a: 1, b: { c: 2, d: { e: 3 } } }>;
+    //    ^?
+    type test2 = Expect<Equal<res2, { a?: 1, b?: { c?: 2, d?: { e?: 3 } } }>>;
+  })
+
   it("Update", () => {
     type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
     //    ^?
@@ -636,8 +650,8 @@ describe("Objects", () => {
         constant: true;
         tuple: [0, 1];
         union:
-          | { flag: true; ordinal: number }
-          | { flag: false; cardinal: string };
+        | { flag: true; ordinal: number }
+        | { flag: false; cardinal: string };
         array: { inner: number }[];
         conditional?: number;
       }
