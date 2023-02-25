@@ -4,7 +4,23 @@ A lodash-like library for types, with support for type-level lambda functions.
 
 🚧 work in progress 🚧
 
+## Installation
+
+You can find HotScript on npm:
+
 ```ts
+npm install -D hotscript
+```
+
+HotScript is a work-in-progress library, so expect **breaking changes** in its API.
+
+## Examples
+
+#### Transforming a list
+
+```ts
+import { Pipe, Tuples, Strings, Number } from "hotscript";
+
 // prettier-ignore
 type res1 = Pipe<
   //  ^? 95
@@ -18,6 +34,12 @@ type res1 = Pipe<
     Tuples.Sum
   ]
 >;
+```
+
+#### Defining a first-class function
+
+```ts
+import { Call, Fn Tuples } from "hotscript";
 
 // This is a type-level "lambda"!
 interface Duplicate extends Fn {
@@ -29,7 +51,11 @@ type result1 = Call<Tuples.Map<Duplicate>, [1, 2, 3, 4]>;
 
 type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 //     ^? [1, 1, 2, 2, 3, 3, 4, 4]
+```
 
+#### Transforming an object type
+
+```ts
 // Let's compose some functions to transform an object type:
 type ToAPIPayload<T> = Pipe<
   T,
