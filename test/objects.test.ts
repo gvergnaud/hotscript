@@ -658,8 +658,8 @@ describe("Objects", () => {
         constant: true;
         tuple: [0, 1];
         union:
-        | { flag: true; ordinal: number }
-        | { flag: false; cardinal: string };
+          | { flag: true; ordinal: number }
+          | { flag: false; cardinal: string };
         array: { inner: number }[];
         conditional?: number;
       }
