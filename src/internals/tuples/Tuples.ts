@@ -191,7 +191,8 @@ export namespace Tuples {
   interface MapFn extends Fn {
     return: this["args"] extends [
       infer fn extends Fn,
-      infer tuple extends unknown[]
+      infer tuple extends unknown[],
+      ...any
     ]
       ? { [key in keyof tuple]: Call<fn, tuple[key]> }
       : never;

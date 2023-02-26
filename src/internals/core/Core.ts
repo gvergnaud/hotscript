@@ -1,5 +1,6 @@
 import { MergeArgs } from "./impl/MergeArgs";
 import { Head } from "../helpers";
+import { Objects } from "../objects/Objects";
 
 declare const rawArgs: unique symbol;
 type rawArgs = typeof rawArgs;
@@ -281,8 +282,25 @@ export interface PartialApply<fn extends Fn, partialArgs extends unknown[]>
   extends Fn {
   return: MergeArgs<
     this["args"],
-    partialArgs
+    ApplyPartialArgFunctions<this["args"], partialArgs>
   > extends infer args extends unknown[]
     ? Apply<fn, args>
     : never;
+}
+
+export type ApplyPartialArgFunctions<
+  args extends unknown[],
+  partialArgs extends unknown[],
+  output extends any[] = []
+> = partialArgs extends [infer first, ...infer rest]
+  ? ApplyPartialArgFunctions<
+      args,
+      rest,
+      [...output, first extends ShouldApply<infer fn> ? Apply<fn, args> : first]
+    >
+  : output;
+
+export interface ShouldApply<fn extends Fn> {
+  shouldApply: true;
+  fn: fn;
 }

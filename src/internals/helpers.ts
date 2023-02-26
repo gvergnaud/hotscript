@@ -38,7 +38,7 @@ export type UnionToIntersection<union> = (
   ? intersection
   : never;
 
-export type Prettify<T> = { [K in keyof T]: T[K] } | never;
+export type Prettify<T> = T extends Primitive ? T : { [K in keyof T]: T[K] };
 
 export type RecursivePrettify<T> = IsArrayStrict<T> extends true
   ? RecursivePrettify<Extract<T, readonly any[]>[number]>[]
@@ -209,3 +209,5 @@ export type Primitive =
   | symbol;
 
 export type Head<xs> = xs extends [infer first, ...any] ? first : never;
+
+export type Tail<xs> = xs extends [any, ...infer rest] ? rest : never;
