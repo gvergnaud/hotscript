@@ -19,7 +19,7 @@ HotScript is a work-in-progress library, so expect **breaking changes** in its A
 #### Transforming a list
 
 ```ts
-import { Pipe, Tuples, Strings, Number } from "hotscript";
+import { Pipe, Tuples, Strings, Numbers } from "hotscript";
 
 // prettier-ignore
 type res1 = Pipe<
