@@ -108,13 +108,32 @@ describe("Objects", () => {
     //    ^?
     type test2 = Expect<Equal<res2, { a?: 1; b?: { c?: 2; d?: { e?: 3 } } }>>;
 
-    type res3 = Call<Objects.PartialDeep, { a: 1; b: { c: 2 } }[]>;
+    type tuple = [string, number];
+    type res3 = Call<Objects.PartialDeep, tuple>;
     //    ^?
-    type test3 = Expect<Equal<res3, { a?: 1; b?: { c?: 2 } }[]>>;
+    type test3 = Expect<Equal<res3, [string?, number?]>>;
 
-    type res4 = Call<Objects.PartialDeep, { a: 1; b: { c: 2 }[] }[]>;
+    type res4 = Call<Objects.PartialDeep, [string, tuple]>;
     //    ^?
-    type test4 = Expect<Equal<res4, { a?: 1; b?: { c?: 2 }[] }[]>>;
+    type test4 = Expect<Equal<res4, [string?, [string?, number?]?]>>;
+
+    type res5 = Call<
+      Objects.PartialDeep,
+      { tuple: tuple; tuple2: { tuple3: tuple } }
+    >;
+    //    ^?
+    type test5 = Expect<
+      Equal<
+        res5,
+        { tuple?: [string?, number?]; tuple2?: { tuple3?: [string?, number?] } }
+      >
+    >;
+
+    type res6 = Call<Objects.PartialDeep, { tuple: [string, tuple] }>;
+    //    ^?
+    type test6 = Expect<
+      Equal<res6, { tuple?: [string?, [string?, number?]?] }>
+    >;
   });
 
   it("Update", () => {
@@ -658,8 +677,8 @@ describe("Objects", () => {
         constant: true;
         tuple: [0, 1];
         union:
-          | { flag: true; ordinal: number }
-          | { flag: false; cardinal: string };
+        | { flag: true; ordinal: number }
+        | { flag: false; cardinal: string };
         array: { inner: number }[];
         conditional?: number;
       }
