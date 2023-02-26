@@ -95,6 +95,65 @@ describe("Objects", () => {
     });
   });
 
+  it("ReadonlyDeep", () => {
+    type res0 = Call<Objects.ReadonlyDeep, { a: 1; b: 2 }>;
+    //    ^?
+    type test0 = Expect<Equal<res0, { readonly a: 1; readonly b: 2 }>>;
+
+    type res1 = Call<Objects.ReadonlyDeep, { a: 1; b: { c: 2 } }>;
+    //    ^?
+    type test1 = Expect<
+      Equal<res1, { readonly a: 1; readonly b: { readonly c: 2 } }>
+    >;
+
+    type res2 = Call<Objects.ReadonlyDeep, { a: 1; b: { c: 2; d: { e: 3 } } }>;
+    //    ^?
+    type test2 = Expect<
+      Equal<
+        res2,
+        {
+          readonly a: 1;
+          readonly b: { readonly c: 2; readonly d: { readonly e: 3 } };
+        }
+      >
+    >;
+
+    type tuple = [string, number];
+    type res3 = Call<Objects.ReadonlyDeep, tuple>;
+    //    ^?
+    type test3 = Expect<Equal<res3, readonly [string, number]>>;
+
+    type res4 = Call<Objects.ReadonlyDeep, [string, tuple]>;
+    //    ^?
+    type test4 = Expect<
+      Equal<res4, readonly [string, readonly [string, number]]>
+    >;
+
+    type res5 = Call<
+      Objects.ReadonlyDeep,
+      { tuple: tuple; tuple2: { tuple3: tuple } }
+    >;
+    //    ^?
+    type test5 = Expect<
+      Equal<
+        res5,
+        {
+          readonly tuple: readonly [string, number];
+          readonly tuple2: { readonly tuple3: readonly [string, number] };
+        }
+      >
+    >;
+
+    type res6 = Call<Objects.ReadonlyDeep, { tuple: [string, tuple] }>;
+    //    ^?
+    type test6 = Expect<
+      Equal<
+        res6,
+        { readonly tuple: readonly [string, readonly [string, number]] }
+      >
+    >;
+  });
+
   it("PartialDeep", () => {
     type res0 = Call<Objects.PartialDeep, { a: 1; b: 2 }>;
     //    ^?
