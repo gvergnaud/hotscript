@@ -204,6 +204,23 @@ export namespace Objects {
   }
 
   /**
+   * Makes all levels of an object read-only
+   * @description This function is used to make all levels of an object read-only
+   * @param obj - The object to make levels read-only
+   * @returns The object with its levels made read-only
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.ReadonlyDeep, {a: 1; b: true }>; // { readonly a:1; readonly b: true}
+   * type T1 = Call<Objects.ReadonlyDeep, {a: 1; b: { c: true } }>; // { readonly a:1; readonly b: { readonly c: true } }
+   */
+
+  export type ReadonlyDeep<obj = unset> = PartialApply<ReadonlyDeepFn, [obj]>;
+
+  interface ReadonlyDeepFn extends Fn {
+    return: this["args"] extends [infer obj] ? Impl.ReadonlyDeep<obj> : never;
+  }
+
+  /**
    * Makes all levels of an object optional
    * @description This function is used to make all levels of an object optional
    * @param obj - The object to make levels optional

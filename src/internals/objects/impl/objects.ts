@@ -79,6 +79,10 @@ type RecursiveGet<Obj, pathList> = Obj extends any
     : Obj
   : never;
 
+export type ReadonlyDeep<T> = T extends object
+  ? { readonly [P in keyof T]: ReadonlyDeep<T[P]> }
+  : T;
+
 export type PartialDeep<T> = T extends object
   ? { [P in keyof T]?: PartialDeep<T[P]> }
   : T;
