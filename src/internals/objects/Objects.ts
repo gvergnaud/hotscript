@@ -204,6 +204,25 @@ export namespace Objects {
   }
 
   /**
+   * Makes all levels of an object optional
+   * @description This function is used to make all levels of an object optional
+   * @param obj - The object to make levels optional
+   * @returns The object with its levels made optional
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true }>; // { a?:1; b?: true}
+   * type T1 = Call<Objects.PartialDeep, {a: 1; b: { c: true } }>; // { a?:1; b?: { c?: true } }
+   * type T2 = Call<Objects.PartialDeep, {a: 1; b: { c: true, d: { e: false } } }>; // { a?:1; b?: { c?: true, d?: { e?: false } } }
+   */
+
+  export type PartialDeep<obj = unset> = PartialApply<PartialDeepFn, [obj]>;
+
+  interface PartialDeepFn extends Fn {
+    return: this["args"] extends [infer obj] ? Impl.PartialDeep<obj> : never;
+  }
+
+  /**
    * Updates an object or a tuple type.
    * @description This function takes an object, a path to one of its properties,
    * a new value or a function to apply to this property, and returns a new version
