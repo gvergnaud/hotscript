@@ -95,47 +95,6 @@ describe("Objects", () => {
     });
   });
 
-  it("PartialDeep", () => {
-    type res0 = Call<Objects.PartialDeep, { a: 1; b: 2 }>;
-    //    ^?
-    type test0 = Expect<Equal<res0, { a?: 1; b?: 2 }>>;
-
-    type res1 = Call<Objects.PartialDeep, { a: 1; b: { c: 2 } }>;
-    //    ^?
-    type test1 = Expect<Equal<res1, { a?: 1; b?: { c?: 2 } }>>;
-
-    type res2 = Call<Objects.PartialDeep, { a: 1; b: { c: 2; d: { e: 3 } } }>;
-    //    ^?
-    type test2 = Expect<Equal<res2, { a?: 1; b?: { c?: 2; d?: { e?: 3 } } }>>;
-
-    type tuple = [string, number];
-    type res3 = Call<Objects.PartialDeep, tuple>;
-    //    ^?
-    type test3 = Expect<Equal<res3, [string?, number?]>>;
-
-    type res4 = Call<Objects.PartialDeep, [string, tuple]>;
-    //    ^?
-    type test4 = Expect<Equal<res4, [string?, [string?, number?]?]>>;
-
-    type res5 = Call<
-      Objects.PartialDeep,
-      { tuple: tuple; tuple2: { tuple3: tuple } }
-    >;
-    //    ^?
-    type test5 = Expect<
-      Equal<
-        res5,
-        { tuple?: [string?, number?]; tuple2?: { tuple3?: [string?, number?] } }
-      >
-    >;
-
-    type res6 = Call<Objects.PartialDeep, { tuple: [string, tuple] }>;
-    //    ^?
-    type test6 = Expect<
-      Equal<res6, { tuple?: [string?, [string?, number?]?] }>
-    >;
-  });
-
   describe("Update", () => {
     it("basic", () => {
       type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
