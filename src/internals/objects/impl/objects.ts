@@ -1,6 +1,13 @@
 import { Apply, Call, Fn } from "../../core/Core";
 import { Strings } from "../../strings/Strings";
-import { Equal, Prettify, Primitive, UnionToIntersection } from "../../helpers";
+import {
+  Equal,
+  IsTuple,
+  IsUnknown,
+  Prettify,
+  Primitive,
+  UnionToIntersection,
+} from "../../helpers";
 
 export type Keys<src> = src extends readonly unknown[]
   ? {
@@ -58,8 +65,30 @@ type RecursiveGet<Obj, pathList> = Obj extends any
     : Obj
   : never;
 
-export type PartialDeep<Type> = Type extends object
+export type PartialDeep<Type> = Type extends Function | Date
+  ? Type
+  : Type extends Map<infer Keys, infer Values>
+  ? Map<PartialDeep<Keys>, PartialDeep<Values>>
+  : Type extends ReadonlyMap<infer Keys, infer Values>
+  ? ReadonlyMap<PartialDeep<Keys>, PartialDeep<Values>>
+  : Type extends WeakMap<infer Keys, infer Values>
+  ? WeakMap<PartialDeep<Keys>, PartialDeep<Values>>
+  : Type extends Set<infer Values>
+  ? Set<PartialDeep<Values>>
+  : Type extends ReadonlySet<infer Values>
+  ? ReadonlySet<PartialDeep<Values>>
+  : Type extends WeakSet<infer Values>
+  ? WeakSet<PartialDeep<Values>>
+  : Type extends Array<infer Values>
+  ? IsTuple<Type> extends true
+    ? { [Key in keyof Type]?: PartialDeep<Type[Key]> }
+    : Array<PartialDeep<Values> | undefined>
+  : Type extends Promise<infer Value>
+  ? Promise<PartialDeep<Value>>
+  : Type extends object
   ? { [Key in keyof Type]?: PartialDeep<Type[Key]> }
+  : IsUnknown<Type> extends true
+  ? unknown
   : Partial<Type>;
 
 export type Update<obj, path, fnOrValue> = RecursiveUpdate<
