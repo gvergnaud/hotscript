@@ -203,6 +203,22 @@ export namespace Objects {
       : never;
   }
 
+  /**
+   * Makes all levels of an object partial
+   * @description This function is used to make all levels of an object partial
+   * @param obj - The object to make levels partial
+   * @returns The object with its levels made partial
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true}>;
+   * //   ^? {a?: 1; b?: true}
+   * type T1 = Call<Objects.PartialDeep, {a: 1; b: {c: true}}>;
+   * //   ^? {a?: 1; b?: {c?: true}}
+   * type T2 = Call<Objects.PartialDeep, {a: 1; b: {c: true, d: {e: false}}}>;
+   * //   ^? {a?: 1; b?: {c?: true, d?: {e?: false}}}
+   * ```
+   */
+
   export type PartialDeep<type = unset> = PartialApply<PartialDeepFn, [type]>;
 
   interface PartialDeepFn extends Fn {
