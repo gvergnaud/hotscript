@@ -384,18 +384,20 @@ export namespace Objects {
   }
 
   /**
-   * Makes all levels of an object optional
-   * @description This function is used to make all levels of an object optional
-   * @param obj - The object to make levels optional
-   * @returns The object with its levels made optional
-   *
+   * Makes all levels of an object partial
+   * @description This function is used to make all levels of an object partial
+   * @param obj - The object to make levels partial
+   * @returns The object with its levels made partial
    * @example
    * ```ts
-   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true }>; // { a?:1; b?: true}
-   * type T1 = Call<Objects.PartialDeep, {a: 1; b: { c: true } }>; // { a?:1; b?: { c?: true } }
-   * type T2 = Call<Objects.PartialDeep, {a: 1; b: { c: true, d: { e: false } } }>; // { a?:1; b?: { c?: true, d?: { e?: false } } }
+   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true}>;
+   * //   ^? {a?: 1; b?: true}
+   * type T1 = Call<Objects.PartialDeep, {a: 1; b: {c: true}}>;
+   * //   ^? {a?: 1; b?: {c?: true}}
+   * type T2 = Call<Objects.PartialDeep, {a: 1; b: {c: true, d: {e: false}}}>;
+   * //   ^? {a?: 1; b?: {c?: true, d?: {e?: false}}}
+   * ```
    */
-
   export type PartialDeep<obj = unset> = PartialApply<PartialDeepFn, [obj]>;
 
   interface PartialDeepFn extends Fn {
