@@ -101,7 +101,7 @@ type T = {
   - [ ] ReadonlyDeep
   - [ ] MutableDeep
   - [ ] RequiredDeep
-  - [ ] PartialDeep
+  - [x] PartialDeep
   - [x] Update
   - [x] Record
   - [x] Keys
