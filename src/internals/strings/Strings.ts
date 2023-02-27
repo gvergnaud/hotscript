@@ -1,4 +1,4 @@
-import { ComposeLeft, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Call, ComposeLeft, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 import * as H from "../helpers";
@@ -138,7 +138,7 @@ export namespace Strings {
       infer Str,
       ...any
     ]
-      ? Impl.Replace<Str, From, To>
+      ? Call<Tuples.Reduce<Impl.ReplaceReducer<To>, Str>, H.UnionToTuple<From>>
       : never;
   }
 

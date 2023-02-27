@@ -204,29 +204,42 @@ export namespace Objects {
   }
 
   /**
-   * Makes all levels of an object partial
-   * @description This function is used to make all levels of an object partial
-   * @param obj - The object to make levels partial
-   * @returns The object with its levels made partial
+   * Makes all levels of an object optional
+   * @description This function is used to make all levels of an object optional
+   * @param obj - The object to make levels optional
+   * @returns The object with its levels made optional
+   *
    * @example
    * ```ts
-   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true}>;
-   * //   ^? {a?: 1; b?: true}
-   * type T1 = Call<Objects.PartialDeep, {a: 1; b: {c: true}}>;
-   * //   ^? {a?: 1; b?: {c?: true}}
-   * type T2 = Call<Objects.PartialDeep, {a: 1; b: {c: true, d: {e: false}}}>;
-   * //   ^? {a?: 1; b?: {c?: true, d?: {e?: false}}}
-   * ```
+   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true }>; // { a?:1; b?: true}
+   * type T1 = Call<Objects.PartialDeep, {a: 1; b: { c: true } }>; // { a?:1; b?: { c?: true } }
+   * type T2 = Call<Objects.PartialDeep, {a: 1; b: { c: true, d: { e: false } } }>; // { a?:1; b?: { c?: true, d?: { e?: false } } }
    */
 
-  export type PartialDeep<type = unset> = PartialApply<PartialDeepFn, [type]>;
+  export type PartialDeep<obj = unset> = PartialApply<PartialDeepFn, [obj]>;
 
   interface PartialDeepFn extends Fn {
-    return: this["args"] extends [infer Object]
-      ? Impl.PartialDeep<Object>
-      : never;
+    return: this["args"] extends [infer obj] ? Impl.PartialDeep<obj> : never;
   }
 
+  /**
+   * Updates an object or a tuple type.
+   * @description This function takes an object, a path to one of its properties,
+   * a new value or a function to apply to this property, and returns a new version
+   * of this object with this property updated.
+   * @param path - the path to the property to update
+   * @param valueOrFn - a value to set, or a function to apply on the target property
+   * @param obj - the object to update.
+   * @returns The updated object.
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<O.Update<'a', Numbers.Add<1>>, { a: 1, b: 1 }>; // { a: 2, b: 1 }
+   * type T1 = Call<O.Update<'a[0]', 4>, { a: [1, 2, 3] }>; // { a: [4, 2, 3] }
+   * type T2 = Call<O.Update<'a.b', Numbers.Add<1>>, { a: { b: 1 }, c: '' }>; // { a: { b: 2 }, c: '' }
+   * type T3 = Call<O.Update<'a.b', "Hello">, { a: { b: 1 } }>; // { a: { b: "Hello" } }
+   * ```
+   */
   export type Update<
     path extends string | number | _ | unset = unset,
     fnOrValue = unset,

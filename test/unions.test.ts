@@ -60,4 +60,10 @@ describe("Unions", () => {
     //    ^?
     type test4 = Expect<Equal<res4, -5 | -4 | -3 | -2>>;
   });
+
+  it("ToTuple", () => {
+    type res0 = Call<Unions.ToTuple, 1 | 2 | 3>;
+    //    ^?
+    type test0 = Expect<Equal<res0, [1, 2, 3]>>;
+  });
 });

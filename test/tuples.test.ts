@@ -63,9 +63,17 @@ describe("Tuples", () => {
     //   ^?
     type tes1 = Expect<Equal<res1, [1, 2, 3]>>;
 
-    type res2 = Eval<Tuples.Filter<IsNumber, [1, 2, "oops", 3]>>;
+    type res2 = Call<Tuples.Filter<IsNumber>, readonly [1, 2, "oops", 3]>;
     //   ^?
     type tes2 = Expect<Equal<res2, [1, 2, 3]>>;
+
+    type res3 = Eval<Tuples.Filter<IsNumber, [1, 2, "oops", 3]>>;
+    //   ^?
+    type tes3 = Expect<Equal<res3, [1, 2, 3]>>;
+
+    type res4 = Eval<Tuples.Filter<IsNumber, readonly [1, 2, "oops", 3]>>;
+    //   ^?
+    type tes4 = Expect<Equal<res4, [1, 2, 3]>>;
   });
 
   it("Reduce", () => {

@@ -55,22 +55,47 @@ describe("Strings", () => {
     type test2 = Expect<Equal<res2, "1">>;
   });
 
-  it("Replace", () => {
-    type res1 = Call<Strings.Replace<"a", "b">, "abc">;
-    //    ^?
-    type test1 = Expect<Equal<res1, "bbc">>;
-    type res2 = Call<Strings.Replace<"a", "b">, "">;
-    //    ^?
-    type test2 = Expect<Equal<res2, "">>;
-    type res3 = Call<Strings.Replace<"a", "">, "abc">;
-    //    ^?
-    type test3 = Expect<Equal<res3, "bc">>;
-    type res4 = Call<Strings.Replace<"hello", "hi!">, "hello world!">;
-    //    ^?
-    type test4 = Expect<Equal<res4, "hi! world!">>;
-    type res5 = Call<Strings.Replace<"many", "more">, "many more than many">;
-    //    ^?
-    type test5 = Expect<Equal<res5, "more more than more">>;
+  describe("Replace", () => {
+    it("replaces single letters", () => {
+      type res1 = Call<Strings.Replace<"a", "b">, "abc">;
+      //    ^?
+      type test1 = Expect<Equal<res1, "bbc">>;
+    });
+
+    it("is identity on empty strings", () => {
+      type res2 = Call<Strings.Replace<"a", "b">, "">;
+      //    ^?
+      type test2 = Expect<Equal<res2, "">>;
+    });
+
+    it("replacing by empty string", () => {
+      type res3 = Call<Strings.Replace<"a", "">, "abc">;
+      //    ^?
+      type test3 = Expect<Equal<res3, "bc">>;
+    });
+
+    it("supports multi char strings", () => {
+      type res4 = Call<Strings.Replace<"hello", "hi!">, "hello world!">;
+      //    ^?
+      type test4 = Expect<Equal<res4, "hi! world!">>;
+
+      type res5 = Call<Strings.Replace<"many", "more">, "many more than many">;
+      //    ^?
+      type test5 = Expect<Equal<res5, "more more than more">>;
+    });
+
+    it("supports union types", () => {
+      type res6 = Call<Strings.Replace<"a" | "b", "c">, "abc">;
+      //    ^?
+      type test6 = Expect<Equal<res6, "ccc">>;
+
+      type res4 = Call<
+        //    ^?
+        Strings.Replace<"hello" | "hi", "sup">,
+        "hello world! hi!"
+      >;
+      type test4 = Expect<Equal<res4, "sup world! sup!">>;
+    });
   });
 
   it("Slice", () => {
