@@ -203,6 +203,14 @@ export namespace Objects {
       : never;
   }
 
+  export type PartialDeep<type = unset> = PartialApply<PartialDeepFn, [type]>;
+
+  interface PartialDeepFn extends Fn {
+    return: this["args"] extends [infer Object]
+      ? Impl.PartialDeep<Object>
+      : never;
+  }
+
   export type Update<
     path extends string | number | _ | unset = unset,
     fnOrValue = unset,

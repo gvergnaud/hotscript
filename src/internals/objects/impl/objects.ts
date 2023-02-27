@@ -79,6 +79,10 @@ type RecursiveGet<Obj, pathList> = Obj extends any
     : Obj
   : never;
 
+export type PartialDeep<Type> = Type extends object
+  ? { [Key in keyof Type]?: PartialDeep<Type[Key]> }
+  : Partial<Type>;
+
 export type Update<obj, path, fnOrValue> = RecursiveUpdate<
   obj,
   ParsePath<path>,
