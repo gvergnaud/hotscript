@@ -134,162 +134,7 @@ describe("Objects", () => {
     type test6 = Expect<
       Equal<res6, { tuple?: [string?, [string?, number?]?] }>
     >;
-  });
 
-  it("Update", () => {
-    type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
-    //    ^?
-    type test0 = Expect<Equal<res0, { a: 2; b: 1 }>>;
-
-    type res1 = Call<Objects.Update<"a[0]", 4>, { a: [1, 2, 3] }>;
-    //    ^?
-    type test1 = Expect<Equal<res1, { a: [4, 2, 3] }>>;
-
-    type res2 = Call<
-      //   ^?
-      Objects.Update<"a.b", Numbers.Add<1>>,
-      { a: { b: 1 }; c: "" }
-    >;
-    type test2 = Expect<Equal<res2, { a: { b: 2 }; c: "" }>>;
-
-    type res3 = Call<Objects.Update<"a.b", "Hello">, { a: { b: 1 } }>;
-    //    ^?
-    type test3 = Expect<Equal<res3, { a: { b: "Hello" } }>>;
-  });
-
-  it("FromEntries", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.FromEntries,
-      ["a", string] | ["b", number]
-    >;
-    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
-  });
-
-  it("Entries", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Entries,
-      { a: string; b: number }
-    >;
-
-    type test1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
-
-    type res2 = Call<
-      //   ^?
-      Objects.Entries,
-      ["a", "b"]
-    >;
-    type test2 = Expect<Equal<res2, [0, "a"] | [1, "b"]>>;
-  });
-
-  it("Entries >> FromEntries identity", () => {
-    type res1 = Pipe<
-      { a: string; b: number },
-      [Objects.Entries, Objects.FromEntries]
-    >;
-    //   ^?
-
-    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
-  });
-
-  it("MapValues", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.MapValues<Strings.ToString>,
-      { a: 1; b: true }
-    >;
-    type test1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
-  });
-
-  it("MapKeys", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.MapKeys<Strings.Prepend<"get_">>,
-      { a: 1; b: true }
-    >;
-    type test1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
-  });
-
-  it("Pick", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Pick<"a">,
-      { a: 1; b: true }
-    >;
-    type test1 = Expect<Equal<res1, { a: 1 }>>;
-  });
-
-  it("Readonly", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Readonly,
-      { a: 1; b: true }
-    >;
-    type tes1 = Expect<Equal<res1, { readonly a: 1; readonly b: true }>>;
-    type res2 = Eval<
-      //   ^?
-      Objects.Readonly<{ a: 1; b: true }>
-    >;
-    type tes2 = Expect<Equal<res2, { readonly a: 1; readonly b: true }>>;
-  });
-
-  it("Required", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Required,
-      { a?: 1; b?: true }
-    >;
-    type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
-    type res2 = Eval<
-      //   ^?
-      Objects.Required<{ a?: 1; b?: true }>
-    >;
-    type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
-  });
-
-  it("Partial", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Partial,
-      { a: 1; b: true }
-    >;
-    type tes1 = Expect<Equal<res1, { a?: 1; b?: true }>>;
-    type res2 = Eval<
-      //   ^?
-      Objects.Partial<{ a: 1; b: true }>
-    >;
-    type tes2 = Expect<Equal<res2, { a?: 1; b?: true }>>;
-  });
-
-  it("Omit", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.Omit<"a">,
-      { a: 1; b: true }
-    >;
-    type test1 = Expect<Equal<res1, { b: true }>>;
-  });
-
-  it("PickBy", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.PickBy<Booleans.Extends<1>>,
-      { a: 1; b: true; c: 1 }
-    >;
-    type test1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
-  });
-
-  it("OmitBy", () => {
-    type res1 = Call<
-      //   ^?
-      Objects.OmitBy<Booleans.Extends<1>>,
-      { a: 1; b: true; c: 1 }
-    >;
-    type test1 = Expect<Equal<res1, { b: true }>>;
-  });
-
-  it("PartialDeep", () => {
     // interface ExtendedFunction extends Function {
     //   args: 0;
     // }
@@ -499,6 +344,159 @@ describe("Objects", () => {
         >
       >
     ];
+  });
+
+  it("Update", () => {
+    type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
+    //    ^?
+    type test0 = Expect<Equal<res0, { a: 2; b: 1 }>>;
+
+    type res1 = Call<Objects.Update<"a[0]", 4>, { a: [1, 2, 3] }>;
+    //    ^?
+    type test1 = Expect<Equal<res1, { a: [4, 2, 3] }>>;
+
+    type res2 = Call<
+      //   ^?
+      Objects.Update<"a.b", Numbers.Add<1>>,
+      { a: { b: 1 }; c: "" }
+    >;
+    type test2 = Expect<Equal<res2, { a: { b: 2 }; c: "" }>>;
+
+    type res3 = Call<Objects.Update<"a.b", "Hello">, { a: { b: 1 } }>;
+    //    ^?
+    type test3 = Expect<Equal<res3, { a: { b: "Hello" } }>>;
+  });
+
+  it("FromEntries", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.FromEntries,
+      ["a", string] | ["b", number]
+    >;
+    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+  });
+
+  it("Entries", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Entries,
+      { a: string; b: number }
+    >;
+
+    type test1 = Expect<Equal<res1, ["a", string] | ["b", number]>>;
+
+    type res2 = Call<
+      //   ^?
+      Objects.Entries,
+      ["a", "b"]
+    >;
+    type test2 = Expect<Equal<res2, [0, "a"] | [1, "b"]>>;
+  });
+
+  it("Entries >> FromEntries identity", () => {
+    type res1 = Pipe<
+      { a: string; b: number },
+      [Objects.Entries, Objects.FromEntries]
+    >;
+    //   ^?
+
+    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+  });
+
+  it("MapValues", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.MapValues<Strings.ToString>,
+      { a: 1; b: true }
+    >;
+    type test1 = Expect<Equal<res1, { a: "1"; b: "true" }>>;
+  });
+
+  it("MapKeys", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.MapKeys<Strings.Prepend<"get_">>,
+      { a: 1; b: true }
+    >;
+    type test1 = Expect<Equal<res1, { get_a: 1; get_b: true }>>;
+  });
+
+  it("Pick", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Pick<"a">,
+      { a: 1; b: true }
+    >;
+    type test1 = Expect<Equal<res1, { a: 1 }>>;
+  });
+
+  it("Readonly", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Readonly,
+      { a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { readonly a: 1; readonly b: true }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Readonly<{ a: 1; b: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { readonly a: 1; readonly b: true }>>;
+  });
+
+  it("Required", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Required,
+      { a?: 1; b?: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Required<{ a?: 1; b?: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
+  });
+
+  it("Partial", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Partial,
+      { a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a?: 1; b?: true }>>;
+    type res2 = Eval<
+      //   ^?
+      Objects.Partial<{ a: 1; b: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { a?: 1; b?: true }>>;
+  });
+
+  it("Omit", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Omit<"a">,
+      { a: 1; b: true }
+    >;
+    type test1 = Expect<Equal<res1, { b: true }>>;
+  });
+
+  it("PickBy", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.PickBy<Booleans.Extends<1>>,
+      { a: 1; b: true; c: 1 }
+    >;
+    type test1 = Expect<Equal<res1, { a: 1; c: 1 }>>;
+  });
+
+  it("OmitBy", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.OmitBy<Booleans.Extends<1>>,
+      { a: 1; b: true; c: 1 }
+    >;
+    type test1 = Expect<Equal<res1, { b: true }>>;
   });
 
   describe("Assign", () => {
