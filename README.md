@@ -119,6 +119,9 @@ type T = {
   - [x] Every
   - [x] Some
   - [x] ToUnion
+  - [x] Prepend
+  - [x] Append
+  - [x] Concat
 - [ ] Object
   - [x] Readonly
   - [ ] Mutable
