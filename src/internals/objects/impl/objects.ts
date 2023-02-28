@@ -86,31 +86,36 @@ type RecursiveGet<Obj, pathList> = Obj extends any
     : Obj
   : never;
 
-export type PartialDeep<Type> = Type extends Function | Date
-  ? Type
-  : Type extends Map<infer Keys, infer Values>
-  ? Map<PartialDeep<Keys>, PartialDeep<Values>>
-  : Type extends ReadonlyMap<infer Keys, infer Values>
-  ? ReadonlyMap<PartialDeep<Keys>, PartialDeep<Values>>
-  : Type extends WeakMap<infer Keys, infer Values>
-  ? WeakMap<PartialDeep<Keys>, PartialDeep<Values>>
-  : Type extends Set<infer Values>
-  ? Set<PartialDeep<Values>>
-  : Type extends ReadonlySet<infer Values>
-  ? ReadonlySet<PartialDeep<Values>>
-  : Type extends WeakSet<infer Values>
-  ? WeakSet<PartialDeep<Values>>
-  : Type extends Array<infer Values>
-  ? IsTuple<Type> extends true
-    ? { [Key in keyof Type]?: PartialDeep<Type[Key]> }
-    : Array<PartialDeep<Values> | undefined>
-  : Type extends Promise<infer Value>
-  ? Promise<PartialDeep<Value>>
-  : Type extends object
-  ? { [Key in keyof Type]?: PartialDeep<Type[Key]> }
-  : IsUnknown<Type> extends true
+export type TransformObjectDeep<fn extends Fn, type> = type extends
+  | Function
+  | Date
+  ? type
+  : type extends Map<infer keys, infer values>
+  ? Map<TransformObjectDeep<fn, keys>, TransformObjectDeep<fn, values>>
+  : type extends ReadonlyMap<infer keys, infer values>
+  ? ReadonlyMap<TransformObjectDeep<fn, keys>, TransformObjectDeep<fn, values>>
+  : type extends WeakMap<infer keys, infer values>
+  ? WeakMap<
+      Extract<TransformObjectDeep<fn, keys>, object>,
+      TransformObjectDeep<fn, values>
+    >
+  : type extends Set<infer values>
+  ? Set<TransformObjectDeep<fn, values>>
+  : type extends ReadonlySet<infer values>
+  ? ReadonlySet<TransformObjectDeep<fn, values>>
+  : type extends WeakSet<infer values>
+  ? WeakSet<Extract<TransformObjectDeep<fn, values>, object>>
+  : type extends Array<infer values>
+  ? IsTuple<type> extends true
+    ? Call<fn, { [Key in keyof type]: TransformObjectDeep<fn, type[Key]> }>
+    : Array<TransformObjectDeep<fn, values> | undefined>
+  : type extends Promise<infer value>
+  ? Promise<TransformObjectDeep<fn, value>>
+  : type extends object
+  ? Call<fn, { [Key in keyof type]: TransformObjectDeep<fn, type[Key]> }>
+  : IsUnknown<type> extends true
   ? unknown
-  : Partial<Type>;
+  : Partial<type>;
 
 export type Update<obj, path, fnOrValue> = RecursiveUpdate<
   obj,

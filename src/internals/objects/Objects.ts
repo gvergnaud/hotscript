@@ -219,7 +219,25 @@ export namespace Objects {
   export type PartialDeep<obj = unset> = PartialApply<PartialDeepFn, [obj]>;
 
   interface PartialDeepFn extends Fn {
-    return: this["args"] extends [infer obj] ? Impl.PartialDeep<obj> : never;
+    return: this["args"] extends [infer obj]
+      ? Impl.TransformObjectDeep<PartialFn, obj>
+      : never;
+  }
+
+  export type RequiredDeep<obj = unset> = PartialApply<RequiredDeepFn, [obj]>;
+
+  interface RequiredDeepFn extends Fn {
+    return: this["args"] extends [infer obj]
+      ? Impl.TransformObjectDeep<RequiredFn, obj>
+      : never;
+  }
+
+  export type ReadonlyDeep<obj = unset> = PartialApply<ReadonlyDeepFn, [obj]>;
+
+  interface ReadonlyDeepFn extends Fn {
+    return: this["args"] extends [infer obj]
+      ? Impl.TransformObjectDeep<ReadonlyFn, obj>
+      : never;
   }
 
   /**
