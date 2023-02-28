@@ -420,6 +420,22 @@ export namespace Objects {
       : never;
   }
 
+  export type MutableDeep<obj = unset> = PartialApply<MutableDeepFn, [obj]>;
+
+  interface MutableDeepFn extends Fn {
+    return: this["args"] extends [infer obj]
+      ? Impl.TransformObjectDeep<MutableFn, obj>
+      : never;
+  }
+
+  export type Mutable<obj = unset> = PartialApply<MutableFn, [obj]>;
+
+  interface MutableFn extends Fn {
+    return: this["args"] extends [infer obj, ...any]
+      ? { -readonly [key in keyof obj]: obj[key] }
+      : never;
+  }
+
   /**
    * Get a value within an object or a tuple type.
    * @description This function takes an object, a path to one of its properties,
