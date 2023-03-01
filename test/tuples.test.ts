@@ -441,6 +441,13 @@ describe("Tuples", () => {
     type res4 = Call<Tuples.ToIntersection, [[1, 2, 3]]>;
     //    ^?
     type test4 = Expect<Equal<res4, [1, 2, 3]>>;
+
+    type res5 = Call<
+      Tuples.ToIntersection,
+      [string | number, string, "hello" | "hi"]
+    >;
+    //    ^?
+    type test5 = Expect<Equal<res5, "hello" | "hi">>;
   });
 
   it("Composition", () => {

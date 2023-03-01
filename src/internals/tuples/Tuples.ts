@@ -100,8 +100,12 @@ export namespace Tuples {
 
   interface ToIntersectionFn extends Fn {
     return: this["args"] extends [infer tuples extends readonly any[], ...any]
-      ? UnionToIntersection<tuples[number]>
+      ? Eval<Tuples.Reduce<IntersectFn, unknown, tuples>>
       : never;
+  }
+
+  interface IntersectFn extends Fn {
+    return: this["arg0"] & this["arg1"];
   }
 
   /**
