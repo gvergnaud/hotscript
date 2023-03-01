@@ -285,6 +285,16 @@ describe("Tuples", () => {
     type test2 = Expect<Equal<res2, [0, 1, 2, 3]>>;
   });
 
+  it("Concat", () => {
+    type res1 = Call<Tuples.Concat<[0]>, [1, 2, 3]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [0, 1, 2, 3]>>;
+
+    type res2 = Eval<Tuples.Concat<[1, 2], [3]>>;
+    //    ^?
+    type test2 = Expect<Equal<res2, [1, 2, 3]>>;
+  });
+
   it("Partition", () => {
     type res1 = Call<
       //    ^?
