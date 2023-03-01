@@ -80,6 +80,10 @@ type T = {
 };
 ```
 
+#### Parsing a route path
+
+https://user-images.githubusercontent.com/2315749/222081717-96217cd2-ac89-4e06-a942-17fbda717cd2.mp4
+
 ## TODO
 
 - [ ] Core
