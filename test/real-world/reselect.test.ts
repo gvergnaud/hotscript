@@ -128,28 +128,38 @@ type MergeParameters<T extends readonly UnknownFunction[]> = H.Pipe<
   ]
 >;
 
-interface PadWithUnknown extends H.Fn {
-  return: H.Call<
+type GetUnknownPadding<
+  longestLength extends number,
+  argsList extends any[][]
+> = H.Eval<
+  H.Tuples.Map<
     H.ComposeLeft<
-      [H.Tuples.Map<H.Tuples.Length>, H.Tuples.Reduce<H.Numbers.Max, 0>]
+      [
+        H.Tuples.Length,
+        H.Numbers.Sub<longestLength, H._>,
+        H.Tuples.Range<0>,
+        H.Tuples.Map<H.Constant<unknown>>,
+        H.Tuples.Tail
+      ]
     >,
-    this["arg0"]
-  > extends infer longestLength extends number
-    ? H.Eval<
-        H.Tuples.Map<
-          H.ComposeLeft<
-            [
-              H.Tuples.Length,
-              H.Numbers.Sub<longestLength, H._>,
-              H.Tuples.Range<0>,
-              H.Tuples.Map<H.Constant<unknown>>,
-              H.Tuples.Tail
-            ]
-          >,
-          this["arg0"]
-        >
-      > extends infer pad extends any[]
-      ? H.Eval<H.Tuples.ZipWith<H.Tuples.Concat, this["arg0"], pad>>
+    argsList
+  >
+>;
+
+type GetLongest<argsList extends any[][]> = H.Pipe<
+  argsList,
+  [H.Tuples.Map<H.Tuples.Length>, H.Tuples.Reduce<H.Numbers.Max, 0>]
+>;
+
+interface PadWithUnknown extends H.Fn {
+  return: this["args"] extends [infer argsList extends any[][]]
+    ? GetLongest<argsList> extends infer longestLength extends number
+      ? GetUnknownPadding<
+          longestLength,
+          argsList
+        > extends infer pad extends any[]
+        ? H.Eval<H.Tuples.ZipWith<H.Tuples.Concat, argsList, pad>>
+        : never
       : never
     : never;
 }
@@ -169,8 +179,7 @@ type MergeParameters2<T extends readonly UnknownFunction[]> = H.Pipe<
     H.Tuples.Map<H.Functions.Parameters>,
     PadWithUnknown,
     Transpose,
-    H.Tuples.Map<H.Tuples.Reduce<H.Objects.Assign, {}>>
-    // // Rest
+    H.Tuples.Map<H.Tuples.ToIntersection>
   ]
 >;
 
