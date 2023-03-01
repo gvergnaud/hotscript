@@ -603,6 +603,31 @@ export namespace Tuples {
   }
 
   /**
+   * Concatenate two tuples together
+   * @param tuple1 - A list of types
+   * @param tuple2 - Another list of types
+   * @returns [...tuple1, ...tuple2]
+   * @example
+   * ```ts
+   * type T0 = Call2<Tuples.Concat, [1], [2, 3]>; // [1, 2, 3]
+   * ```
+   */
+  export type Concat<tuple1 = unset, tuple2 = unset> = PartialApply<
+    ConcatFn,
+    [tuple1, tuple2]
+  >;
+
+  interface ConcatFn extends Fn {
+    return: this["args"] extends [
+      infer t1 extends readonly any[],
+      infer t2 extends readonly any[],
+      ...any
+    ]
+      ? [...t1, ...t2]
+      : never;
+  }
+
+  /**
    * Splits a tuple into two groups based on a predicate:
    * - The first group contains elements predicate returns true for.
    * - The second group contains elements predicate returns false for.
