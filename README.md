@@ -166,6 +166,7 @@ https://user-images.githubusercontent.com/2315749/222081717-96217cd2-ac89-4e06-a
   - [x] ExtractBy
   - [x] Exclude
   - [x] ExcludeBy
+  - [x] NonNullable
   - [x] ToTuple
 - [ ] String
   - [x] Length
