@@ -39,7 +39,7 @@ type res1 = Pipe<
 #### Defining a first-class function
 
 ```ts
-import { Call, Fn Tuples } from "hotscript";
+import { Call, Fn, Tuples } from "hotscript";
 
 // This is a type-level "lambda"!
 interface Duplicate extends Fn {
@@ -56,6 +56,8 @@ type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 #### Transforming an object type
 
 ```ts
+import { Pipe, Objects, Booleans } from "hotscript";
+
 // Let's compose some functions to transform an object type:
 type ToAPIPayload<T> = Pipe<
   T,
