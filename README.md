@@ -18,6 +18,8 @@ HotScript is a work-in-progress library, so expect **breaking changes** in its A
 
 #### Transforming a list
 
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgFQK5gA26AztgMoxTAB2A5mXAHJ4gBG6UJcAvnAGZQIIOACIAFhBgkAxtTAxRAbgBQKgPTq4YKOhgxgnALTA6NaOhUwAnhji6SARjgBeFGnQAeFXDibfAHoA-D5wANqO2ABM2ADM2AAscYkAupihYaG++ESkAHQAsgCGYJ4s7JwkeQCCACa1nrEAfE3pvtkExFUAUhC0nqJ5oq1ZcJTU9FXkRMAwA0Mj7bid+cWl47QMeTgQ5RxQi+05XYUlZaz7VXUNjgAMLW1HK1OsoSkqTUpAA)
+
 ```ts
 import { Pipe, Tuples, Strings, Numbers } from "hotscript";
 
@@ -38,6 +40,8 @@ type res1 = Pipe<
 
 #### Defining a first-class function
 
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgYQIYBt0Bo4DEB2OAKgK5joCmAznAL5wBmUEIcARABYQxUDGUwMDDYBuAFBiA9JLhEOwGgrio4MAJ5gKAWkoA3CunbpUIAEYATVGwCEY4PhgUoDVLwpwAImXTBeqR3AUAB6O+OY0BIhicHBQFDAkUPgAXHAA2jDyVGlsqFAA5gAMbAC6OJkKOXlFpSXitBLqmrHUJOgwAIxwALwoGOgAPKTk1AB0ALKoYANe5L7+FAB8OGkdOABMOADMOAAsJYvi0jEnAHoA-I0a7nFUbTDrPX2YQ95juMYwk9OzPn6Oy3SazgmzgOzg+0OUhkJzgFyAA)
+
 ```ts
 import { Call, Fn, Tuples } from "hotscript";
 
@@ -54,6 +58,8 @@ type result2 = Call<Tuples.FlatMap<Duplicate>, [1, 2, 3, 4]>;
 ```
 
 #### Transforming an object type
+
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgeQEYBW6AxjAM7YBCEEANugIYB2ZcAvnAGZQQhwBEACwjliUNDH4BuAFAyA9PLgAZdDADkrYr0hl0cMr32cArk1LAILODAg2ozMp2h9mcCIRLwYATwwAuGV8MOAAVCABBZABJZAYfWggGABMAHlCAPjgAXhQ0dFSZODDMIrgAbTLi-CJSMgA6HBBgGEofVOo6RhZ6gFEARxMGWjJUsh8QPDoMjNLi6s86+oiyMmAAcyZUpBA1FIYYBn9EOCZ0AHcAVT0oY5goE30ONlmq3EXyeoBlJgYAa3QAGEGHoACLodBgObzGpeBorNabbZwYDJY5ke7AJjrdgZMoAXRkGVkwX0UWi13QUByYUiMTiCSSaQQZUU8wAegB+Mqo9ETKa0WTFTjAKAYgByDF26Mx2KFcFoIJgkulBll61kL1kbIASmoTFAWIFSWEaSziry1eI5WVdodkgcjiczucAPomG53B5PeUisUwV2-VUY60asqKjGBqXoGWhzVSIA)
 
 ```ts
 import { Pipe, Objects, Booleans } from "hotscript";
@@ -84,7 +90,28 @@ type T = {
 
 #### Parsing a route path
 
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgeQEYBW6AxjAM7YDKMUwAdgOYVwDCE4EZ6AMugGYxsAFQCuYADbpmAWQCGMYgAs4AXzh8o7OACJFEcsVpgY2gNwAoczACeGOFCkBWOAF4UadAB5zcOAHo-X18APQB+Hx0-ES4oMj9PYAATAC4yGnoGAD4-SDS4hLpE9AAPZLoREDx0KEztTAiAbQjfalpGMgA6SglgGE9tP21M+qC4UQkpDoAxYHEYas9WjM7qWVgyAHVexX7+zOHmsbFJTrkwb1HfNg4uXgFPJsugpfaOoVoQXe04AB8dWoOTxa6Ve3XEvX6ySGI0uAF1ModAUFxic3hAAKp0YAQOgw3z4IikTpTTQgACidHSUjxuEIJHIHTOADVZOIRFILpc5Aodo8gdylB0tjAdto0m0GHU4OKMkingLFELtv1ypVqlLVVUaodfPDERFYeZMqYgA)
+
 https://user-images.githubusercontent.com/2315749/222081717-96217cd2-ac89-4e06-a942-17fbda717cd2.mp4
+
+```ts
+import { Pipe, Objects, Strings, ComposeLeft, Tuples, Match } from "hotscript";
+
+type res5 = Pipe<
+  //    ^? { id: string, index: number }
+  "/users/<id:string>/posts/<index:number>",
+  [
+    Strings.Split<"/">,
+    Tuples.Filter<Strings.StartsWith<"<">>,
+    Tuples.Map<ComposeLeft<[Strings.Trim<"<" | ">">, Strings.Split<":">]>>,
+    Tuples.ToUnion,
+    Objects.FromEntries,
+    Objects.MapValues<
+      Match<[Match.With<"string", string>, Match.With<"number", number>]>
+    >
+  ]
+>;
+```
 
 ## TODO
 
