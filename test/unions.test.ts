@@ -9,6 +9,18 @@ describe("Unions", () => {
     type tes1 = Expect<Equal<res1, "b" | "c">>;
   });
 
+  it("NonNullable", () => {
+    type res1 = Pipe<"a" | 1 | null | undefined, [U.NonNullable]>;
+    //   ^?
+    type tes1 = Expect<Equal<res1, "a" | 1>>;
+    type res2 = Eval<Unions.NonNullable<"a" | 1 | null | undefined>>;
+    //    ^?
+    type tes2 = Expect<Equal<res2, "a" | 1>>;
+    type res3 = Call<Unions.NonNullable, "a" | 1 | null | undefined>;
+    //    ^?
+    type tes3 = Expect<Equal<res3, "a" | 1>>;
+  });
+
   it("Extract", () => {
     type res1 = Pipe<"a" | "b" | "c", [U.Extract<"a" | "b">]>;
     type tes1 = Expect<Equal<res1, "a" | "b">>;

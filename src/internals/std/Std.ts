@@ -11,4 +11,5 @@ export namespace Std {
   export type _Readonly<a> = Readonly<a>;
   export type _Required<a> = Required<a>;
   export type _Partial<a> = Partial<a>;
+  export type _NonNullable<a> = NonNullable<a>;
 }
