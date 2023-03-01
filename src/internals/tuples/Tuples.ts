@@ -818,4 +818,24 @@ export namespace Tuples {
         length,
         [...output, Eval<Numbers.Add<start, output["length"]>>]
       >;
+
+  /**
+   * Returns the length of a tuple
+   * @param tuple - any tuple
+   * @returns a number
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Length, [1, 2, 3]>; // 3
+   * type T1 = Eval<Tuples.Length, []>; 0
+   * type T2 = Eval<Tuples.Length, ['a']>; 1
+   * ```
+   */
+  export type Length<tuple extends readonly any[] | _ | unset = unset> =
+    PartialApply<LengthFn, [tuple]>;
+
+  interface LengthFn extends Fn {
+    return: this["args"] extends [infer tuple extends readonly any[], ...any]
+      ? tuple["length"]
+      : never;
+  }
 }
