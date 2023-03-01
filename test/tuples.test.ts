@@ -425,6 +425,24 @@ describe("Tuples", () => {
     type test1 = Expect<Equal<res1, 1 | "a" | 2 | "b" | 3 | "c">>;
   });
 
+  it("ToIntersection", () => {
+    type res1 = Call<Tuples.ToIntersection, [1, 2, 3]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, never>>;
+
+    type res2 = Call<Tuples.ToIntersection, [{ a: string }, { b: number }]>;
+    //    ^?
+    type test2 = Expect<Equal<res2, { a: string } & { b: number }>>;
+
+    type res3 = Call<Tuples.ToIntersection, [{ a: string } & { b: number }]>;
+    //    ^?
+    type test3 = Expect<Equal<res3, { a: string } & { b: number }>>;
+
+    type res4 = Call<Tuples.ToIntersection, [[1, 2, 3]]>;
+    //    ^?
+    type test4 = Expect<Equal<res4, [1, 2, 3]>>;
+  });
+
   it("Composition", () => {
     interface Duplicate extends Fn {
       return: [this["arg0"], this["arg0"]];

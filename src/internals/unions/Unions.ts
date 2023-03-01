@@ -1,6 +1,6 @@
 import { Call, Eval, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Functions } from "../functions/Functions";
-import { UnionToTuple } from "../helpers";
+import { UnionToIntersection, UnionToTuple } from "../helpers";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 
@@ -122,5 +122,25 @@ export namespace Unions {
 
   interface NonNullableFn extends Fn {
     return: this["arg0"] extends infer union ? Std._NonNullable<union> : never;
+  }
+
+  /**
+   * `Unions.ToIntersection` turns a union type into an intersection type.
+   * @param union - any union type.
+   * @returns an intersection of all member of the union
+   * @example
+   * ```ts
+   * type T0 = Call<Unions.ToIntersection, {a: string} | {b: number}>; // {a: string} & {b: number}
+   * ```
+   */
+  export type ToIntersection<union = unset> = PartialApply<
+    ToIntersectionFn,
+    [union]
+  >;
+
+  interface ToIntersectionFn extends Fn {
+    return: this["args"] extends [infer union, ...any]
+      ? UnionToIntersection<union>
+      : never;
   }
 }

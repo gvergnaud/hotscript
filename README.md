@@ -125,6 +125,7 @@ https://user-images.githubusercontent.com/2315749/222081717-96217cd2-ac89-4e06-a
   - [x] Every
   - [x] Some
   - [x] ToUnion
+  - [x] ToIntersection
   - [x] Prepend
   - [x] Append
   - [x] Concat
@@ -168,6 +169,7 @@ https://user-images.githubusercontent.com/2315749/222081717-96217cd2-ac89-4e06-a
   - [x] ExcludeBy
   - [x] NonNullable
   - [x] ToTuple
+  - [x] ToIntersection
 - [ ] String
   - [x] Length
   - [x] TrimLeft

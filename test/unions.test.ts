@@ -1,6 +1,6 @@
 import { Pipe, Fn, B, U, F, Eval, Call, Unions, _ } from "../src/index";
 import { Compose } from "../src/internals/core/Core";
-import { Equal, Expect } from "../src/internals/helpers";
+import { Equal, Expect, Extends } from "../src/internals/helpers";
 
 describe("Unions", () => {
   it("Exclude", () => {
@@ -74,8 +74,28 @@ describe("Unions", () => {
   });
 
   it("ToTuple", () => {
-    type res0 = Call<Unions.ToTuple, 1 | 2 | 3>;
+    type res1 = Call<Unions.ToTuple, 1 | 2 | 3>;
     //    ^?
-    type test0 = Expect<Equal<res0, [1, 2, 3]>>;
+    // Since the order isn't stable we can't use `Equal`:
+    type test1 = Expect<Extends<res1, (1 | 2 | 3)[]>>;
+    type test2 = Expect<Extends<res1, [any, ...any]>>;
+  });
+
+  it("ToIntersection", () => {
+    type res1 = Call<Unions.ToIntersection, 1 | 2 | 3>;
+    //    ^?
+    type test1 = Expect<Equal<res1, never>>;
+
+    type res2 = Call<Unions.ToIntersection, { a: string } | { b: number }>;
+    //    ^?
+    type test2 = Expect<Equal<res2, { a: string } & { b: number }>>;
+
+    type res3 = Call<Unions.ToIntersection, { a: string } & { b: number }>;
+    //    ^?
+    type test3 = Expect<Equal<res3, { a: string } & { b: number }>>;
+
+    type res4 = Call<Unions.ToIntersection, [1, 2, 3]>;
+    //    ^?
+    type test4 = Expect<Equal<res4, [1, 2, 3]>>;
   });
 });

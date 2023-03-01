@@ -14,7 +14,7 @@ import {
   unset,
   _,
 } from "../core/Core";
-import { Iterator, Stringifiable } from "../helpers";
+import { Iterator, Stringifiable, UnionToIntersection } from "../helpers";
 import { Objects } from "../objects/Objects";
 import { ToNumber } from "../numbers/impl/utils";
 
@@ -83,6 +83,26 @@ export namespace Tuples {
    */
   export type ToUnion<tuple extends readonly any[] | _ | unset = unset> =
     PartialApply<ToUnionFn, [tuple]>;
+
+  /**
+   * `Unions.ToIntersection` turns a tuple into an intersection type.
+   * @param tuple - any tuple.
+   * @returns an intersection of all member of the tuple
+   * @example
+   * ```ts
+   * type T0 = Call<Unions.ToIntersection, [{a: string}, {b: number}]>; // {a: string} & {b: number}
+   * ```
+   */
+  export type ToIntersection<tuple = unset> = PartialApply<
+    ToIntersectionFn,
+    [tuple]
+  >;
+
+  interface ToIntersectionFn extends Fn {
+    return: this["args"] extends [infer tuples extends readonly any[], ...any]
+      ? UnionToIntersection<tuples[number]>
+      : never;
+  }
 
   /**
    * Returns the first element of a tuple.
