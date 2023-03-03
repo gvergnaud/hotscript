@@ -5,8 +5,7 @@
     "esModuleInterop": true,
     "target": "ESNext",
     "strict": true,
-    "outDir": "dist/",
-    "exactOptionalPropertyTypes": true,
+    "outDir": "dist/"
   },
   "include": ["src/"],
   "exclude": ["tests/", "dist/", "examples/"]
