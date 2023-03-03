@@ -289,9 +289,7 @@ export namespace Objects {
     union = {
       [key in keyof obj]: obj[key];
     } & {
-      -readonly [key in keyof obj as key extends keys
-        ? key
-        : never]: obj[key];
+      -readonly [key in keyof obj as key extends keys ? key : never]: obj[key];
     }
   > = {
     [key in keyof union]: union[key];
@@ -316,7 +314,7 @@ export namespace Objects {
    * type T0 = Call<Objects.Mutable, {readonly a: 1; readonly b: true }>; // { a:1; b: true}
    * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
    * ```
-   * 
+   *
    * @example Make only a specific set of properties mutable
    * ```ts
    * type T2 = Call<Objects.Mutable<'a' | 'c'>, {readonly a: 1; readonly b: true, readonly c: 'hello' }>; // { a:1; readonly b: true, c: 'hello'}
