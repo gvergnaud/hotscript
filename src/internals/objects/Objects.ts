@@ -286,17 +286,23 @@ export namespace Objects {
   type MutableImpl<
     obj,
     keys,
+    r = Std._Required<obj>,
     union = {
-      [key in keyof obj]: obj[key];
+      [key in keyof obj]: Std._Required<obj>[key];
     } & {
-      -readonly [key in Extract<keyof obj, keys>]: obj[key];
+      -readonly [key in keyof obj as key extends keys
+        ? key
+        : never]: Std._Required<obj>[key];
     }
   > = {
     [key in keyof union]: union[key];
   };
 
   interface MutableFn extends Fn {
-    return: this["args"] extends [infer value] ? { -readonly [k in keyof value]: value[k] } : never;
+    return: MutableImpl<
+      this["arg0"],
+      this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]
+    >;
   }
 
   /**
@@ -311,7 +317,10 @@ export namespace Objects {
    * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
    * ```
    */
-  export type Mutable<value = unset> = PartialApply<MutableFn, [value]>;
+  export type Mutable<keys = unset, value = unset> = PartialApply<
+    MutableFn,
+    [value, keys]
+  >;
 
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]
