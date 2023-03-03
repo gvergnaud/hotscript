@@ -317,7 +317,7 @@ export namespace Objects {
    * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
    * ```
    * 
-   * @example Make only a specific set of property mutable
+   * @example Make only a specific set of properties mutable
    * ```ts
    * type T2 = Call<Objects.Mutable<'a' | 'c'>, {readonly a: 1; readonly b: true, readonly c: 'hello' }>; // { a:1; readonly b: true, c: 'hello'}
    * type T3 = Eval<Objects.Mutable<'a' | 'c', {readonly a: 1; readonly b: true, readonly c: 'hello' }>>; // { a:1; readonly b: true, c: 'hello'}
