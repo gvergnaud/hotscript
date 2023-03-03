@@ -527,10 +527,10 @@ describe("Objects", () => {
     >;
     type tes4 = Expect<Equal<res4, { a: 1; b: true }>>;
 
-    type res5 = Apply<
+    type res5 = Call<
       //   ^?
-      Objects.Mutable,
-      [{ a: 1; readonly b: true; readonly c: "cc" }, "a" | "c"]
+      Objects.Mutable<'a' | 'c'>,
+      { a: 1; readonly b: true; readonly c: "cc" }
     >;
     type tes5 = Expect<Equal<res5, { a: 1; readonly b: true; c: "cc" }>>;
 
