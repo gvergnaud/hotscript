@@ -305,15 +305,23 @@ export namespace Objects {
   }
 
   /**
-   * Make all properties of an object mutable
+   * Make all properties (or a specific set) of a record mutable
    * @description This function is used to make properties of an object mutable
    * @param obj - The object to make properties mutable
-   * @returns The object with its properties made mutable
+   * @param keys - The keys to make mutable, if not specified, all properties will be made mutable
+   * @returns The record with the specified properties made mutable
    *
-   * @example
+   * @example Make all properties mutable
    * ```ts
    * type T0 = Call<Objects.Mutable, {readonly a: 1; readonly b: true }>; // { a:1; b: true}
    * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
+   * ```
+   * 
+   * @example Make only a specific set of property mutable
+   * ```ts
+   * type T2 = Call<Objects.Mutable<'a' | 'c'>, {readonly a: 1; readonly b: true, readonly c: 'hello' }>; // { a:1; readonly b: true, c: 'hello'}
+   * type T3 = Eval<Objects.Mutable<'a' | 'c', {readonly a: 1; readonly b: true, readonly c: 'hello' }>>; // { a:1; readonly b: true, c: 'hello'}
+   * type T3 = Apply<Objects.Mutable, [{readonly a: 1; readonly b: true, readonly c: 'hello' }, 'a' | 'c']> // { a:1; readonly b: true, c: 'hello'}
    * ```
    */
   export type Mutable<keys = unset, value = unset> = PartialApply<
