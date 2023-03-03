@@ -295,25 +295,23 @@ export namespace Objects {
     [key in keyof union]: union[key];
   };
 
+  interface MutableFn extends Fn {
+    return: this["args"] extends [infer value] ? { -readonly [k in keyof value]: value[k] } : never;
+  }
+
   /**
-   * Make all properties (or a specific set) of a record mutable
-   * @description This function is used to make properties of a record mutable
-   * @param obj - The record to make properties mutable
-   * @param keys - The keys to make mutable, if not specified, all properties will be made mutable
-   * @returns The record with the specified properties made mutable
+   * Make all properties of an object mutable
+   * @description This function is used to make properties of an object mutable
+   * @param obj - The object to make properties mutable
+   * @returns The object with its properties made mutable
    *
    * @example
    * ```ts
-   * type T0 = Call<O.Mutable, { readonly a: 1, readonly b: 2, c: 3 }>; // { a: 1, b: 2, c: 3 }
-   * type T1 = Apply<O.Mutable, [{ readonly a: 1, readonly b: 2, readonly c: 3 }, 'a' | 'c']>; // { a: 1, readonly b: 2, c: 3 }
+   * type T0 = Call<Objects.Mutable, {readonly a: 1; readonly b: true }>; // { a:1; b: true}
+   * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
    * ```
    */
-  export interface Mutable extends Fn {
-    return: MutableImpl<
-      this["arg0"],
-      this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]
-    >;
-  }
+  export type Mutable<value = unset> = PartialApply<MutableFn, [value]>;
 
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]

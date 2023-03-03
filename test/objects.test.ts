@@ -500,16 +500,15 @@ describe("Objects", () => {
     type res1 = Call<
       //   ^?
       Objects.Mutable,
-      { readonly a: 1; b: true }
+      { readonly a: 1; readonly b: true }
     >;
     type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
 
-    type res2 = Apply<
+    type res2 = Eval<
       //   ^?
-      Objects.Mutable,
-      [{ a: 1; readonly b: true; readonly c: "cc" }, "a" | "c"]
+      Objects.Mutable<{ readonly a: 1; readonly b: true }>
     >;
-    type tes2 = Expect<Equal<res2, { a: 1; readonly b: true; c: "cc" }>>;
+    type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
   });
 
   it("Record", () => {
