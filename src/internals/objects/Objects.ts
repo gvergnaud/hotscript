@@ -286,13 +286,12 @@ export namespace Objects {
   type MutableImpl<
     obj,
     keys,
-    r = Std._Required<obj>,
     union = {
-      [key in keyof obj]: Std._Required<obj>[key];
+      [key in keyof obj]: obj[key];
     } & {
       -readonly [key in keyof obj as key extends keys
         ? key
-        : never]: Std._Required<obj>[key];
+        : never]: obj[key];
     }
   > = {
     [key in keyof union]: union[key];
