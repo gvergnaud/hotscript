@@ -303,11 +303,11 @@ export namespace Objects {
   }
 
   /**
-   * Make all properties (or a specific set) of a record mutable
+   * Make all properties (or a specific set) of an object mutable
    * @description This function is used to make properties of an object mutable
    * @param obj - The object to make properties mutable
    * @param keys - The keys to make mutable, if not specified, all properties will be made mutable
-   * @returns The record with the specified properties made mutable
+   * @returns The object with the specified properties made mutable
    *
    * @example Make all properties mutable
    * ```ts
