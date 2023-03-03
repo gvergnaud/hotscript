@@ -519,7 +519,7 @@ describe("Objects", () => {
     >;
     type tes3 = Expect<Equal<res3, { a?: 1; b?: true }>>;
 
-    // Make only certain properties mutable
+    // Make a subset of properties mutable
     type res4 = Call<
       //   ^?
       Objects.Mutable,
