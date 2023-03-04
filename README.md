@@ -147,10 +147,10 @@ type res5 = Pipe<
   - [x] Last
   - [x] FlatMap
   - [x] Find
-  - [x] Sum
   - [x] Drop n
   - [x] Take n
   - [x] TakeWhile
+  - [x] GroupBy
   - [x] Join separator
   - [x] Map
   - [x] Filter
@@ -165,6 +165,7 @@ type res5 = Pipe<
   - [x] Concat
   - [x] Min
   - [x] Max
+  - [x] Sum
 - [ ] Object
   - [x] Readonly
   - [ ] Mutable
@@ -185,7 +186,6 @@ type res5 = Pipe<
   - [x] Entries
   - [x] MapValues
   - [x] MapKeys
-  - [x] GroupBy
   - [x] Assign
   - [x] Pick
   - [x] PickBy
