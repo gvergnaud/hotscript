@@ -223,6 +223,25 @@ export namespace Objects {
   }
 
   /**
+   * Makes all levels of an object required
+   * @description This function is used to make all levels of an object required
+   * @param obj - The object to make levels required
+   * @returns The object with its levels made required
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.RequiredDeep, {a?: 1; b?: true }>; // { a:1; b: true}
+   * type T1 = Call<Objects.RequiredDeep, {a?: 1; b?: { c?: true } }>; // { a:1; b: { c: true } }
+   * type T2 = Call<Objects.RequiredDeep, {a?: 1; b?: { c?: true, d?: { e?: false } } }>; // { a:1; b: { c: true, d: { e: false } } }
+   * ```
+   */
+
+  export type RequiredDeep<obj = unset> = PartialApply<RequiredDeepFn, [obj]>;
+
+  interface RequiredDeepFn extends Fn {
+    return: this["args"] extends [infer obj] ? Impl.RequiredDeep<obj> : never;
+  }
+
+  /**
    * Updates an object or a tuple type.
    * @description This function takes an object, a path to one of its properties,
    * a new value or a function to apply to this property, and returns a new version

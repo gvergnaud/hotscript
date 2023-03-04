@@ -83,6 +83,10 @@ export type PartialDeep<T> = T extends object
   ? { [P in keyof T]?: PartialDeep<T[P]> }
   : T;
 
+export type RequiredDeep<T> = T extends object
+  ? { [P in keyof T]-?: RequiredDeep<T[P]> }
+  : T;
+
 export type Update<obj, path, fnOrValue> = RecursiveUpdate<
   obj,
   ParsePath<path>,
