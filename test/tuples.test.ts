@@ -2,6 +2,7 @@ import { Booleans } from "../src/internals/booleans/Booleans";
 import { Call, Call2, Eval, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
+import { Objects } from "../src/internals/objects/Objects";
 import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 
@@ -348,6 +349,9 @@ describe("Tuples", () => {
   });
 
   it("Zip", () => {
+    type x = Eval<Tuples.Zip<[1, 2, 3]>>;
+    //   ^?
+
     type res1 = Call<
       //    ^?
       Tuples.Zip<[1, 2, 3]>,
@@ -417,6 +421,34 @@ describe("Tuples", () => {
     type res4 = Eval<Tuples.Range<-5, -2>>;
     //    ^?
     type test4 = Expect<Equal<res4, [-5, -4, -3, -2]>>;
+  });
+
+  it("Min", () => {
+    type res1 = Eval<Tuples.Min<[1, 2, 3]>>;
+    //    ^?
+    type test1 = Expect<Equal<res1, 1>>;
+
+    type res2 = Eval<Tuples.Min<[-1, -2, -3]>>;
+    //    ^?
+    type test2 = Expect<Equal<res2, -3>>;
+
+    type res3 = Eval<Tuples.Min<[]>>;
+    //    ^?
+    type test3 = Expect<Equal<res3, never>>;
+  });
+
+  it("Max", () => {
+    type res1 = Eval<Tuples.Max<[1, 2, 3]>>;
+    //    ^?
+    type test1 = Expect<Equal<res1, 3>>;
+
+    type res2 = Eval<Tuples.Max<[-1, -2, -3]>>;
+    //    ^?
+    type test2 = Expect<Equal<res2, -1>>;
+
+    type res3 = Eval<Tuples.Max<[]>>;
+    //    ^?
+    type test3 = Expect<Equal<res3, never>>;
   });
 
   it("ToUnion", () => {

@@ -16,7 +16,7 @@ import {
 } from "../core/Core";
 import { Iterator, Stringifiable, UnionToIntersection } from "../helpers";
 import { Objects } from "../objects/Objects";
-import { ToNumber } from "../numbers/impl/utils";
+import * as NumberImpls from "../numbers/impl/numbers";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
@@ -700,7 +700,8 @@ export namespace Tuples {
           arrays,
           [
             Tuples.Map<Objects.Get<"length">>,
-            Tuples.Reduce<Numbers.Min, 9999>, // a length of 9999 is the longest possible tuple
+            Tuples.Min,
+            Numbers.Abs,
             Numbers.Sub<_, 1>,
             Tuples.Range<0, _>,
             Tuples.Map<ZipWithMapper<fn, arrays>>
@@ -838,4 +839,64 @@ export namespace Tuples {
       ? tuple["length"]
       : never;
   }
+
+  /**
+   * Takes a tuple of numbers and returns the smallest one
+   * @param tuple - a tuple of numbers
+   * @returns a number
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Min, [1, 2, 3]>; // 1
+   * type T1 = Call<Tuples.Min, [-1, -2, -3]>; // -3
+   * type T2 = Eval<Tuples.Min, []>; never
+   * ```
+   */
+  export type Min<tuple extends readonly any[] | _ | unset = unset> =
+    PartialApply<MinFn, [tuple]>;
+
+  interface MinFn extends Fn {
+    return: this["args"] extends [
+      infer tuple extends readonly (number | bigint)[],
+      ...any
+    ]
+      ? MinImpl<tuple>
+      : never;
+  }
+
+  type MinImpl<xs, min extends number | bigint = never> = xs extends [
+    infer first extends number | bigint,
+    ...infer rest
+  ]
+    ? MinImpl<rest, [min] extends [never] ? first : NumberImpls.Min<first, min>>
+    : min;
+
+  /**
+   * Takes a tuple of numbers and returns the smallest one
+   * @param tuple - a tuple of numbers
+   * @returns a number
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.Max, [1, 2, 3]>; // 3
+   * type T1 = Call<Tuples.Max, [-1, -2, -3]>; // -1
+   * type T2 = Eval<Tuples.Max, []>; never
+   * ```
+   */
+  export type Max<tuple extends readonly any[] | _ | unset = unset> =
+    PartialApply<MaxFn, [tuple]>;
+
+  interface MaxFn extends Fn {
+    return: this["args"] extends [
+      infer tuple extends readonly (number | bigint)[],
+      ...any
+    ]
+      ? MaxImpl<tuple>
+      : never;
+  }
+
+  type MaxImpl<xs, min extends number | bigint = never> = xs extends [
+    infer first extends number | bigint,
+    ...infer rest
+  ]
+    ? MaxImpl<rest, [min] extends [never] ? first : NumberImpls.Max<first, min>>
+    : min;
 }

@@ -34,12 +34,13 @@ export type DigitCompare<
 export type CompareDigitsWithEqualLength<
   T extends Digit[],
   U extends Digit[]
-> = T extends [infer N1 extends Digit, ...infer R1 extends Digit[]]
-  ? U extends [infer N2 extends Digit, ...infer R2 extends Digit[]]
-    ? DigitCompare<N1, N2> extends 0
-      ? CompareDigitsWithEqualLength<R1, R2>
-      : DigitCompare<N1, N2>
-    : 0
+> = [T, U] extends [
+  [infer N1 extends Digit, ...infer R1 extends Digit[]],
+  [infer N2 extends Digit, ...infer R2 extends Digit[]]
+]
+  ? DigitCompare<N1, N2> extends 0
+    ? CompareDigitsWithEqualLength<R1, R2>
+    : DigitCompare<N1, N2>
   : 0;
 
 export type CompareDigits<T extends Digit[], U extends Digit[]> = CompareLength<
