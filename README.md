@@ -1,6 +1,13 @@
 # Higher-Order TypeScript (HOTScript)
 
-A lodash-like library for types, with support for type-level lambda functions.
+A library of composable functions for the type-level! Transform your TypeScript types in any way you want using functions you already know.
+
+## Features
+
+- Type-level higher-order functions (`Tuples.Map`, `Tuples.Filter`, `Objects.MapValues`, etc).
+- Type-level pattern matching with `Match`.
+- Performant math operations (`Numbers.Add`, `Numbers.Sub`, `Numbers.Mul`, `Numbers.Div`, etc).
+- Custom "lambda" functions.
 
 🚧 work in progress 🚧
 
