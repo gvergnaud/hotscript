@@ -14,9 +14,15 @@ import {
   unset,
   _,
 } from "../core/Core";
-import { Iterator, Stringifiable, UnionToIntersection } from "../helpers";
+import {
+  Iterator,
+  Prettify,
+  Stringifiable,
+  UnionToIntersection,
+} from "../helpers";
 import { Objects } from "../objects/Objects";
 import * as NumberImpls from "../numbers/impl/numbers";
+import { Std } from "../std/Std";
 
 export namespace Tuples {
   type HeadImpl<xs> = xs extends readonly [infer head, ...any] ? head : never;
@@ -772,6 +778,50 @@ export namespace Tuples {
     ZipWithFn<fn>,
     [arr0, arr1, arr2, arr3, arr4, arr5, arr6, arr7, arr8, arr9]
   >;
+
+  /**
+   * Group values in a tuple into an object, using a predicate
+   * to compute the key of each group.
+   * @param fn - function applied to all values in the tuple to get a key.
+   * @param tuple - A list of element
+   * @returns an object containing a list of element for each key.
+   * @example
+   * ```ts
+   * interface IsNumber extends Fn {
+   *   return: this["arg0"] extends number ? true : false;
+   * }
+   *
+   * type T0 = Call<Tuples.GroupBy<IsNumber>, [1, "str", 2]>;
+   * //   ^? { true: [1, 2], false: ["str"] }
+   * type T2 = Call<Tuples.GroupBy<Strings.StartsWith<"a">>, ["alice", "bob", "carl"]>;
+   * //   ^? { true: ["alice"], false: ["bob", "carl"] }
+   * ```
+   */
+  export interface GroupBy<fn extends Fn> extends Fn {
+    return: GroupByImpl<this["arg0"], fn>;
+  }
+
+  type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
+    infer first,
+    ...infer rest
+  ]
+    ? Call<fn, first> extends infer key extends PropertyKey
+      ? GroupByImplRec<
+          rest,
+          fn,
+          Std._Omit<acc, key> & {
+            [K in key]: [
+              ...(key extends keyof acc
+                ? Extract<acc[key], readonly any[]>
+                : []),
+              first
+            ];
+          }
+        >
+      : never
+    : acc;
+
+  export type GroupByImpl<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
 
   /**
    * Range takes a `start` and an `end` integer and produces

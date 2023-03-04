@@ -1,7 +1,6 @@
 import { Apply, Call, Fn } from "../../core/Core";
 import { Strings } from "../../strings/Strings";
 import { Equal, Prettify, Primitive, UnionToIntersection } from "../../helpers";
-import { Std } from "../../std/Std";
 
 export type Keys<src> = src extends unknown[]
   ? {
@@ -26,26 +25,6 @@ export type Entries<T> = Keys<T> extends infer keys extends keyof T
       [K in keys]: [K, T[K]];
     }[keys]
   : never;
-
-type GroupByImplRec<xs, fn extends Fn, acc = {}> = xs extends [
-  infer first,
-  ...infer rest
-]
-  ? Call<fn, first> extends infer key extends PropertyKey
-    ? GroupByImplRec<
-        rest,
-        fn,
-        Std._Omit<acc, key> & {
-          [K in key]: [
-            ...(key extends keyof acc ? Extract<acc[key], readonly any[]> : []),
-            first
-          ];
-        }
-      >
-    : never
-  : acc;
-
-export type GroupBy<xs, fn extends Fn> = Prettify<GroupByImplRec<xs, fn>>;
 
 export type Assign<xs extends readonly any[]> = Prettify<
   UnionToIntersection<xs[number]>

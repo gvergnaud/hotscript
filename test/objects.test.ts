@@ -583,44 +583,6 @@ describe("Objects", () => {
     >;
   });
 
-  describe("GroupBy", () => {
-    interface GetTypeKey extends Fn {
-      return: this["arg0"] extends { type: infer Type } ? Type : never;
-    }
-    type res1 = Call<
-      // ^?
-      Objects.GroupBy<GetTypeKey>,
-      [
-        { type: "img"; src: string },
-        { type: "video"; src: 1 },
-        { type: "video"; src: 2 }
-      ]
-    >;
-    type tes1 = Expect<
-      Equal<
-        res1,
-        {
-          img: [
-            {
-              type: "img";
-              src: string;
-            }
-          ];
-          video: [
-            {
-              type: "video";
-              src: 1;
-            },
-            {
-              type: "video";
-              src: 2;
-            }
-          ];
-        }
-      >
-    >;
-  });
-
   it("Keys", () => {
     type res0 = Call<Objects.Keys, [3, 4, 5]>;
     //   ^?
