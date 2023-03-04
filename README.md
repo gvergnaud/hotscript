@@ -188,6 +188,8 @@ type res5 = Pipe<
   - [x] SnakeCaseDeep
   - [x] KebabCase
   - [x] KebabCaseDeep
+  - [x] Min
+  - [x] Max
 - [ ] Union
   - [x] Map
   - [x] Extract
