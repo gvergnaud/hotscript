@@ -1,69 +1,106 @@
 import * as H from "../../src/index";
+import { Equal, Expect } from "../../src/internals/helpers";
 
-type res = MergeParameters<
-  // ^?
-  [
-    (a: number, b: number) => boolean,
-    (c: 21, b: "hello") => string,
-    (c: number | string, b: 2, d: 123) => string
-  ]
->;
+describe("Reselect", () => {
+  type MergeParameters<T> = H.Pipe<
+    T,
+    [
+      H.Tuples.Map<H.Functions.Parameters>,
+      PadWithUnknown,
+      ApplyArg<H.Tuples.Zip>,
+      H.Tuples.Map<H.Tuples.ToIntersection>
+    ]
+  >;
 
-type MergeParameters<T extends readonly UnknownFunction[]> = H.Pipe<
-  T,
-  [
-    H.Tuples.Map<H.Functions.Parameters>,
-    PadWithUnknown,
-    Transpose,
-    H.Tuples.Map<H.Tuples.ToIntersection>
-  ]
->;
+  interface ApplyArg<fn extends H.Fn> extends H.Fn {
+    return: H.Apply<fn, this["arg0"]>;
+  }
 
-interface Transpose extends H.Fn {
-  return: H.Apply<H.Tuples.Zip, Extract<this["arg0"], any[]>>;
-}
+  /**
+   * Make sure all lists of arguments have the same length by
+   * adding unknown arguments at the end of the shorter ones.
+   * @example
+   * ```ts
+   * type T = Call<PadWithUnknown, [[], [1], [1, 2]]>>
+   * // [[unknown, unknown], [1, unknown], [1, 2]]
+   * ```
+   */
+  interface PadWithUnknown extends H.Fn {
+    return: this["args"] extends [infer argsList extends any[][]]
+      ? H.Pipe<
+          argsList,
+          [
+            GetMaxLength,
+            GetUnknownPadding<argsList>,
+            H.Tuples.ZipWith<H.Tuples.Concat, argsList, H._>
+          ]
+        >
+      : never;
+  }
 
-/**
- * Returns a list of `unknown` to pad the argsList
- * to make them all have the same length.
- * @example
- * ```ts
- * type T = GetUnknownPadding<2, [[], [1], [1, 2]]>
- * // [[unknown, unknown], [unknown], []]
- * ```
- */
-type GetUnknownPadding<
-  maxLength extends number,
-  argsList extends any[][]
-> = H.Eval<
-  H.Tuples.Map<
-    H.ComposeLeft<
+  type GetMaxLength = H.ComposeLeft<
+    [H.Tuples.Map<H.Tuples.Length>, H.Tuples.Reduce<H.Numbers.Max, 0>]
+  >;
+
+  /**
+   * Returns a list of `unknown` to pad the argsList
+   * to make them all have the same length.
+   * @example
+   * ```ts
+   * type T = Call<GetUnknownPadding<[[], [1], [1, 2]]>, 2>
+   * // [[unknown, unknown], [unknown], []]
+   * ```
+   */
+  interface GetUnknownPadding<argsList extends any[][]> extends H.Fn {
+    return: H.Eval<
+      H.Tuples.Map<
+        H.ComposeLeft<
+          [
+            H.Tuples.Length,
+            H.Numbers.Sub<this["arg0"], H._>,
+            H.Tuples.Range<0>,
+            H.Tuples.Map<H.Constant<unknown>>,
+            H.Tuples.Tail
+          ]
+        >,
+        argsList
+      >
+    >;
+  }
+
+  it("MergeParameters", () => {
+    type res1 = MergeParameters<[(a: number) => boolean, (c: 42) => string]>;
+    //   ^?
+    type test1 = Expect<Equal<res1, [42]>>;
+
+    type res2 = MergeParameters<
+      //  ^?
       [
-        H.Tuples.Length,
-        H.Numbers.Sub<maxLength, H._>,
-        H.Tuples.Range<0>,
-        H.Tuples.Map<H.Constant<unknown>>,
-        H.Tuples.Tail
+        (a: number | string) => boolean,
+        (a: number) => boolean,
+        (c: 42) => string
       ]
-    >,
-    argsList
-  >
->;
+    >;
+    type test2 = Expect<Equal<res2, [42]>>;
 
-type GetMaxLength<argsList extends any[][]> = H.Pipe<
-  argsList,
-  [H.Tuples.Map<H.Tuples.Length>, H.Tuples.Reduce<H.Numbers.Max, 0>]
->;
+    type res3 = MergeParameters<
+      //  ^?
+      [
+        (a: number | string) => boolean,
+        (a: string, b: string, c: string) => boolean,
+        (c: "hello") => string
+      ]
+    >;
+    type test3 = Expect<Equal<res3, ["hello", string, string]>>;
 
-interface PadWithUnknown extends H.Fn {
-  return: this["args"] extends [infer argsList extends any[][]]
-    ? GetMaxLength<argsList> extends infer maxLength extends number
-      ? GetUnknownPadding<maxLength, argsList> extends infer pad extends any[]
-        ? H.Eval<H.Tuples.ZipWith<H.Tuples.Concat, argsList, pad>>
-        : never
-      : never
-    : never;
-}
-
-/** Any function with arguments */
-type UnknownFunction = (...args: any[]) => any;
+    type res4 = MergeParameters<
+      //  ^?
+      [
+        (a: number | string) => boolean,
+        (a: string, b: string) => boolean,
+        (c: number, b: string) => string
+      ]
+    >;
+    type test4 = Expect<Equal<res4, [never, string]>>;
+  });
+});
