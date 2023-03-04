@@ -1,14 +1,5 @@
-import {
-  Pipe,
-  PipeRight,
-  Call,
-  Numbers,
-  Strings,
-  Tuples,
-  F,
-  _,
-} from "../src/index";
-import { Call2, Identity, unset } from "../src/internals/core/Core";
+import { Call, F, _ } from "../src/index";
+import { Call2 } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Functions", () => {

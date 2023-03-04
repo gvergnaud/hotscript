@@ -61,7 +61,10 @@ export namespace Functions {
    * type T1 = Eval<ReturnType<(a: number, b: string) => number>>; // number
    * ```
    */
-  export interface ReturnType extends Fn {
+  export type ReturnType<
+    fn extends ((...args: any[]) => any) | _ | unset = unset
+  > = PartialApply<ReturnTypeFn, [fn]>;
+  export interface ReturnTypeFn extends Fn {
     return: ReturnTypeImpl<this["arg0"]>;
   }
 }
