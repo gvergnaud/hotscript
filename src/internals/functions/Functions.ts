@@ -1,4 +1,4 @@
-import { Apply, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Fn, PartialApply, unset, _ } from "../core/Core";
 
 export namespace Functions {
   type ParametersImpl<fn> = fn extends (...args: infer args) => any
@@ -45,21 +45,23 @@ export namespace Functions {
     fn extends ((...args: any[]) => any) | _ | unset = unset
   > = PartialApply<ParameterFn, [fn, N]>;
 
-  type ReturnImpl<fn> = fn extends (...args: any[]) => infer ret ? ret : never;
+  type ReturnTypeImpl<fn> = fn extends (...args: any[]) => infer ret
+    ? ret
+    : never;
 
   /**
-   * Returns the return type of a function.
+   * ReturnTypes the return type of a function.
    *
    * @param fn - The function to extract the return type from.
    * @returns The return type of the function.
    *
    * @example
    * ```ts
-   * type T0 = Call<Return, (a: number, b: string) => number>; // number
-   * type T1 = Eval<Return<(a: number, b: string) => number>>; // number
+   * type T0 = Call<ReturnType, (a: number, b: string) => number>; // number
+   * type T1 = Eval<ReturnType<(a: number, b: string) => number>>; // number
    * ```
    */
-  export interface Return extends Fn {
-    return: ReturnImpl<this["arg0"]>;
+  export interface ReturnType extends Fn {
+    return: ReturnTypeImpl<this["arg0"]>;
   }
 }

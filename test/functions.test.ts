@@ -27,8 +27,8 @@ describe("Functions", () => {
     type tes2 = Expect<Equal<res2, string>>;
   });
 
-  it("Return", () => {
-    type res1 = Call<F.Return, (a: string, b: number) => boolean>;
+  it("ReturnType", () => {
+    type res1 = Call<F.ReturnType, (a: string, b: number) => boolean>;
     //   ^?
     type tes1 = Expect<Equal<res1, boolean>>;
   });
