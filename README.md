@@ -156,6 +156,8 @@ type res5 = Pipe<
   - [x] Prepend
   - [x] Append
   - [x] Concat
+  - [x] Min
+  - [x] Max
 - [ ] Object
   - [x] Readonly
   - [ ] Mutable
@@ -188,8 +190,6 @@ type res5 = Pipe<
   - [x] SnakeCaseDeep
   - [x] KebabCase
   - [x] KebabCaseDeep
-  - [x] Min
-  - [x] Max
 - [ ] Union
   - [x] Map
   - [x] Extract
