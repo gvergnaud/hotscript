@@ -719,19 +719,34 @@ export namespace Parser {
     [Skip<Whitespaces>, Parser, Skip<Whitespaces>]
   >;
 
+  interface ParseFn extends Fn {
+    return: this["args"] extends [
+      infer Parser extends ParserFn,
+      infer Input extends string
+    ]
+      ? Call<Parser, Input> extends infer A
+        ? A extends Ok<infer Result>
+          ? Result
+          : A extends Error<infer Err>
+          ? Err
+          : never
+        : never
+      : never;
+  }
+
   /**
    * Parse a string using the given parser and return the result.
    * @param Parser - the parser to use
    * @param Input - the string to parse
+   * @returns the result of the parser
+   *
+   * @example
+   * ```ts
+   * type T0 = Eval<Parse<Word, "abc">>;
+   * ```
    */
-  export type Parse<Parser extends ParserFn, Input extends string> = Call<
-    Parser,
-    Input
-  > extends infer A
-    ? A extends Ok<infer Result>
-      ? Result
-      : A extends Error<infer Err>
-      ? Err
-      : never
-    : never;
+  export type Parse<
+    Parser extends ParserFn | _ | unset = unset,
+    Input extends string | _ | unset = unset
+  > = PartialApply<ParseFn, [Parser, Input]>;
 }
