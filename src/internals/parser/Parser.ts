@@ -12,11 +12,11 @@ import {
   Pipe,
   unset,
   _,
-} from "../internals/core/Core";
-import { Match } from "../internals/match/Match";
-import { Objects } from "../internals/objects/Objects";
-import { Strings } from "../internals/strings/Strings";
-import { Tuples } from "../internals/tuples/Tuples";
+} from "../core/Core";
+import { Match } from "../match/Match";
+import { Objects } from "../objects/Objects";
+import { Strings } from "../strings/Strings";
+import { Tuples } from "../tuples/Tuples";
 
 export namespace Parser {
   /**
@@ -162,7 +162,7 @@ export namespace Parser {
    * //   ^? type T2 = Ok<{ result: "a"; input: "" }>
    * ```
    */
-  interface Literal<ExpectedLiteral extends string> extends ParserFn {
+  export interface Literal<ExpectedLiteral extends string> extends ParserFn {
     name: "literal";
     params: [ExpectedLiteral];
     return: LiteralImpl<this, ExpectedLiteral, this["arg0"]>;
@@ -203,7 +203,7 @@ export namespace Parser {
       : InputError<this["arg0"]>;
   }
 
-  export type SequenceImpl<
+  type SequenceImpl<
     Self extends ParserFn,
     Parsers extends ParserFn[],
     Input extends string,
@@ -353,7 +353,7 @@ export namespace Parser {
       : InputError<this["arg0"]>;
   }
 
-  export type ChoiceImpl<
+  type ChoiceImpl<
     Self extends ParserFn,
     Parsers extends ParserFn[],
     Input extends string,
@@ -561,7 +561,7 @@ export namespace Parser {
       : InputError<this["arg0"]>;
   }
 
-  export type WordImpl<
+  type WordImpl<
     Self extends ParserFn,
     Input extends string,
     Acc extends string = ""
@@ -697,23 +697,19 @@ export namespace Parser {
     [Skip<Whitespaces>, Parser, Skip<Whitespaces>]
   >;
 
-  type T0 = Call<
-    Map<
-      Sequence<
-        [
-          Skip<Literal<"function">>,
-          Trim<Word>,
-          Between<Literal<"(">, SepBy<Trim<Word>, Literal<",">>, Literal<")">>,
-          Skip<Literal<";">>,
-          EndOfInput
-        ]
-      >,
-      Objects.Create<{
-        type: "function";
-        name: Tuples.At<0>;
-        parameters: Tuples.Drop<1>;
-      }>
-    >,
-    `function test ( aaaaa, hello_  ,  allo  );`
-  >;
+  /**
+   * Parse a string using the given parser and return the result.
+   * @param Parser - the parser to use
+   * @param Input - the string to parse
+   */
+  export type Parse<Parser extends ParserFn, Input extends string> = Call<
+    Parser,
+    Input
+  > extends infer A
+    ? A extends Ok<infer Result>
+      ? Result
+      : A extends Error<infer Err>
+      ? Err
+      : never
+    : never;
 }
