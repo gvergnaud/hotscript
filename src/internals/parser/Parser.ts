@@ -1,20 +1,15 @@
 import {
-  Apply,
-  arg0,
   Call,
   Compose,
-  ComposeLeft,
   Constant,
   Eval,
   Fn,
-  Identity,
   PartialApply,
   Pipe,
   unset,
   _,
 } from "../core/Core";
 import { Match } from "../match/Match";
-import { Objects } from "../objects/Objects";
 import { Strings } from "../strings/Strings";
 import { Tuples } from "../tuples/Tuples";
 
@@ -418,6 +413,33 @@ export namespace Parser {
   export type Or<Parser1 extends ParserFn, Parser2 extends ParserFn> = Choice<
     [Parser1, Parser2]
   >;
+
+  /**
+   * Parser that optionally matches the input with the given parser.
+   * @description If the parser matches it will return the result of the parser.
+   * If the parser doesn't match it will return an empty array.
+   * @param Parser - the parser to match
+   * @returns an Ok type if the parser matches and an empty array or the error of the parser
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Optional<Literal<"a">>, "a">;
+   * //   ^? type T0 = Ok<{ result: ["a"]; input: "" }>
+   * type T1 = Call<Optional<Literal<"a">>, "b">;
+   * //   ^? type T1 = Ok<{ result: []; input: "b" }>
+   * ```
+   */
+  export interface Optional<Parser extends ParserFn> extends ParserFn {
+    name: "optional";
+    params: [Parser];
+    return: this["arg0"] extends infer Input extends string
+      ? Call<Parser, Input> extends infer A
+        ? A extends Ok
+          ? A
+          : Ok<{ result: []; input: Input }>
+        : never
+      : InputError<this["arg0"]>;
+  }
 
   /**
    * Parser that matches if the given parser doesn't match.
