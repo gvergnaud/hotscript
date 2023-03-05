@@ -170,15 +170,15 @@ export namespace Parser {
   > = Input extends ""
     ? Ok<Acc, Input>
     : Call<Parser, Input> extends infer A
-    ? A extends Ok<unknown[]>
-      ? ManyImpl<Parser, A["value"]["input"], [...Acc, ...A["value"]["result"]]>
-      : A extends Ok
-      ? ManyImpl<Parser, A["value"]["input"], [...Acc, A["value"]["result"]]>
+    ? A extends Ok<infer Res extends unknown[], infer In>
+      ? ManyImpl<Parser, In, [...Acc, ...Res]>
+      : A extends Ok<infer Res, infer In>
+      ? ManyImpl<Parser, In, [...Acc, Res]>
       : Ok<Acc, Input>
     : Ok<Acc, Input>;
 
   /**
-   * Parser that matches a parser 0 or more times.
+   * Parser that matches a parser 0 or more times. It returns an array of the matched parsers results.
    * @param Parser - the parser to match
    * @returns an Ok type if the parser matches 0 or more times and the rest of the input
    *
@@ -208,20 +208,10 @@ export namespace Parser {
     ...infer Tail extends ParserFn[]
   ]
     ? Call<Head, Input> extends infer A
-      ? A extends Ok<unknown[]>
-        ? SequenceImpl<
-            Self,
-            Tail,
-            A["value"]["input"],
-            [...Acc, ...A["value"]["result"]]
-          >
-        : A extends Ok<unknown>
-        ? SequenceImpl<
-            Self,
-            Tail,
-            A["value"]["input"],
-            [...Acc, A["value"]["result"]]
-          >
+      ? A extends Ok<infer Res extends unknown[], infer In>
+        ? SequenceImpl<Self, Tail, In, [...Acc, ...Res]>
+        : A extends Ok<infer Res, infer In>
+        ? SequenceImpl<Self, Tail, In, [...Acc, Res]>
         : A // forwards error
       : never
     : Ok<Acc, Input>;
@@ -229,7 +219,7 @@ export namespace Parser {
   /**
    * Parser that matches a list of parsers in sequence.
    * @param Parsers - the parsers to match
-   * @returns an Ok type if the parsers match in sequence or the error of the first parser that fails
+   * @returns an Ok type with an array of all the parsers results or the error of the first parser that fails
    *
    * @example
    * ```ts
@@ -291,8 +281,8 @@ export namespace Parser {
     params: [Parser, "Fn"];
     return: this["arg0"] extends infer Input extends string
       ? Call<Parser, Input> extends infer A
-        ? A extends Ok<infer Result>
-          ? Ok<Call<Map, Result>, A["value"]["input"]>
+        ? A extends Ok<infer Result, infer Input>
+          ? Ok<Call<Map, Result>, Input>
           : A
         : never
       : InputError<this["arg0"]>;
