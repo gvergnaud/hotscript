@@ -10,6 +10,39 @@ describe("Parser", () => {
       type res1 = Eval<P.Parse<P.Literal<"hello">, "hello">>;
       //   ^?
       type test1 = Expect<Equal<res1, "hello">>;
+      type res2 = Eval<P.Parse<P.Literal<"hello">, "hello world">>;
+      //   ^?
+      type test2 = Expect<Equal<res2, "hello">>;
+    });
+
+    it("should not parse another literal", () => {
+      type res1 = Eval<P.Parse<P.Literal<"hello">, "world">>;
+      //   ^?
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            message: "Expected 'literal('hello')' - Received 'world'";
+            input: "world";
+            cause: "";
+          }
+        >
+      >;
+    });
+
+    it("should not parse an empty string", () => {
+      type res1 = Eval<P.Parse<P.Literal<"hello">, "">>;
+      //   ^?
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            message: "Expected 'literal('hello')' - Received ''";
+            input: "";
+            cause: "";
+          }
+        >
+      >;
     });
   });
 
