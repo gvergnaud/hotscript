@@ -2,7 +2,8 @@
 
 A library of composable functions for the type-level! Transform your TypeScript types in any way you want using functions you already know.
 
-![carbon (39)](https://user-images.githubusercontent.com/9265418/223132680-d682e9de-adc0-4b7e-a39f-0166a3fe8c19.png)
+![carbon (40)](https://user-images.githubusercontent.com/9265418/223132839-f77acb83-cbfe-41cc-9a07-c0a01f072b87.png)
+
 
 ## Features
 
