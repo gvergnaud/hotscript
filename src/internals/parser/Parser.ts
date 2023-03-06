@@ -150,11 +150,11 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Literal<"a">, "a">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    * type T1 = Call<Literal<"a">, "b">;
    * //   ^? type T1 = Error<{ message: "Expected 'literal('a')' - Received 'b'"; cause: "" }>
    * type T2 = Call<Literal<"a" | "b">, "a">;
-   * //   ^? type T2 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T2 = Ok< "a", "" >
    * ```
    */
   export interface Literal<ExpectedLiteral extends string> extends ParserFn {
@@ -185,9 +185,9 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Many<Literal<"a">>, "aaa">;
-   * //   ^? type T0 = Ok<{ result: ["a", "a", "a"]; input: "" }>
+   * //   ^? type T0 = Ok< ["a", "a", "a"], "" >
    * type T1 = Call<Many<Literal<"a">>, "bbb">;
-   * //   ^? type T1 = Ok<{ result: []; input: "bbb" }>
+   * //   ^? type T1 = Ok< [], "bbb" >
    * ```
    */
   export interface Many<Parser extends ParserFn> extends ParserFn {
@@ -224,7 +224,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Sequence<[Literal<"a">, Literal<"b">]>, "ab">;
-   * //   ^? type T0 = Ok<{ result: ["a", "b"]; input: "" }>
+   * //   ^? type T0 = Ok< ["a", "b"], "" >
    * type T1 = Call<Sequence<[Literal<"a">, Literal<"b">]>, "ac">;
    * //   ^? type T1 = Error<{ message: "Expected 'literal('b')' - Received 'c'"; cause: "" }>
    * ```
@@ -244,7 +244,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<EndOfInput, "">;
-   * //   ^? type T0 = Ok<{ result: []; input: "" }>
+   * //   ^? type T0 = Ok< [], "" >
    * type T1 = Call<EndOfInput, "a">;
    * //   ^? type T1 = Error<{ message: "Expected 'endOfInput()' - Received 'a'"; cause: "" }>
    * ```
@@ -270,7 +270,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Map<Literal<"a">, Constant<"b">>, "a">;
-   * //   ^? type T0 = Ok<{ result: "b"; input: "" }>
+   * //   ^? type T0 = Ok< "b", "" >
    * type T1 = Call<Map<Literal<"a">, Constant<"b">>, "b">;
    * //   ^? type T1 = Error<{ message: "Expected 'literal('a')' - Received 'b'"; cause: "" }>
    * ```
@@ -297,7 +297,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Skip<Literal<"a">>, "a">;
-   * //   ^? type T0 = Ok<{ result: []; input: "" }>
+   * //   ^? type T0 = Ok< [], "" >
    * type T1 = Call<Skip<Literal<"a">>, "b">;
    * //   ^? type T1 = Error<{ message: "Expected 'literal('a')' - Received 'b'"; cause: "" }>
    * ```
@@ -315,7 +315,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<MapError<Literal<"a">, Constant<"b">>, "a">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    * type T1 = Call<MapError<Literal<"a">, Objects.Create<{
    *  kind: "Ok";
    *  value: {
@@ -363,12 +363,12 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Choice<[
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    *   Literal<"a">,
    *   Literal<"b">,
    * ]>, "a">;
    * type T1 = Call<Choice<[
-   * //   ^? type T1 = Ok<{ result: "b"; input: "" }>
+   * //   ^? type T1 = Ok< "b", "" >
    *  Literal<"a">,
    *  Literal<"b">,
    * ]>, "b">;
@@ -397,7 +397,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Or<Literal<"a">, Literal<"b">>, "a">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok<"a", "">
    * ```
    */
   export type Or<Parser1 extends ParserFn, Parser2 extends ParserFn> = Choice<
@@ -414,9 +414,9 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Optional<Literal<"a">>, "a">;
-   * //   ^? type T0 = Ok<{ result: ["a"]; input: "" }>
+   * //   ^? type T0 = Ok<["a"],"">
    * type T1 = Call<Optional<Literal<"a">>, "b">;
-   * //   ^? type T1 = Ok<{ result: []; input: "b" }>
+   * //   ^? type T1 = Ok<[],"b">
    * ```
    */
   export interface Optional<Parser extends ParserFn> extends ParserFn {
@@ -426,7 +426,7 @@ export namespace Parser {
       ? Call<Parser, Input> extends infer A
         ? A extends Ok
           ? A
-          : Ok<{ result: []; input: Input }>
+          : Ok<[], Input>
         : never
       : InputError<this["arg0"]>;
   }
@@ -442,7 +442,7 @@ export namespace Parser {
    * type T0 = Call<Not<Literal<"test">>, "test">;
    * //   ^? type T0 = Error<{ message: "Expected 'not(literal('test'))' - Received 'test'"; cause: "";}>
    * type T1 = Call<Not<Literal<"test">>, "other">;
-   * //   ^? type T1 = Ok<{ result: []; input: "other" }>
+   * //   ^? type T1 = Ok< [], "other" >
    */
   export interface Not<Parser extends ParserFn> extends ParserFn {
     name: "not";
@@ -470,9 +470,9 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Alpha, "a">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    * type T1 = Call<Alpha, "A">;
-   * //   ^? type T1 = Ok<{ result: "A"; input: "" }>
+   * //   ^? type T1 = Ok< "A", "" >
    * type T2 = Call<Alpha, "1">;
    * //   ^? type T2 = Error<{ message: "Expected 'alpha()' - Received '1'"; cause: "";}>
    * ```
@@ -496,11 +496,11 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<AlphaNum, "a">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    * type T1 = Call<AlphaNum, "A">;
-   * //   ^? type T1 = Ok<{ result: "A"; input: "" }>
+   * //   ^? type T1 = Ok< "A", "" >
    * type T2 = Call<AlphaNum, "1">;
-   * //   ^? type T2 = Ok<{ result: "1"; input: "" }>
+   * //   ^? type T2 = Ok< "1", "" >
    * type T3 = Call<AlphaNum, "_">;
    * //   ^? type T3 = Error<{ message: "Expected 'alphaNum()' - Received '_'"; cause: "";}>
    * ```
@@ -524,7 +524,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Digit, "1">;
-   * //   ^? type T0 = Ok<{ result: "1"; input: "" }>
+   * //   ^? type T0 = Ok< "1", "" >
    * type T1 = Call<Digit, "a">;
    * //   ^? type T1 = Error<{ message: "Expected 'digit()' - Received 'a'"; cause: "";}>
    * ```
@@ -546,9 +546,15 @@ export namespace Parser {
     Input extends string,
     Acc extends string = ""
   > = Input extends ""
-    ? Ok<Acc, Input>
+    ? Acc extends ""
+      ? Err<Self, Input>
+      : Ok<Acc, Input>
     : Input extends `${infer Head}${infer Tail}`
-    ? Head extends _digit
+    ? Acc extends ""
+      ? Head extends _digit
+        ? DigitsImpl<Self, Tail, `${Acc}${Head}`>
+        : Err<Self, Input>
+      : Head extends _digit
       ? DigitsImpl<Self, Tail, `${Acc}${Head}`>
       : Ok<Acc, Input>
     : never;
@@ -560,7 +566,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Digits, "123">;
-   * //   ^? type T0 = Ok<{ result: "123"; input: "" }>
+   * //   ^? type T0 = Ok< "123", "" >
    * type T1 = Call<Digits, "a">;
    * //   ^? type T1 = Error<{ message: "Expected 'digits()' - Received 'a'"; cause: "";}>
    * ```
@@ -596,13 +602,13 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Word, "abc">;
-   * //   ^? type T0 = Ok<{ result: "abc"; input: "" }>
+   * //   ^? type T0 = Ok< "abc", "" >
    * type T1 = Call<Word, "123">;
    * //   ^? type T1 = Error<{ message: "Expected 'word()' - Received '123'"; cause: "";}>
    * type T2 = Call<Word, "_abc">;
-   * //   ^? type T2 = Ok<{ result: "_abc"; input: "" }>
+   * //   ^? type T2 = Ok< "_abc", "" >
    * type T3 = Call<Word, "a_123">;
-   * //   ^? type T3 = Ok<{ result: "a_123"; input: "" }>
+   * //   ^? type T3 = Ok< "a_123", "" >
    * ```
    */
   export interface Word extends ParserFn {
@@ -621,7 +627,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Many1<Alpha>, "abc">;
-   * //   ^? type T0 = Ok<{ result: ["a", "b", "c"]; input: "" }>
+   * //   ^? type T0 = Ok< ["a", "b", "c"], "" >
    * type T1 = Call<Many1<Alpha>, "123">;
    * //  ^? type T1 = Error<{ message: "Expected 'alpha()' - Received '123'"; cause: "";}>
    * ```
@@ -638,7 +644,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<SepBy<Alpha, Literal<",">>, "a,b,c">;
-   * //   ^? type T0 = Ok<{ result: ["a", "b", "c"]; input: "" }>
+   * //   ^? type T0 = Ok< ["a", "b", "c"], "" >
    * type T1 = Call<SepBy<Alpha, Literal<",">>, "a,b,c,">;
    * //   ^? type T1 = Error<{ message: "Expected 'alpha()' - Received ''"; cause: "";}>
    * ```
@@ -657,7 +663,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Between<Literal<"(">, Alpha, Literal<")">>, "(a)">;
-   * //   ^? type T0 = Ok<{ result: "a"; input: "" }>
+   * //   ^? type T0 = Ok< "a", "" >
    * type T1 = Call<Between<Literal<"(">, Alpha, Literal<")">>, "(a">;
    * //   ^? type T1 = Error<{ message: "Expected Literal(')') - Received ''"; cause: "";}>
    * ```
@@ -675,9 +681,9 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Whitespace, " ">; // space
-   * //   ^? type T0 = Ok<{ result: " "; input: "" }>
+   * //   ^? type T0 = Ok< " ", "" >
    * type T1 = Call<Whitespace, "\t">; // tab
-   * //   ^? type T1 = Ok<{ result: "\t"; input: "" }>
+   * //   ^? type T1 = Ok< "\t", "" >
    * ```
    */
   export type Whitespace = Literal<" " | "\t" | "\n" | "\r">;
@@ -689,7 +695,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Whitespaces, " \t \n \r ">;
-   * //   ^? type T0 = Ok<{ result: [" ", "\t", " ", "\n", " ", "\r", " "]; input: "" }>
+   * //   ^? type T0 = Ok< [" ", "\t", " ", "\n", " ", "\r", " "], "" >
    * ```
    */
   export type Whitespaces = Many<Whitespace>;
@@ -702,7 +708,7 @@ export namespace Parser {
    * @example
    * ```ts
    * type T0 = Call<Trim<Literal<"test">>, "     test  ">;
-   * //   ^? type T0 = Ok<{ result: "test"; input: "" }>
+   * //   ^? type T0 = Ok< "test", "" >
    * ```
    */
   export type Trim<Parser extends ParserFn> = Sequence<
