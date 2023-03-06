@@ -2,6 +2,8 @@
 
 A library of composable functions for the type-level! Transform your TypeScript types in any way you want using functions you already know.
 
+![carbon (39)](https://user-images.githubusercontent.com/9265418/223132680-d682e9de-adc0-4b7e-a39f-0166a3fe8c19.png)
+
 ## Features
 
 - Type-level higher-order functions (`Tuples.Map`, `Tuples.Filter`, `Objects.MapValues`, etc).
