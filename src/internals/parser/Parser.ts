@@ -584,7 +584,9 @@ export namespace Parser {
     Input extends string,
     Acc extends string = ""
   > = Input extends ""
-    ? Ok<Acc, Input>
+    ? Acc extends ""
+      ? Err<Self, Input>
+      : Ok<Acc, Input>
     : Input extends `${infer Head}${infer Tail}`
     ? Acc extends ""
       ? Head extends _alpha | "_"
