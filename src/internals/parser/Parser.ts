@@ -22,9 +22,7 @@ export namespace Parser {
    */
   export interface ParserFn extends Fn {
     name: string;
-    params: Array<
-      string | number | bigint | undefined | null | boolean | ParserFn
-    >;
+    params: any;
   }
 
   /**
@@ -55,7 +53,7 @@ export namespace Parser {
    * specialised Error type for parsers.
    */
   export type Err<
-    Parser extends ParserFn,
+    Parser,
     Input extends string,
     Cause extends unknown = ""
   > = Error<{
@@ -124,7 +122,7 @@ export namespace Parser {
    * //   ^? type T0 = "literal('a')"
    * ```
    */
-  export type ToString<Parser extends ParserFn | _ | unset = unset> =
+  export type ToString<Parser extends unknown | _ | unset = unset> =
     PartialApply<ToStringFn, [Parser]>;
 
   /**
@@ -133,7 +131,7 @@ export namespace Parser {
    * in case of a union, the correct string literal is returned.
    */
   type LiteralImpl<
-    Self extends ParserFn,
+    Self,
     ExpectedLiteral extends string,
     Input extends string
   > = Input extends `${ExpectedLiteral}${infer Rest}`
@@ -164,18 +162,21 @@ export namespace Parser {
   }
 
   type ManyImpl<
-    Parser extends ParserFn,
+    Self,
+    Parser,
     Input extends string,
     Acc extends unknown[] = []
   > = Input extends ""
     ? Ok<Acc, Input>
-    : Call<Parser, Input> extends infer A
-    ? A extends Ok<infer Res extends unknown[], infer In>
-      ? ManyImpl<Parser, In, [...Acc, ...Res]>
-      : A extends Ok<infer Res, infer In>
-      ? ManyImpl<Parser, In, [...Acc, Res]>
+    : Parser extends infer F extends ParserFn
+    ? Call<F, Input> extends infer A
+      ? A extends Ok<infer Res extends unknown[], infer In>
+        ? ManyImpl<Self, Parser, In, [...Acc, ...Res]>
+        : A extends Ok<infer Res, infer In>
+        ? ManyImpl<Self, Parser, In, [...Acc, Res]>
+        : Ok<Acc, Input>
       : Ok<Acc, Input>
-    : Ok<Acc, Input>;
+    : Err<Self, Input>;
 
   /**
    * Parser that matches a parser 0 or more times. It returns an array of the matched parsers results.
@@ -190,23 +191,20 @@ export namespace Parser {
    * //   ^? type T1 = Ok< [], "bbb" >
    * ```
    */
-  export interface Many<Parser extends ParserFn> extends ParserFn {
+  export interface Many<Parser> extends ParserFn {
     name: "many";
-    params: [Parser["name"]];
+    params: [Parser];
     return: this["arg0"] extends infer Input extends string
-      ? ManyImpl<Parser, Input>
+      ? ManyImpl<this, Parser, Input>
       : InputError<this["arg0"]>;
   }
 
   type SequenceImpl<
-    Self extends ParserFn,
-    Parsers extends ParserFn[],
+    Self,
+    Parsers,
     Input extends string,
     Acc extends unknown[] = []
-  > = Parsers extends [
-    infer Head extends ParserFn,
-    ...infer Tail extends ParserFn[]
-  ]
+  > = Parsers extends [infer Head extends ParserFn, ...infer Tail]
     ? Call<Head, Input> extends infer A
       ? A extends Ok<infer Res extends unknown[], infer In>
         ? SequenceImpl<Self, Tail, In, [...Acc, ...Res]>
@@ -229,13 +227,20 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected 'literal('b')' - Received 'c'"; cause: "" }>
    * ```
    */
-  export interface Sequence<Parsers extends ParserFn[]> extends ParserFn {
+  export interface Sequence<Parsers> extends ParserFn {
     name: "sequence";
     params: Parsers;
     return: this["arg0"] extends infer Input extends string
       ? SequenceImpl<this, Parsers, Input>
       : InputError<this["arg0"]>;
   }
+
+  type CommaSep = Sequence<
+    [Trim<Word>, Optional<Sequence<[Literal<",">, CommaSep]>>]
+  >;
+
+  type test = Call<CommaSep, "a, b, c">;
+  //    ^?
 
   /**
    * Parser that fails if there is any input left.
@@ -275,16 +280,17 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected 'literal('a')' - Received 'b'"; cause: "" }>
    * ```
    */
-  export interface Map<Parser extends ParserFn, Map extends Fn>
-    extends ParserFn {
+  export interface Map<Parser, Map extends Fn> extends ParserFn {
     name: "map";
     params: [Parser, "Fn"];
     return: this["arg0"] extends infer Input extends string
-      ? Call<Parser, Input> extends infer A
-        ? A extends Ok<infer Result, infer Input>
-          ? Ok<Call<Map, Result>, Input>
-          : A
-        : never
+      ? Parser extends infer F extends ParserFn
+        ? Call<F, Input> extends infer A
+          ? A extends Ok<infer Result, infer Input>
+            ? Ok<Call<Map, Result>, Input>
+            : A
+          : never
+        : Err<this, Input>
       : InputError<this["arg0"]>;
   }
 
@@ -302,7 +308,7 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected 'literal('a')' - Received 'b'"; cause: "" }>
    * ```
    */
-  export type Skip<Parser extends ParserFn> = Map<Parser, Constant<[]>>;
+  export type Skip<Parser> = Map<Parser, Constant<[]>>;
 
   /**
    * Parser that transforms the error of another parser when it fails.
@@ -325,22 +331,23 @@ export namespace Parser {
    * }>>, "b">; // transforms the error to an Ok type
    * ```
    */
-  export interface MapError<Parser extends ParserFn, Map extends Fn>
-    extends ParserFn {
+  export interface MapError<Parser, Map extends Fn> extends ParserFn {
     name: "mapError";
     params: [Parser, "Fn"];
     return: this["arg0"] extends infer Input extends string
-      ? Call<Parser, Input> extends infer A
-        ? A extends Error<unknown>
-          ? Call<Map, A>
-          : A
-        : never
+      ? Parser extends infer F extends ParserFn
+        ? Call<F, Input> extends infer A
+          ? A extends Error<unknown>
+            ? Call<Map, A>
+            : A
+          : never
+        : Err<this, Input>
       : InputError<this["arg0"]>;
   }
 
   type ChoiceImpl<
-    Self extends ParserFn,
-    Parsers extends ParserFn[],
+    Self,
+    Parsers,
     Input extends string,
     ErrorAcc extends unknown[] = []
   > = Parsers extends [
@@ -379,7 +386,7 @@ export namespace Parser {
    * ]>, "c">;
    * ```
    */
-  export interface Choice<Parsers extends ParserFn[]> extends ParserFn {
+  export interface Choice<Parsers> extends ParserFn {
     name: "choice";
     params: Parsers;
     return: this["arg0"] extends infer Input extends string
@@ -400,9 +407,7 @@ export namespace Parser {
    * //   ^? type T0 = Ok<"a", "">
    * ```
    */
-  export type Or<Parser1 extends ParserFn, Parser2 extends ParserFn> = Choice<
-    [Parser1, Parser2]
-  >;
+  export type Or<Parser1, Parser2> = Choice<[Parser1, Parser2]>;
 
   /**
    * Parser that optionally matches the input with the given parser.
@@ -419,15 +424,17 @@ export namespace Parser {
    * //   ^? type T1 = Ok<[],"b">
    * ```
    */
-  export interface Optional<Parser extends ParserFn> extends ParserFn {
+  export interface Optional<Parser> extends ParserFn {
     name: "optional";
     params: [Parser];
     return: this["arg0"] extends infer Input extends string
-      ? Call<Parser, Input> extends infer A
-        ? A extends Ok
-          ? A
-          : Ok<[], Input>
-        : never
+      ? Parser extends infer F extends ParserFn
+        ? Call<F, Input> extends infer A
+          ? A extends Ok
+            ? A
+            : Ok<[], Input>
+          : never
+        : Err<this, Input>
       : InputError<this["arg0"]>;
   }
 
@@ -444,13 +451,15 @@ export namespace Parser {
    * type T1 = Call<Not<Literal<"test">>, "other">;
    * //   ^? type T1 = Ok< [], "other" >
    */
-  export interface Not<Parser extends ParserFn> extends ParserFn {
+  export interface Not<Parser> extends ParserFn {
     name: "not";
     params: [Parser];
     return: this["arg0"] extends infer Input extends string
-      ? Call<Parser, Input> extends Ok
-        ? Err<this, Input>
-        : Ok<[], Input>
+      ? Parser extends infer F extends ParserFn
+        ? Call<F, Input> extends Ok
+          ? Err<this, Input>
+          : Ok<[], Input>
+        : Err<this, Input>
       : InputError<this["arg0"]>;
   }
 
@@ -542,7 +551,7 @@ export namespace Parser {
   }
 
   export type DigitsImpl<
-    Self extends ParserFn,
+    Self,
     Input extends string,
     Acc extends string = ""
   > = Input extends ""
@@ -580,7 +589,7 @@ export namespace Parser {
   }
 
   type WordImpl<
-    Self extends ParserFn,
+    Self,
     Input extends string,
     Acc extends string = ""
   > = Input extends ""
@@ -634,7 +643,7 @@ export namespace Parser {
    * //  ^? type T1 = Error<{ message: "Expected 'alpha()' - Received '123'"; cause: "";}>
    * ```
    */
-  export type Many1<Parser extends ParserFn> = Sequence<[Parser, Many<Parser>]>;
+  export type Many1<Parser> = Sequence<[Parser, Many<Parser>]>;
 
   /**
    * Parser that matches the given parser followed by the given separator
@@ -651,7 +660,7 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected 'alpha()' - Received ''"; cause: "";}>
    * ```
    */
-  export type SepBy<Parser extends ParserFn, Sep extends ParserFn> = Sequence<
+  export type SepBy<Parser, Sep> = Sequence<
     [Many<Sequence<[Parser, Skip<Sep>]>>, Parser]
   >;
 
@@ -670,11 +679,9 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected Literal(')') - Received ''"; cause: "";}>
    * ```
    */
-  export type Between<
-    Open extends ParserFn,
-    Parser extends ParserFn,
-    Close extends ParserFn
-  > = Sequence<[Skip<Open>, Parser, Skip<Close>]>;
+  export type Between<Open, Parser, Close> = Sequence<
+    [Skip<Open>, Parser, Skip<Close>]
+  >;
 
   /**
    * Parser that matches whitespace characters.
@@ -713,7 +720,7 @@ export namespace Parser {
    * //   ^? type T0 = Ok< "test", "" >
    * ```
    */
-  export type Trim<Parser extends ParserFn> = Sequence<
+  export type Trim<Parser> = Sequence<
     [Skip<Whitespaces>, Parser, Skip<Whitespaces>]
   >;
 
@@ -744,7 +751,7 @@ export namespace Parser {
    * ```
    */
   export type Parse<
-    Parser extends ParserFn | _ | unset = unset,
+    Parser extends unknown | _ | unset = unset,
     Input extends string | _ | unset = unset
   > = PartialApply<ParseFn, [Parser, Input]>;
 }

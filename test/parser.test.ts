@@ -2,7 +2,17 @@ import { Equal, Expect } from "../src/internals/helpers";
 import { Parser as P } from "../src/internals/parser/Parser";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
-import { Eval } from "../src/internals/core/Core";
+import {
+  arg0,
+  arg1,
+  Call,
+  ComposeLeft,
+  Eval,
+  Identity,
+} from "../src/internals/core/Core";
+import { Strings } from "../src/internals/strings/Strings";
+import { Numbers as N } from "../src/internals/numbers/Numbers";
+import { Match } from "../src/internals/match/Match";
 
 describe("Parser", () => {
   describe("P.Literal", () => {
@@ -158,6 +168,63 @@ describe("Parser", () => {
             name: "test";
             parameters: ["aaaaa", "hello_", "allo"];
           }
+        >
+      >;
+    });
+
+    it("should parse a calculator grammar", () => {
+      // the calculator grammar is a simple grammar that allows to parse simple arithmetic expressions
+      // it should support the following operations:
+      // - addition
+      // - substraction
+      // - multiplication
+      // - division
+      // - parenthesis
+      // - numbers
+
+      // the grammar is defined as a recursive grammar
+      // definition of the grammar:
+      // Expr = Added (AddOp Added)*
+      // Added = Multiplied (MulOp Multipled)*
+      // Multiplied = (Expr) | Integer
+      // AddOp = + | -
+      // MulOp = * | /
+
+      type MulOp = P.Literal<"*" | "/">;
+      type AddOp = P.Literal<"+" | "-">;
+      type Integer = P.Map<
+        P.Trim<P.Digits>,
+        ComposeLeft<[Tuples.At<0>, Strings.ToNumber]>
+      >;
+      type Multiplied = P.Choice<
+        [P.Between<P.Literal<"(">, Expr, P.Literal<")">>, Integer]
+      >;
+      type Added = P.Map<
+        P.Sequence<[Multiplied, P.Many<P.Sequence<[MulOp, Multiplied]>>]>,
+        Match<
+          [
+            Match.With<[arg0, "*", arg1], N.Mul>,
+            Match.With<[arg0, "/", arg1], N.Div>,
+            Match.With<arg0, Identity>
+          ]
+        >
+      >;
+      type Expr = P.Map<
+        P.Sequence<[Added, P.Many<P.Sequence<[AddOp, Added]>>]>,
+        Match<
+          [
+            Match.With<[arg0, "+", arg1], N.Add>,
+            Match.With<[arg0, "-", arg1], N.Sub>,
+            Match.With<arg0, Identity>
+          ]
+        >
+      >;
+
+      type res1 = Eval<
+        //   ^?
+        P.Parse<
+          P.Map<P.Sequence<[Expr, P.EndOfInput]>, Tuples.At<0>>,
+          "(3*2)/(4/2)-2"
         >
       >;
     });
