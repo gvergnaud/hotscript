@@ -550,6 +550,45 @@ export namespace Parser {
       : InputError<this["arg0"]>;
   }
 
+  /**
+   * Parser that matches any single character
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Any, "a">;
+   * //   ^? type T0 = Ok< "a", "" >
+   * type T1 = Call<Any, "">;
+   * //   ^? type T1 = Error<{ message: "Expected 'any()' - Received ''"; cause: "";}>
+   * ```
+   */
+  export interface Any extends ParserFn {
+    name: "any";
+    params: [];
+    return: this["arg0"] extends infer Input extends string
+      ? Input extends `${infer Head}${infer Tail}`
+        ? Ok<Head, Tail>
+        : Err<this, Input>
+      : InputError<this["arg0"]>;
+  }
+
+  /**
+   * Parser that matches a single character that is not the given literal.
+   * @param NotExpected - The character that should not be matched
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<NotLiteral<"a">, "b">;
+   * //   ^? type T0 = Ok< "b", "" >
+   * type T1 = Call<NotLiteral<"a">, "a">;
+   * //   ^? type T1 = Error<{ message: "Expected 'notLiteral('a')' - Received 'a'"; cause: "";}>
+   * ```
+   */
+  export type NotLiteral<NotExpected extends string> = Sequence<
+    [Not<Literal<NotExpected>>, Any]
+  >;
+
   export type DigitsImpl<
     Self,
     Input extends string,
@@ -723,6 +762,32 @@ export namespace Parser {
   export type Trim<Parser> = Sequence<
     [Skip<Whitespaces>, Parser, Skip<Whitespaces>]
   >;
+
+  /**
+   * Parser that matches the given parser and discards the enclosing whitespace characters.
+   * @param Parser - the parser to match
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<TrimLeft<Literal<"test">>, "     test  ">;
+   * //   ^? type T0 = Ok<["test"], "  " >
+   * ```
+   */
+  export type TrimLeft<Parser> = Sequence<[Skip<Whitespaces>, Parser]>;
+
+  /**
+   * Parser that matches the given parser and discards the enclosing whitespace characters.
+   * @param Parser - the parser to match
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<TrimRight<Literal<"test">>, "test  ">;
+   * //   ^? type T0 = Ok< "test", "" >
+   * ```
+   */
+  export type TrimRight<Parser> = Sequence<[Parser, Skip<Whitespaces>]>;
 
   interface ParseFn extends Fn {
     return: this["args"] extends [

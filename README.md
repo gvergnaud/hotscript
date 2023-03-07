@@ -265,6 +265,7 @@ type res5 = Pipe<
   - [x] Parse
   - [x] ToString
   - [x] Literal
+  - [x] NotLiteral
   - [x] Optional
   - [x] Many
   - [x] Many1
@@ -279,6 +280,9 @@ type res5 = Pipe<
   - [x] Whitespace
   - [x] Whitespaces
   - [x] Trim
+  - [x] TrimLeft
+  - [x] TrimRight
+  - [x] Any
   - [x] Alpha
   - [x] AlphaNum
   - [x] Digit

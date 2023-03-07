@@ -257,29 +257,27 @@ describe("Parser", () => {
       // | False = false |
       // | Null = null |
       // ---------------------------------------------
-      type Value = P.Optional<
-        P.Choice<
-          [JSonObject, JSonArray, JSonString, JSonNumber, JsonBoolean, JSonNull]
-        >
+      type Value = P.Choice<
+        [JSonObject, JSonArray, JSonString, JSonNumber, JsonBoolean, JSonNull]
       >;
       type JSonObject = P.Map<
         P.Sequence<
           [
             P.Trim<P.Skip<P.Literal<"{">>>,
-            P.SepBy<JSonPair, P.Trim<P.Literal<",">>>,
+            P.Optional<P.SepBy<JSonPair, P.Trim<P.Literal<",">>>>,
             P.Trim<P.Skip<P.Literal<"}">>>
           ]
         >,
         Objects.FromArray
       >;
-      type JSonPair = P.Optional<
-        P.Sequence<[JSonString, P.Trim<P.Skip<P.Literal<":">>>, Value]>
+      type JSonPair = P.Sequence<
+        [JSonString, P.Trim<P.Skip<P.Literal<":">>>, Value]
       >;
       type JSonArray = P.Map<
         P.Sequence<
           [
             P.Trim<P.Skip<P.Literal<"[">>>,
-            P.SepBy<Value, P.Trim<P.Literal<",">>>,
+            P.Optional<P.SepBy<Value, P.Trim<P.Literal<",">>>>,
             P.Trim<P.Skip<P.Literal<"]">>>
           ]
         >,
@@ -288,9 +286,9 @@ describe("Parser", () => {
 
       type JSonString = P.Map<
         P.Between<
-          P.Trim<P.Skip<P.Literal<'"'>>>,
-          P.Many<P.AlphaNum>,
-          P.Trim<P.Skip<P.Literal<'"'>>>
+          P.TrimLeft<P.Skip<P.Literal<'"'>>>,
+          P.Many<P.NotLiteral<'"'>>,
+          P.TrimRight<P.Skip<P.Literal<'"'>>>
         >,
         Tuples.Join<"">
       >;
@@ -299,7 +297,7 @@ describe("Parser", () => {
           [
             P.Optional<P.Literal<"-" | "+">>,
             P.Digits,
-            P.Optional<P.Sequence<[P.Literal<"." | ",">, P.Digits]>>
+            P.Optional<P.Sequence<[P.Literal<".">, P.Digits]>>
           ]
         >,
         ComposeLeft<[Tuples.Join<"">, Strings.ToNumber]>
@@ -314,9 +312,11 @@ describe("Parser", () => {
         P.Parse<P.Map<P.Sequence<[Value, P.EndOfInput]>, Tuples.At<0>>, T>
       >;
 
-      type res1 = Json<`{"hello": "world", "foo": [1, 2, 3]}`>;
+      type res1 = Json<`{"hello": " world! with @", "foo": [1.4, 2, 3]}`>;
       //   ^?
-      type test1 = Expect<Equal<res1, { hello: "world"; foo: [1, 2, 3] }>>;
+      type test1 = Expect<
+        Equal<res1, { hello: " world! with @"; foo: [1.4, 2, 3] }>
+      >;
       type res2 = Json<`[]`>;
       //   ^?
       type test2 = Expect<Equal<res2, []>>;
