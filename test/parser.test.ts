@@ -211,12 +211,26 @@ describe("Parser", () => {
           ]
         >
       >;
+      type Calc<T extends string> = Eval<
+        P.Parse<P.Map<P.Sequence<[Expr, P.EndOfInput]>, Tuples.At<0>>, T>
+      >;
 
-      type res1 = Eval<
-        //   ^?
-        P.Parse<
-          P.Map<P.Sequence<[Expr, P.EndOfInput]>, Tuples.At<0>>,
-          "(3*2)/(4/2)-2"
+      type res1 = Calc<"(3*2)/(4/2)-2">;
+      //   ^?
+      type test1 = Expect<Equal<res1, 1>>;
+      type res2 = Calc<"3*(2-5)">;
+      //   ^?
+      type test2 = Expect<Equal<res2, -9>>;
+      type res3 = Calc<"3*(2-5">;
+      //   ^?
+      type test3 = Expect<
+        Equal<
+          res3,
+          {
+            message: "Expected 'endOfInput()' - Received '*(2-5'";
+            input: "*(2-5";
+            cause: "";
+          }
         >
       >;
     });
