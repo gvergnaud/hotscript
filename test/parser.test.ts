@@ -173,22 +173,14 @@ describe("Parser", () => {
     });
 
     it("should parse a calculator grammar", () => {
-      // the calculator grammar is a simple grammar that allows to parse simple arithmetic expressions
-      // it should support the following operations:
-      // - addition
-      // - substraction
-      // - multiplication
-      // - division
-      // - parenthesis
-      // - numbers
-
-      // the grammar is defined as a recursive grammar
-      // definition of the grammar:
-      // Expr = Added (AddOp Added)*
-      // Added = Multiplied (MulOp Multipled)*
-      // Multiplied = (Expr) | Integer
-      // AddOp = + | -
-      // MulOp = * | /
+      // The grammar is defined as a recursive grammar:
+      // ---------------------------------------------
+      // | Expr = Added (AddOp Added)*               |
+      // | Added = Multiplied (MulOp Multipled)*     |
+      // | Multiplied = (Expr) | Integer             |
+      // | AddOp = + | -                             |
+      // | MulOp = * | /                             |
+      // ---------------------------------------------
 
       type MulOp = P.Literal<"*" | "/">;
       type AddOp = P.Literal<"+" | "-">;
