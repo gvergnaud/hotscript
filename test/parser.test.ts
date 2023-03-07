@@ -7,6 +7,7 @@ import {
   arg1,
   Call,
   ComposeLeft,
+  Constant,
   Eval,
   Identity,
 } from "../src/internals/core/Core";
@@ -189,7 +190,10 @@ describe("Parser", () => {
         ComposeLeft<[Tuples.At<0>, Strings.ToNumber]>
       >;
       type Multiplied = P.Choice<
-        [P.Between<P.Literal<"(">, Expr, P.Literal<")">>, Integer]
+        [
+          P.Between<P.Trim<P.Literal<"(">>, Expr, P.Trim<P.Literal<")">>>,
+          Integer
+        ]
       >;
       type Added = P.Map<
         P.Sequence<[Multiplied, P.Many<P.Sequence<[MulOp, Multiplied]>>]>,
@@ -215,7 +219,7 @@ describe("Parser", () => {
         P.Parse<P.Map<P.Sequence<[Expr, P.EndOfInput]>, Tuples.At<0>>, T>
       >;
 
-      type res1 = Calc<"(3*2)/(4/2)-2">;
+      type res1 = Calc<"( 3*2 ) / ( 4/2 ) - 2">;
       //   ^?
       type test1 = Expect<Equal<res1, 1>>;
       type res2 = Calc<"3*(2-5)">;
@@ -233,6 +237,92 @@ describe("Parser", () => {
           }
         >
       >;
+    });
+
+    it("should parse json grammar", () => {
+      // The grammar is defined as a recursive grammar:
+      // ---------------------------------------------
+      // | Value = Object | Array | String | Number | True | False | Null |
+      // | Object = { Members } |
+      // | Members = Pair (, Pair)* |
+      // | Pair = String : Value |
+      // | Array = [ Values ] |
+      // | Values = Value (, Value)* |
+      // | String = " Characters " |
+      // | Characters = Character* |
+      // | Character = any character except " or \ or control character |
+      // | Number = -? Digits ( . Digits )? |
+      // | Digits = [0-9]+ |
+      // | True = true |
+      // | False = false |
+      // | Null = null |
+      // ---------------------------------------------
+      type Value = P.Optional<
+        P.Choice<
+          [JSonObject, JSonArray, JSonString, JSonNumber, JsonBoolean, JSonNull]
+        >
+      >;
+      type JSonObject = P.Map<
+        P.Sequence<
+          [
+            P.Trim<P.Skip<P.Literal<"{">>>,
+            P.SepBy<JSonPair, P.Trim<P.Literal<",">>>,
+            P.Trim<P.Skip<P.Literal<"}">>>
+          ]
+        >,
+        Objects.FromArray
+      >;
+      type JSonPair = P.Optional<
+        P.Sequence<[JSonString, P.Trim<P.Skip<P.Literal<":">>>, Value]>
+      >;
+      type JSonArray = P.Map<
+        P.Sequence<
+          [
+            P.Trim<P.Skip<P.Literal<"[">>>,
+            P.SepBy<Value, P.Trim<P.Literal<",">>>,
+            P.Trim<P.Skip<P.Literal<"]">>>
+          ]
+        >,
+        Objects.Create<[arg0]>
+      >;
+
+      type JSonString = P.Map<
+        P.Between<
+          P.Trim<P.Skip<P.Literal<'"'>>>,
+          P.Many<P.AlphaNum>,
+          P.Trim<P.Skip<P.Literal<'"'>>>
+        >,
+        Tuples.Join<"">
+      >;
+      type JSonNumber = P.Map<
+        P.Sequence<
+          [
+            P.Optional<P.Literal<"-" | "+">>,
+            P.Digits,
+            P.Optional<P.Sequence<[P.Literal<"." | ",">, P.Digits]>>
+          ]
+        >,
+        ComposeLeft<[Tuples.Join<"">, Strings.ToNumber]>
+      >;
+      type JsonBoolean = P.Map<
+        P.Literal<"true" | "false">,
+        Match<[Match.With<"true", true>, Match.With<"false", false>]>
+      >;
+      type JSonNull = P.Map<P.Literal<"null">, Constant<null>>;
+
+      type Json<T extends string> = Eval<
+        P.Parse<P.Map<P.Sequence<[Value, P.EndOfInput]>, Tuples.At<0>>, T>
+      >;
+
+      type res1 = Json<`{"hello": "world", "foo": [1, 2, 3]}`>;
+      //   ^?
+      type test1 = Expect<Equal<res1, { hello: "world"; foo: [1, 2, 3] }>>;
+      type res2 = Json<`[]`>;
+      //   ^?
+      type test2 = Expect<Equal<res2, []>>;
+      type res3 = Json<`{}`>;
+      //   ^?
+      type test3 = Expect<Equal<res3, {}>>;
     });
   });
 });

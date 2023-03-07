@@ -26,6 +26,13 @@ export type FromEntries<entries extends [PropertyKey, any]> = {
   [entry in entries as entry[0]]: entry[1];
 };
 
+export type FromArray<
+  arr extends unknown[],
+  Acc extends Record<PropertyKey, unknown> = {}
+> = arr extends [infer key extends PropertyKey, infer value, ...infer rest]
+  ? FromArray<rest, Prettify<Acc & { [K in key]: value }>>
+  : Acc;
+
 export type Entries<T> = Keys<T> extends infer keys extends keyof T
   ? {
       [K in keys]: [K, T[K]];

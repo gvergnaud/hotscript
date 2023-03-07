@@ -137,6 +137,22 @@ describe("Objects", () => {
     type test1 = Expect<Equal<res1, { a: string; b: number }>>;
   });
 
+  it("FromArray", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.FromArray,
+      ["a", string, "b", number]
+    >;
+    type test1 = Expect<Equal<res1, { a: string; b: number }>>;
+    // emptry array
+    type res2 = Call<
+      //   ^?
+      Objects.FromArray,
+      []
+    >;
+    type test2 = Expect<Equal<res2, {}>>;
+  });
+
   it("Entries", () => {
     type res1 = Call<
       //   ^?
