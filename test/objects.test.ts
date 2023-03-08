@@ -125,7 +125,10 @@ describe("Objects", () => {
     type test5 = Expect<
       Equal<
         res5,
-        { tuple?: [string?, number?]; tuple2?: { tuple3?: [string?, number?] } }
+        {
+          tuple?: [string?, number?];
+          tuple2?: { tuple3?: [string?, number?] };
+        }
       >
     >;
 
@@ -494,6 +497,49 @@ describe("Objects", () => {
       //   ^?
       type test2 = Expect<Equal<res2, "hello">>;
     });
+  });
+
+  it("Mutable", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.Mutable,
+      { readonly a: 1; b: true }
+    >;
+    type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
+
+    type res2 = Eval<
+      //   ^?
+      Objects.Mutable<{ readonly a: 1; b: true }>
+    >;
+    type tes2 = Expect<Equal<res2, { a: 1; b: true }>>;
+
+    type res3 = Eval<
+      //   ^?
+      Objects.Mutable<{ readonly a?: 1; b?: true }>
+    >;
+    type tes3 = Expect<Equal<res3, { a?: 1; b?: true }>>;
+
+    // Make a subset of properties mutable
+    type res4 = Call<
+      //   ^?
+      Objects.Mutable,
+      { readonly a: 1; b: true }
+    >;
+    type tes4 = Expect<Equal<res4, { a: 1; b: true }>>;
+
+    type res5 = Call<
+      //   ^?
+      Objects.Mutable<"a" | "c">,
+      { a: 1; readonly b: true; readonly c: "cc" }
+    >;
+    type tes5 = Expect<Equal<res5, { a: 1; readonly b: true; c: "cc" }>>;
+
+    type res6 = Apply<
+      //   ^?
+      Objects.Mutable,
+      [{ a?: 1; readonly b?: true; readonly c?: "cc" }, "a" | "c"]
+    >;
+    type tes6 = Expect<Equal<res6, { a?: 1; readonly b?: true; c?: "cc" }>>;
   });
 
   it("Record", () => {

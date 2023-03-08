@@ -493,6 +493,50 @@ export namespace Objects {
     arg3 = unset
   > = PartialApply<CreateFn, [pattern, arg0, arg1, arg2, arg3]>;
 
+  type MutableImpl<
+    obj,
+    keys,
+    union = {
+      [key in keyof obj]: obj[key];
+    } & {
+      -readonly [key in keyof obj as key extends keys ? key : never]: obj[key];
+    }
+  > = {
+    [key in keyof union]: union[key];
+  };
+
+  interface MutableFn extends Fn {
+    return: MutableImpl<
+      this["arg0"],
+      this["arg1"] extends unset ? keyof this["arg0"] : this["arg1"]
+    >;
+  }
+
+  /**
+   * Make all properties (or a specific set) of an object mutable
+   * @description This function is used to make properties of an object mutable
+   * @param obj - The object to make properties mutable
+   * @param keys - The keys to make mutable, if not specified, all properties will be made mutable
+   * @returns The object with the specified properties made mutable
+   *
+   * @example Make all properties mutable
+   * ```ts
+   * type T0 = Call<Objects.Mutable, {readonly a: 1; readonly b: true }>; // { a:1; b: true}
+   * type T1 = Eval<Objects.Mutable<{ readonly a: 1; readonly b: true }>>; // { a:1; b: true}
+   * ```
+   *
+   * @example Make only a specific set of properties mutable
+   * ```ts
+   * type T2 = Call<Objects.Mutable<'a' | 'c'>, {readonly a: 1; readonly b: true, readonly c: 'hello' }>; // { a:1; readonly b: true, c: 'hello'}
+   * type T3 = Eval<Objects.Mutable<'a' | 'c', {readonly a: 1; readonly b: true, readonly c: 'hello' }>>; // { a:1; readonly b: true, c: 'hello'}
+   * type T3 = Apply<Objects.Mutable, [{readonly a: 1; readonly b: true, readonly c: 'hello' }, 'a' | 'c']> // { a:1; readonly b: true, c: 'hello'}
+   * ```
+   */
+  export type Mutable<keys = unset, value = unset> = PartialApply<
+    MutableFn,
+    [value, keys]
+  >;
+
   interface RecordFn extends Fn {
     return: this["args"] extends [infer union extends string, infer value]
       ? Std._Record<union, value>
