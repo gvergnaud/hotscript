@@ -8,10 +8,31 @@ import {
   arg0,
   arg1,
   Constant,
+  Pipe,
+  Fn,
+  Numbers,
+  Parser,
 } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Parser", () => {
+  describe("arithmetic", () => {
+    type Expr = P.Do<
+      [
+        P.Let<"a", P.Number>,
+        P.Optional<P.WhiteSpaces>,
+        P.Literal<"+">,
+        P.Optional<P.WhiteSpaces>,
+        P.Let<"b", P.Number>,
+        P.Apply<Numbers.Add, ["a", "b"]>
+      ]
+    >;
+
+    type res = Parser.Parse<Expr, "40 + 60">;
+    type tes1 = Expect<Equal<res, 100>>;
+    //    ^?
+  });
+
   describe("JSON", () => {
     it("Object parser", () => {
       type StrLit = P.Do<
@@ -19,7 +40,7 @@ describe("Parser", () => {
           P.Literal<'"'>,
           P.Let<"key", P.Word>,
           P.Literal<'"'>,
-          P.Ap<Identity, ["key"]>
+          P.Apply<Identity, ["key"]>
         ]
       >;
 
@@ -34,7 +55,7 @@ describe("Parser", () => {
           P.Let<"value", StrLit>,
           P.Optional<P.WhiteSpaces>,
           P.Literal<"}">,
-          P.Ap<
+          P.Apply<
             Compose<[Objects.FromEntries, Objects.Create<[arg0, arg1]>]>,
             ["key", "value"]
           >
@@ -47,18 +68,18 @@ describe("Parser", () => {
     });
 
     it("Full JSON parser", () => {
-      type JSON = P.OneOf<[NullLit, StrLit, NumLit, Obj, Arr]>;
+      // type JSON = P.OneOf<[NullLit, StrLit, NumLit, Obj, Arr]>;
 
       type NumLit = P.Number;
 
-      type NullLit = P.Do<[P.Literal<"null">, P.Ap<Constant<null>, []>]>;
+      type NullLit = P.Do<[P.Literal<"null">, P.Apply<Constant<null>, []>]>;
 
       type StrLit = P.Do<
         [
           P.Literal<'"'>,
           P.Let<"key", P.Word>,
           P.Literal<'"'>,
-          P.Ap<Identity, ["key"]>
+          P.Apply<Identity, ["key"]>
         ]
       >;
 
@@ -73,7 +94,7 @@ describe("Parser", () => {
           P.Let<"value", JSON>,
           P.Optional<P.WhiteSpaces>,
           P.Literal<"}">,
-          P.Ap<
+          P.Apply<
             Compose<[Objects.FromEntries, Objects.Create<[arg0, arg1]>]>,
             ["key", "value"]
           >
@@ -91,7 +112,7 @@ describe("Parser", () => {
               []
             >
           >,
-          P.Ap<Tuples.Prepend, ["first", "rest"]>
+          P.Apply<Tuples.Prepend, ["first", "rest"]>
         ]
       >;
 
@@ -102,7 +123,7 @@ describe("Parser", () => {
           P.Let<"values", CSV>,
           P.Optional<P.WhiteSpaces>,
           P.Literal<"]">,
-          P.Ap<Identity, ["values"]>
+          P.Apply<Identity, ["values"]>
         ]
       >;
 
@@ -165,6 +186,17 @@ describe("Parser", () => {
       type test10 = Expect<
         Equal<res10, ["", P.Ok<[1, { a: { b: "hello" } }, "str"]>]>
       >;
+
+      type res11 = Pipe<
+        //  ^?
+        '[1, { "a": { "b": "hello" } },  "str"]',
+        [JSON, Objects.Get<"[1].value">]
+      >;
+
+      type JSON = P.OneOf<[NullLit, StrLit, NumLit, Obj, Arr]>;
+
+      type res = P.Parse<JSON, '{ "hello": ["value", 1, ["null"]] }'>;
+      //   ^?
     });
   });
 
@@ -177,7 +209,7 @@ describe("Parser", () => {
             "rest",
             P.Optional<P.Do<[P.Literal<",">, P.Return<CommaSep>]>, []>
           >,
-          P.Ap<Tuples.Prepend, ["first", "rest"]>
+          P.Apply<Tuples.Prepend, ["first", "rest"]>
         ]
       >;
 

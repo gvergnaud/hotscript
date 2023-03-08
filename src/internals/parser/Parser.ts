@@ -1,5 +1,6 @@
-import { Apply, Call, Compose, Constant, Fn } from "../core/Core";
+import * as C from "../core/Core";
 import { Prettify } from "../helpers";
+import { Match } from "../match/Match";
 import { Strings } from "../strings/Strings";
 import { Tuples } from "../tuples/Tuples";
 
@@ -17,7 +18,7 @@ export namespace Parser {
 
   export type ParseResult = [string, Result<unknown, ParseError>];
 
-  interface Parser extends Fn {
+  interface Parser extends C.Fn {
     return: ParseResult;
   }
 
@@ -65,7 +66,7 @@ export namespace Parser {
 
   export interface Optional<parser extends Parser, defaultValue = null>
     extends Parser {
-    return: Call<parser, this["arg0"]> extends [
+    return: C.Call<parser, this["arg0"]> extends [
       infer rest extends string,
       Ok<infer A>
     ]
@@ -78,7 +79,7 @@ export namespace Parser {
     parser extends Parser,
     fullInput = input,
     output extends any[] = []
-  > = Call<parser, input> extends [infer rest extends string, Ok<infer value>]
+  > = C.Call<parser, input> extends [infer rest extends string, Ok<infer value>]
     ? ManyImpl<rest, parser, fullInput, [...output, value]>
     : output extends []
     ? [fullInput, Err<ParseError<"many", fullInput>>]
@@ -125,7 +126,7 @@ export namespace Parser {
   export type Digit = Literal<DigitUnion>;
 
   export type Number = Map<
-    Compose<[Strings.ToNumber, Tuples.Join<"">]>,
+    C.Compose<[Strings.ToNumber, Tuples.Join<"">]>,
     Many<Digit>
   >;
 
@@ -137,7 +138,7 @@ export namespace Parser {
     infer parser extends Parser,
     ...infer rest
   ]
-    ? Call<parser, input> extends infer res
+    ? C.Call<parser, input> extends infer res
       ? res extends [unknown, Ok<unknown>]
         ? res
         : OneOfImpl<rest, input>
@@ -148,40 +149,40 @@ export namespace Parser {
     return: OneOfImpl<parsers, this["arg0"]>;
   }
 
-  export interface Map<fn extends Fn, parser extends Parser> extends Parser {
-    return: Call<parser, this["arg0"]> extends infer res extends ParseResult
+  export interface Map<fn extends C.Fn, parser extends Parser> extends Parser {
+    return: C.Call<parser, this["arg0"]> extends infer res extends ParseResult
       ? res extends [infer rest extends string, Ok<infer value>]
-        ? [rest, Ok<Call<fn, value>>]
+        ? [rest, Ok<C.Call<fn, value>>]
         : res
       : never;
   }
 
-  type DoImpl<getParsers extends Fn[], output> = output extends [
+  type DoImpl<getParsers extends C.Fn[], output> = output extends [
     infer rest,
     Ok<infer a>
   ]
     ? getParsers extends [
         infer first extends Parser,
-        ...infer restParsers extends Fn[]
+        ...infer restParsers extends C.Fn[]
       ]
-      ? DoImpl<restParsers, Call<Map<Constant<a>, first>, rest>>
+      ? DoImpl<restParsers, C.Call<Map<C.Constant<a>, first>, rest>>
       : getParsers extends [
-          infer first extends Fn,
-          ...infer restParsers extends Fn[]
+          infer first extends C.Fn,
+          ...infer restParsers extends C.Fn[]
         ]
-      ? Call<first, a> extends infer newParser extends Parser
-        ? DoImpl<restParsers, Call<newParser, rest>>
+      ? C.Call<first, a> extends infer newParser extends Parser
+        ? DoImpl<restParsers, C.Call<newParser, rest>>
         : never
       : output
     : output;
 
-  export interface Do<getParsers extends Fn[]> extends Parser {
+  export interface Do<getParsers extends C.Fn[]> extends Parser {
     return: DoImpl<getParsers, [this["arg0"], Ok<{}>]>;
   }
 
   interface LetParser<name extends string, variables, parser extends Parser>
     extends Parser {
-    return: Call<parser, this["arg0"]> extends infer res extends ParseResult
+    return: C.Call<parser, this["arg0"]> extends infer res extends ParseResult
       ? res extends [infer rest extends string, Ok<infer a>]
         ? [rest, Ok<Prettify<variables & { [k in name]: a }>>]
         : res
@@ -191,7 +192,8 @@ export namespace Parser {
         ];
   }
 
-  export interface Let<name extends string, parser extends Parser> extends Fn {
+  export interface Let<name extends string, parser extends Parser>
+    extends C.Fn {
     return: LetParser<name, this["arg0"], parser>;
   }
 
@@ -202,13 +204,26 @@ export namespace Parser {
     ? GetByName<rest, obj, [...output, obj[first]]>
     : output;
 
-  export interface Ap<fn extends Fn, names> extends Fn {
+  export interface Apply<fn extends C.Fn, names> extends C.Fn {
     return: this["arg0"] extends infer variables
-      ? Pure<Apply<fn, GetByName<names, variables>>>
+      ? Pure<C.Apply<fn, GetByName<names, variables>>>
       : Fail<ParseError<"no variables in Ap">>;
   }
 
-  export interface Return<parser extends Parser> extends Fn {
+  export interface Return<parser extends Parser> extends C.Fn {
     return: parser;
   }
+
+  export type Parse<parser extends C.Fn, str> = C.Pipe<
+    str,
+    [
+      parser,
+      Match<
+        [
+          Match.With<[any, Ok<C.arg0>], C.Identity>,
+          Match.With<[any, Err<C.arg0>], C.Identity>
+        ]
+      >
+    ]
+  >;
 }
