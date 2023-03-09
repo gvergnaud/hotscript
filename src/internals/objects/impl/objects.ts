@@ -18,7 +18,7 @@ export type Values<src> = Keys<src> extends infer keys extends keyof src
 
 export type FromEntries<entries extends [PropertyKey, any]> = {
   [entry in entries as entry[0]]: entry[1];
-};
+} & {};
 
 export type Entries<T> = Keys<T> extends infer keys extends keyof T
   ? {
