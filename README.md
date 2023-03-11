@@ -175,7 +175,7 @@ type res5 = Pipe<
   - [ ] Mutable
   - [x] Required
   - [x] Partial
-  - [ ] ReadonlyDeep
+  - [x] ReadonlyDeep
   - [ ] MutableDeep
   - [ ] RequiredDeep
   - [x] PartialDeep
