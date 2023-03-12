@@ -10,9 +10,10 @@ import {
   _,
 } from "../core/Core";
 import { Match } from "../match/Match";
+import { CharToNumber } from "../strings/impl/chars";
 import { Strings } from "../strings/Strings";
 import { Tuples } from "../tuples/Tuples";
-
+import { GreaterThanOrEqual, LessThanOrEqual } from "../numbers/impl/compare";
 export namespace Parser {
   /**
    * A parser is a function that takes static parameters and a string input
@@ -493,6 +494,44 @@ export namespace Parser {
       ? Input extends `${infer Head}${infer Tail}`
         ? Head extends _lower | _upper | "_"
           ? Ok<Head, Tail>
+          : Err<this, Input>
+        : Err<this, Input>
+      : InputError<this["arg0"]>;
+  }
+
+  /**
+   * Parser that matches a single character between the given characters.
+   * @param start - the start of the range
+   * @param end - the end of the range
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<CharRange<"a", "z">, "a">;
+   * //   ^? type T0 = Ok< "a", "" >
+   * type T1 = Call<CharRange<"a", "z">, "z">;
+   * //   ^? type T1 = Ok< "z", "" >
+   * type T2 = Call<CharRange<"a", "z">, "A">;
+   * //   ^? type T2 = Error<{ message: "Expected 'range('a', 'z')' - Received 'A'"; cause: "";}>
+   * ```
+   */
+  export interface CharRange<start extends string, end extends string>
+    extends ParserFn {
+    name: "range";
+    params: [start, end];
+    return: this["arg0"] extends infer Input extends string
+      ? Input extends `${infer Head}${infer Tail}`
+        ? [CharToNumber<start>, CharToNumber<Head>, CharToNumber<end>] extends [
+            infer S extends number,
+            infer H extends number,
+            infer E extends number
+          ]
+          ? [GreaterThanOrEqual<H, S>, LessThanOrEqual<H, E>] extends [
+              true,
+              true
+            ]
+            ? Ok<Head, Tail>
+            : Err<this, Input>
           : Err<this, Input>
         : Err<this, Input>
       : InputError<this["arg0"]>;
