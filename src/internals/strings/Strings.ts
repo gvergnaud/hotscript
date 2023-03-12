@@ -3,7 +3,6 @@ import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";
 import * as H from "../helpers";
 import * as Impl from "./impl/strings";
-import { Functions } from "../functions/Functions";
 
 export namespace Strings {
   export type Stringifiable =
