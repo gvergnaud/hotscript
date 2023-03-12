@@ -283,6 +283,7 @@ type res5 = Pipe<
   - [x] TrimLeft
   - [x] TrimRight
   - [x] Any
+  - [x] CharRange
   - [x] Alpha
   - [x] AlphaNum
   - [x] Digit
