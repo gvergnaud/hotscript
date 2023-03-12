@@ -263,3 +263,34 @@ type res5 = Pipe<
   - [x] Extends
   - [x] Equals
   - [x] DoesNotExtend
+- [ ] Parser
+  - [x] Parse
+  - [x] ToString
+  - [x] Literal
+  - [x] NotLiteral
+  - [x] Optional
+  - [x] Many
+  - [x] Many1
+  - [x] Sequence
+  - [x] EndOfInput
+  - [x] Map
+  - [x] MapError
+  - [x] Skip
+  - [x] Choice
+  - [x] Or
+  - [x] Not
+  - [x] Whitespace
+  - [x] Whitespaces
+  - [x] Trim
+  - [x] TrimLeft
+  - [x] TrimRight
+  - [x] Any
+  - [x] CharRange
+  - [x] Alpha
+  - [x] AlphaNum
+  - [x] Digit
+  - [x] Digits
+  - [x] Word
+  - [x] SepBy
+  - [x] Between
+

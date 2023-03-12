@@ -19,6 +19,20 @@ export namespace Objects {
   }
 
   /**
+   * Create an object from an array like `[key1, value1, key2, value2, ...]`.
+   * @param arr - array to convert to an object
+   * @returns an object
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.FromArray, ["a", 1, "b", true]>; // { a: 1; b: true }
+   * ```
+   */
+  export interface FromArray extends Fn {
+    return: Impl.FromArray<this["arg0"]>;
+  }
+
+  /**
    * Turn an object into a union of entries
    * @param obj - The object to transform to entries
    * @returns a union of `[key, value]` entry tuples.
