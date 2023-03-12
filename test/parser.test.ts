@@ -241,22 +241,17 @@ describe("Parser", () => {
 
     it("should parse json grammar", () => {
       // The grammar is defined as a recursive grammar:
-      // ---------------------------------------------
-      // | Value = Object | Array | String | Number | True | False | Null |
-      // | Object = { Members } |
-      // | Members = Pair (, Pair)* |
-      // | Pair = String : Value |
-      // | Array = [ Values ] |
-      // | Values = Value (, Value)* |
-      // | String = " Characters " |
-      // | Characters = Character* |
-      // | Character = any character except " or \ or control character |
-      // | Number = -? Digits ( . Digits )? |
-      // | Digits = [0-9]+ |
-      // | True = true |
-      // | False = false |
-      // | Null = null |
-      // ---------------------------------------------
+      // -------------------------------------------------------------
+      // | Value = Object | Array | String | Number | Boolean | Null |
+      // | Object = { (Pair (, Pair)*)? }                            |
+      // | Pair = String : Value                                     |
+      // | Array = [ (Value (, Value)*)? ]                           |
+      // | String = " Character* "                                   |
+      // | Character = any character except "                        |
+      // | Number = -? Digits ( . Digits )?                          |
+      // | Boolean = true | false                                    |
+      // | Null = null                                               |
+      // -------------------------------------------------------------
       type Value = P.Choice<
         [JSonObject, JSonArray, JSonString, JSonNumber, JsonBoolean, JSonNull]
       >;
@@ -292,6 +287,7 @@ describe("Parser", () => {
         >,
         Tuples.Join<"">
       >;
+
       type JSonNumber = P.Map<
         P.Sequence<
           [
@@ -323,6 +319,10 @@ describe("Parser", () => {
       type res3 = Json<`{}`>;
       //   ^?
       type test3 = Expect<Equal<res3, {}>>;
+      // 4 deep nested objects
+      type res4 = Json<`{"a": {"b": {"c": {"d": 8}}}}`>;
+      //   ^?
+      type test4 = Expect<Equal<res4, { a: { b: { c: { d: 8 } } } }>>;
     });
   });
 });
