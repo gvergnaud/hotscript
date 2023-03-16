@@ -3,7 +3,6 @@ import { Strings } from "../../strings/Strings";
 import {
   Equal,
   IsTuple,
-  IsUnknown,
   Prettify,
   Primitive,
   UnionToIntersection,
@@ -92,7 +91,7 @@ export type TransformObjectDeep<fn extends Fn, type> = type extends
   ? Promise<TransformObjectDeep<fn, value>>
   : type extends object
   ? Call<fn, { [Key in keyof type]: TransformObjectDeep<fn, type[Key]> }>
-  : IsUnknown<type> extends true
+  : Equal<type, unknown> extends true
   ? unknown
   : Partial<type>;
 

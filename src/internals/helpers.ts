@@ -137,15 +137,6 @@ export type KebabCase<
   ? str
   : output;
 
-// https://stackoverflow.com/questions/49927523/disallow-call-with-any/49928360#49928360
-export type IsAny<type> = 0 extends 1 & type ? true : false;
-
-export type IsUnknown<type> = IsAny<type> extends true
-  ? false
-  : unknown extends type
-  ? true
-  : false;
-
 export type IsTuple<a extends readonly any[]> = a extends
   | readonly []
   | readonly [any, ...any]
