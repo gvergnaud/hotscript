@@ -2,7 +2,7 @@ import { Apply, Call, Fn } from "../../core/Core";
 import { Strings } from "../../strings/Strings";
 import { Equal, Prettify, Primitive, UnionToIntersection } from "../../helpers";
 
-export type Keys<src> = src extends unknown[]
+export type Keys<src> = src extends readonly unknown[]
   ? {
       [key in keyof src]: key;
     }[number] extends infer res
@@ -52,7 +52,7 @@ type RecursiveGet<Obj, pathList> = Obj extends any
   ? pathList extends [infer first, ...infer rest]
     ? first extends keyof Obj
       ? RecursiveGet<Obj[first], rest>
-      : [first, Obj] extends [`${number}` | "number", any[]]
+      : [first, Obj] extends [`${number}` | "number", readonly any[]]
       ? RecursiveGet<Extract<Obj, any[]>[number], rest>
       : undefined
     : Obj
@@ -76,9 +76,20 @@ type RecursiveUpdate<obj, pathList, fnOrValue> = obj extends any
             ? RecursiveUpdate<obj[K], rest, fnOrValue>
             : obj[K];
         }
-      : [first, obj] extends ["number", any[]]
+      : [first, obj] extends ["number", readonly any[]]
       ? RecursiveUpdate<Extract<obj, any[]>[number], rest, fnOrValue>[]
-      : undefined
+      : Assign<
+          [
+            obj,
+            {
+              [K in Extract<first, PropertyKey>]: RecursiveUpdate<
+                {},
+                rest,
+                fnOrValue
+              >;
+            }
+          ]
+        >
     : fnOrValue extends Fn
     ? Call<Extract<fnOrValue, Fn>, obj>
     : fnOrValue
@@ -91,9 +102,9 @@ export type Create<
   ? Apply<p, args>
   : pattern extends Primitive
   ? pattern
-  : pattern extends [any, ...any]
+  : pattern extends readonly [any, ...any]
   ? { [key in keyof pattern]: Create<pattern[key], args> }
-  : pattern extends (infer V)[]
+  : pattern extends readonly (infer V)[]
   ? Create<V, args>[]
   : pattern extends object
   ? { [key in keyof pattern]: Create<pattern[key], args> }
@@ -111,7 +122,7 @@ export type AllPaths<T, ParentPath extends string = never> = T extends Primitive
   ? ParentPath
   : unknown extends T
   ? JoinPath<ParentPath, string, ".">
-  : T extends any[]
+  : T extends readonly any[]
   ? Keys<T> extends infer key extends string | number
     ?
         | JoinPath<ParentPath, `[${key}]`>

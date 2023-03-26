@@ -136,25 +136,37 @@ describe("Objects", () => {
     >;
   });
 
-  it("Update", () => {
-    type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
-    //    ^?
-    type test0 = Expect<Equal<res0, { a: 2; b: 1 }>>;
+  describe("Update", () => {
+    it("basic", () => {
+      type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
+      //    ^?
+      type test0 = Expect<Equal<res0, { a: 2; b: 1 }>>;
 
-    type res1 = Call<Objects.Update<"a[0]", 4>, { a: [1, 2, 3] }>;
-    //    ^?
-    type test1 = Expect<Equal<res1, { a: [4, 2, 3] }>>;
+      type res1 = Call<Objects.Update<"a[0]", 4>, { a: [1, 2, 3] }>;
+      //    ^?
+      type test1 = Expect<Equal<res1, { a: [4, 2, 3] }>>;
 
-    type res2 = Call<
-      //   ^?
-      Objects.Update<"a.b", Numbers.Add<1>>,
-      { a: { b: 1 }; c: "" }
-    >;
-    type test2 = Expect<Equal<res2, { a: { b: 2 }; c: "" }>>;
+      type res2 = Call<
+        //   ^?
+        Objects.Update<"a.b", Numbers.Add<1>>,
+        { a: { b: 1 }; c: "" }
+      >;
+      type test2 = Expect<Equal<res2, { a: { b: 2 }; c: "" }>>;
 
-    type res3 = Call<Objects.Update<"a.b", "Hello">, { a: { b: 1 } }>;
-    //    ^?
-    type test3 = Expect<Equal<res3, { a: { b: "Hello" } }>>;
+      type res3 = Call<Objects.Update<"a.b", "Hello">, { a: { b: 1 } }>;
+      //    ^?
+      type test3 = Expect<Equal<res3, { a: { b: "Hello" } }>>;
+    });
+
+    it("should add new properties if they do not exist", () => {
+      type res4 = Call<Objects.Update<"a.b", 2>, { a: { c: 1 } }>;
+      //    ^?
+      type test4 = Expect<Equal<res4, { a: { c: 1; b: 2 } }>>;
+
+      type res5 = Call<Objects.Update<"a.b.c.d", 2>, { a: { e: 1 } }>;
+      //    ^?
+      type test5 = Expect<Equal<res5, { a: { b: { c: { d: 2 } }; e: 1 } }>>;
+    });
   });
 
   it("FromEntries", () => {
@@ -685,5 +697,23 @@ describe("Objects", () => {
     type res6 = Call<Objects.AllPaths, boolean[]>;
     //   ^?
     type test6 = Expect<Equal<res6, `[${number}]`>>;
+
+    const readonlyObj = { a: 1, b: 2, c: [{ d: 3 }, { e: 4 }] } as const;
+    type res7 = Call<Objects.AllPaths, typeof readonlyObj>;
+    //   ^?
+    type test7 = Expect<
+      Equal<
+        res7,
+        | "a"
+        | "b"
+        | "c"
+        | "c[0]"
+        | "c[1]"
+        | "c[0].d"
+        | "c[1].d"
+        | "c[0].e"
+        | "c[1].e"
+      >
+    >;
   });
 });
