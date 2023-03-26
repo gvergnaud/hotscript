@@ -4,8 +4,6 @@ A library of composable functions for the type-level! Transform your TypeScript 
 
 ![image](https://user-images.githubusercontent.com/9265418/223854503-b54f6a62-9f21-4953-aaa3-5d54699516a7.png)
 
-
-
 ## Features
 
 - Type-level higher-order functions (`Tuples.Map`, `Tuples.Filter`, `Objects.MapValues`, etc).
@@ -172,12 +170,12 @@ type res5 = Pipe<
   - [x] Sum
 - [ ] Object
   - [x] Readonly
-  - [ ] Mutable
+  - [x] Mutable
   - [x] Required
   - [x] Partial
-  - [ ] ReadonlyDeep
-  - [ ] MutableDeep
-  - [ ] RequiredDeep
+  - [x] ReadonlyDeep
+  - [x] MutableDeep
+  - [x] RequiredDeep
   - [x] PartialDeep
   - [x] Update
   - [x] Record
