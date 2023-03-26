@@ -95,47 +95,6 @@ describe("Objects", () => {
     });
   });
 
-  it("PartialDeep", () => {
-    type res0 = Call<Objects.PartialDeep, { a: 1; b: 2 }>;
-    //    ^?
-    type test0 = Expect<Equal<res0, { a?: 1; b?: 2 }>>;
-
-    type res1 = Call<Objects.PartialDeep, { a: 1; b: { c: 2 } }>;
-    //    ^?
-    type test1 = Expect<Equal<res1, { a?: 1; b?: { c?: 2 } }>>;
-
-    type res2 = Call<Objects.PartialDeep, { a: 1; b: { c: 2; d: { e: 3 } } }>;
-    //    ^?
-    type test2 = Expect<Equal<res2, { a?: 1; b?: { c?: 2; d?: { e?: 3 } } }>>;
-
-    type tuple = [string, number];
-    type res3 = Call<Objects.PartialDeep, tuple>;
-    //    ^?
-    type test3 = Expect<Equal<res3, [string?, number?]>>;
-
-    type res4 = Call<Objects.PartialDeep, [string, tuple]>;
-    //    ^?
-    type test4 = Expect<Equal<res4, [string?, [string?, number?]?]>>;
-
-    type res5 = Call<
-      Objects.PartialDeep,
-      { tuple: tuple; tuple2: { tuple3: tuple } }
-    >;
-    //    ^?
-    type test5 = Expect<
-      Equal<
-        res5,
-        { tuple?: [string?, number?]; tuple2?: { tuple3?: [string?, number?] } }
-      >
-    >;
-
-    type res6 = Call<Objects.PartialDeep, { tuple: [string, tuple] }>;
-    //    ^?
-    type test6 = Expect<
-      Equal<res6, { tuple?: [string?, [string?, number?]?] }>
-    >;
-  });
-
   describe("Update", () => {
     it("basic", () => {
       type res0 = Call<Objects.Update<"a", Numbers.Add<1>>, { a: 1; b: 1 }>;
@@ -299,6 +258,172 @@ describe("Objects", () => {
       { a: 1; b: true; c: 1 }
     >;
     type test1 = Expect<Equal<res1, { b: true }>>;
+  });
+
+  describe("PartialDeep", () => {
+    it("primitives", () => {
+      type res0 = Call<Objects.PartialDeep, number>;
+      type test0 = Expect<Equal<res0, number>>;
+
+      type res1 = Call<Objects.PartialDeep, string>;
+      type test1 = Expect<Equal<res1, string>>;
+
+      type res2 = Call<Objects.PartialDeep, boolean>;
+      type test2 = Expect<Equal<res2, boolean>>;
+
+      type res3 = Call<Objects.PartialDeep, bigint>;
+      type test3 = Expect<Equal<res3, bigint>>;
+
+      type res4 = Call<Objects.PartialDeep, symbol>;
+      type test4 = Expect<Equal<res4, symbol>>;
+
+      type res5 = Call<Objects.PartialDeep, undefined>;
+      type test5 = Expect<Equal<res5, undefined>>;
+
+      type res6 = Call<Objects.PartialDeep, null>;
+      type test6 = Expect<Equal<res6, null>>;
+
+      type res7 = Call<Objects.PartialDeep, Function>;
+      type test7 = Expect<Equal<res7, Function>>;
+    });
+
+    it("Map & Set", () => {
+      type res0 = Call<Objects.PartialDeep, Map<string, boolean>>;
+      type test0 = Expect<Equal<res0, Map<string, boolean>>>;
+
+      type res1 = Call<Objects.PartialDeep, Map<string, { a: number }>>;
+      type test1 = Expect<Equal<res1, Map<string, { a?: number }>>>;
+
+      type res2 = Call<Objects.PartialDeep, ReadonlyMap<string, boolean>>;
+      type test2 = Expect<Equal<res2, ReadonlyMap<string, boolean>>>;
+
+      type res3 = Call<
+        Objects.PartialDeep,
+        ReadonlyMap<string, { checked: boolean }>
+      >;
+      type test3 = Expect<
+        Equal<res3, ReadonlyMap<string, { checked?: boolean }>>
+      >;
+
+      type res4 = Call<Objects.PartialDeep, WeakMap<{ key: string }, boolean>>;
+      type test4 = Expect<Equal<res4, WeakMap<{ key?: string }, boolean>>>;
+
+      type res5 = Call<
+        Objects.PartialDeep,
+        WeakMap<{ key: string }, { value: boolean }>
+      >;
+      type test5 = Expect<
+        Equal<res5, WeakMap<{ key?: string }, { value?: boolean }>>
+      >;
+
+      type res6 = Call<Objects.PartialDeep, Set<string>>;
+      type test6 = Expect<Equal<res6, Set<string>>>;
+
+      type res7 = Call<Objects.PartialDeep, Set<number[]>>;
+      type test7 = Expect<Equal<res7, Set<(number | undefined)[]>>>;
+
+      type res8 = Call<Objects.PartialDeep, ReadonlySet<string>>;
+      type test8 = Expect<Equal<res8, ReadonlySet<string>>>;
+    });
+
+    it("Objects and Arrays", () => {
+      type res1 = Call<Objects.PartialDeep, []>;
+      type test1 = Expect<Equal<res1, []>>;
+
+      type res2 = Call<Objects.PartialDeep, never[]>;
+      type test2 = Expect<Equal<res2, undefined[]>>;
+
+      type res3 = Call<Objects.PartialDeep, [1, 2, 3]>;
+      type test3 = Expect<
+        Equal<res3, [(1 | undefined)?, (2 | undefined)?, (3 | undefined)?]>
+      >;
+
+      type res4 = Call<Objects.PartialDeep, readonly number[]>;
+      type test4 = Expect<Equal<res4, readonly (number | undefined)[]>>;
+
+      type res5 = Call<Objects.PartialDeep, number[]>;
+      type test5 = Expect<Equal<res5, (number | undefined)[]>>;
+
+      type res6 = Call<Objects.PartialDeep, Array<number>>;
+      type test6 = Expect<Equal<res6, Array<number | undefined>>>;
+
+      type res7 = Call<
+        Objects.PartialDeep,
+        { readonly obj: unknown; readonly arr: readonly unknown[] }
+      >;
+      type test7 = Expect<
+        Equal<
+          res7,
+          {
+            readonly obj?: unknown | undefined;
+            readonly arr?: readonly unknown[] | undefined;
+          }
+        >
+      >;
+
+      type res8 = Call<Objects.PartialDeep, { a: 1; b: 2; c: 3 }>;
+      type test8 = Expect<Equal<res8, { a?: 1; b?: 2; c?: 3 }>>;
+
+      type res9 = Call<Objects.PartialDeep, { foo: () => void }>;
+      type test9 = Expect<Equal<res9, { foo?: () => void }>>;
+    });
+
+    it("Promises", () => {
+      type res0 = Call<Objects.PartialDeep, Promise<number>>;
+      type test0 = Expect<Equal<res0, Promise<number>>>;
+
+      type res1 = Call<
+        Objects.PartialDeep,
+        Promise<{ api: () => { play: () => void; pause: () => void } }>
+      >;
+      type test1 = Expect<
+        Equal<
+          res1,
+          Promise<{ api?: () => { play: () => void; pause: () => void } }>
+        >
+      >;
+    });
+
+    it("Complex structures", () => {
+      type ComplexNestedRequired = {
+        simple: number;
+        nested: {
+          date: Date;
+          func: () => string;
+          array: { bar: number }[];
+          tuple: [string, number, { good: boolean }];
+          set: Set<{ name: string }>;
+          map: Map<
+            string,
+            {
+              name: string;
+            }
+          >;
+          promise: Promise<{ foo: string; bar: number }>;
+        };
+      };
+
+      type ComplexNestedPartial = {
+        simple?: number;
+        nested?: {
+          date?: Date;
+          func?: () => string;
+          array?: ({ bar?: number } | undefined)[];
+          set?: Set<{ name?: string }>;
+          tuple?: [string?, number?, { good?: boolean }?];
+          map?: Map<
+            string,
+            {
+              name?: string;
+            }
+          >;
+          promise?: Promise<{ foo?: string; bar?: number }>;
+        };
+      };
+
+      type res1 = Call<Objects.PartialDeep, ComplexNestedRequired>;
+      type test1 = Expect<Equal<res1, ComplexNestedPartial>>;
+    });
   });
 
   describe("Assign", () => {

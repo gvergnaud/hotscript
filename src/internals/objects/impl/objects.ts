@@ -1,6 +1,12 @@
 import { Apply, Call, Fn } from "../../core/Core";
 import { Strings } from "../../strings/Strings";
-import { Equal, Prettify, Primitive, UnionToIntersection } from "../../helpers";
+import {
+  Equal,
+  IsTuple,
+  Prettify,
+  Primitive,
+  UnionToIntersection,
+} from "../../helpers";
 
 export type Keys<src> = src extends readonly unknown[]
   ? {
@@ -58,9 +64,36 @@ type RecursiveGet<Obj, pathList> = Obj extends any
     : Obj
   : never;
 
-export type PartialDeep<T> = T extends object
-  ? { [P in keyof T]?: PartialDeep<T[P]> }
-  : T;
+export type TransformObjectDeep<fn extends Fn, type> = type extends
+  | Function
+  | Date
+  ? type
+  : type extends Map<infer keys, infer values>
+  ? Map<TransformObjectDeep<fn, keys>, TransformObjectDeep<fn, values>>
+  : type extends ReadonlyMap<infer keys, infer values>
+  ? ReadonlyMap<TransformObjectDeep<fn, keys>, TransformObjectDeep<fn, values>>
+  : type extends WeakMap<infer keys, infer values>
+  ? WeakMap<
+      Extract<TransformObjectDeep<fn, keys>, object>,
+      TransformObjectDeep<fn, values>
+    >
+  : type extends Set<infer values>
+  ? Set<TransformObjectDeep<fn, values>>
+  : type extends ReadonlySet<infer values>
+  ? ReadonlySet<TransformObjectDeep<fn, values>>
+  : type extends WeakSet<infer values>
+  ? WeakSet<Extract<TransformObjectDeep<fn, values>, object>>
+  : type extends Array<infer values>
+  ? IsTuple<type> extends true
+    ? Call<fn, { [Key in keyof type]: TransformObjectDeep<fn, type[Key]> }>
+    : Array<TransformObjectDeep<fn, values> | undefined>
+  : type extends Promise<infer value>
+  ? Promise<TransformObjectDeep<fn, value>>
+  : type extends object
+  ? Call<fn, { [Key in keyof type]: TransformObjectDeep<fn, type[Key]> }>
+  : Equal<type, unknown> extends true
+  ? unknown
+  : Partial<type>;
 
 export type Update<obj, path, fnOrValue> = RecursiveUpdate<
   obj,
