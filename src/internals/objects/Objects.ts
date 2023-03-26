@@ -339,7 +339,7 @@ export namespace Objects {
    * @returns The object with its properties made readonly
    * @example
    * ```ts
-   * type T0 = Call<Objects.Readonly, {a: 1; b: true }>; // { readonly a:1; readonly b: true}
+   * type T0 = Call<Objects.Readonly, { a: 1; b: true }>; // { readonly a:1; readonly b: true}
    * type T1 = Eval<Objects.Readonly<{ a: 1; b: true }>>; // { readonly a:1; readonly b: true}
    * ```
    */
@@ -356,7 +356,7 @@ export namespace Objects {
    * @returns The object with its properties made required
    * @example
    * ```ts
-   * type T0 = Call<Objects.Required, {a?: 1; b?: true }>; // { a:1; b: true}
+   * type T0 = Call<Objects.Required, { a?: 1; b?: true }>; // { a:1; b: true}
    * type T1 = Eval<Objects.Required<{ a?: 1; b?: true }>>; // { a:1; b: true}
    * ```
    */
@@ -373,7 +373,7 @@ export namespace Objects {
    * @returns The object with its properties made optional
    * @example
    * ```ts
-   * type T0 = Call<Objects.Partial, {a: 1; b: true }>; // { a?:1; b?: true}
+   * type T0 = Call<Objects.Partial, { a: 1; b: true }>; // { a?:1; b?: true}
    * type T1 = Eval<Objects.Partial<{ a: 1; b: true }>>; // { a?:1; b?: true}
    * ```
    */
@@ -384,6 +384,23 @@ export namespace Objects {
   }
 
   /**
+   * Make all properties of an object mutable
+   * @param value - The object to make properties mutable
+   * @returns The object with its properties made mutable
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.Mutable, { readonly a: 1; readonly b: true }>; // { a:1; b: true }
+   * ```
+   */
+  export type Mutable<obj = unset> = PartialApply<MutableFn, [obj]>;
+
+  interface MutableFn extends Fn {
+    return: this["args"] extends [infer obj, ...any]
+      ? { -readonly [key in keyof obj]: obj[key] }
+      : never;
+  }
+
+  /**
    * Makes all levels of an object optional
    * @description This function is used to make all levels of an object optional
    * @param obj - The object to make levels optional
@@ -391,11 +408,13 @@ export namespace Objects {
    *
    * @example
    * ```ts
-   * type T0 = Call<Objects.PartialDeep, {a: 1; b: true }>; // { a?:1; b?: true}
-   * type T1 = Call<Objects.PartialDeep, {a: 1; b: { c: true } }>; // { a?:1; b?: { c?: true } }
-   * type T2 = Call<Objects.PartialDeep, {a: 1; b: { c: true, d: { e: false } } }>; // { a?:1; b?: { c?: true, d?: { e?: false } } }
+   * type T0 = Call<Objects.PartialDeep, { a: 1; b: true }>;
+   * //   ^? { a?:1; b?: true}
+   * type T1 = Call<Objects.PartialDeep, { a: 1; b: { c: true } }>;
+   * //   ^? { a?:1; b?: { c?: true } }
+   * type T2 = Call<Objects.PartialDeep, { a: 1; b: { c: true, d: { e: false } } }>;
+   * //   ^? { a?:1; b?: { c?: true, d?: { e?: false } } }
    */
-
   export type PartialDeep<obj = unset> = PartialApply<PartialDeepFn, [obj]>;
 
   interface PartialDeepFn extends Fn {
@@ -404,6 +423,21 @@ export namespace Objects {
       : never;
   }
 
+  /**
+   * Makes all levels of an object required
+   * @description This function is used to make all levels of an object required
+   * @param obj - The object to make levels required
+   * @returns The object with its levels made required
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.RequiredDeep, { a?:1; b?: true }>;
+   * //   ^? { a: 1; b: true }
+   * type T1 = Call<Objects.RequiredDeep, { a?:1; b?: { c?: true } }>;
+   * //   ^? { a: 1; b: { c: true } }
+   * type T2 = Call<Objects.RequiredDeep, { a?:1; b?: { c?: true, d?: { e?: false } } }>;
+   * //   ^? { a: 1; b: { c: true, d: { e: false } } }
+   */
   export type RequiredDeep<obj = unset> = PartialApply<RequiredDeepFn, [obj]>;
 
   interface RequiredDeepFn extends Fn {
@@ -412,6 +446,21 @@ export namespace Objects {
       : never;
   }
 
+  /**
+   * Makes all levels of an object readonly
+   * @description This function is used to make all levels of an object readonly
+   * @param obj - The object to make levels readonly
+   * @returns The object with its levels made readonly
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.ReadonlyDeep, { a:1; b: true }>;
+   * //   ^? { readonly a: 1; readonly b: true }
+   * type T1 = Call<Objects.ReadonlyDeep, { a:1; b: { c: true } }>;
+   * //   ^? { readonly a: 1; readonly b: { readonly c: true } }
+   * type T2 = Call<Objects.ReadonlyDeep, { a:1; b: { c: true, d: { e: false } } }>;
+   * //   ^? { readonly a: 1; readonly b: { readonly c: true, d: { readonly e: false } } }
+   */
   export type ReadonlyDeep<obj = unset> = PartialApply<ReadonlyDeepFn, [obj]>;
 
   interface ReadonlyDeepFn extends Fn {
@@ -420,19 +469,26 @@ export namespace Objects {
       : never;
   }
 
+  /**
+   * Makes all levels of an object mutable
+   * @description This function is used to make all levels of an object mutable
+   * @param obj - The object to make levels mutable
+   * @returns The object with its levels made mutable
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.MutableDeep, { readonly a: 1; readonly b: true }>;
+   * //   ^? { a:1; b: true }
+   * type T1 = Call<Objects.MutableDeep, { readonly a: 1; readonly b: { readonly c: true } }>;
+   * //   ^? { a:1; b: { c: true } }
+   * type T2 = Call<Objects.MutableDeep, { readonly a: 1; readonly b: { readonly c: true, d: { readonly e: false } } }>;
+   * //   ^? { a:1; b: { c: true, d: { e: false } } }
+   */
   export type MutableDeep<obj = unset> = PartialApply<MutableDeepFn, [obj]>;
 
   interface MutableDeepFn extends Fn {
     return: this["args"] extends [infer obj]
       ? Impl.TransformObjectDeep<MutableFn, obj>
-      : never;
-  }
-
-  export type Mutable<obj = unset> = PartialApply<MutableFn, [obj]>;
-
-  interface MutableFn extends Fn {
-    return: this["args"] extends [infer obj, ...any]
-      ? { -readonly [key in keyof obj]: obj[key] }
       : never;
   }
 
