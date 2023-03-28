@@ -646,4 +646,45 @@ export namespace Objects {
   export interface AllPaths extends Fn {
     return: Impl.AllPaths<this["arg0"]>;
   }
+
+  /**
+   * Create a union of all terminal paths the object has
+   * @description This function is used to create a union from an object with keys
+   * @param obj - The object from which the union will be generated
+   * @returns An union with all the possible terminal paths
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<O.TerminalPaths, { a: { b: number } }>; // 'a.b'
+   * ```
+   */
+  export interface TerminalPaths extends Fn {
+    return: Impl.TerminalPaths<this["arg0"]>;
+  }
+
+  /**
+   * Turn an object into a union of entries of its terminal paths
+   * @param obj - The object to transform to entries
+   * @returns a union of `[key, value]` entry tuples.
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.DeepEntries, { a: [true]; b: { c: number } }>; // ["a[0]", true] | ["b.c", number]
+   * ```
+   */
+  export interface DeepEntries extends Fn {
+    return: Impl.DeepEntries<this["arg0"]>;
+  }
+
+  /**
+   * Create an object from a union of deep `[key, value]` entries.
+   * @param entries - union of entries to convert to an object
+   * @returns an object
+   * @example
+   * ```ts
+   * type T0 = Call<Objects.FromDeepEntries, ["a[0]", true] | ["b.c", number]>; // { a: [true]; b: { c: number } }
+   * ```
+   */
+  export interface FromDeepEntries extends Fn {
+    return: Impl.FromDeepEntries<this["arg0"]>;
+  }
 }

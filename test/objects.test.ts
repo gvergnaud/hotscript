@@ -841,4 +841,119 @@ describe("Objects", () => {
       >
     >;
   });
+
+  describe("TerminalPaths", () => {
+    type res1 = Call<
+      // ^?
+      Objects.TerminalPaths,
+      {
+        shallow: string;
+        object: {
+          nested: boolean;
+        };
+        constant: true;
+        tuple: [0, 1];
+        union:
+          | { flag: true; ordinal: number }
+          | { flag: false; cardinal: string };
+        array: { inner: number }[];
+        conditional?: number;
+      }
+    >;
+    type test1 = Expect<
+      Equal<
+        res1,
+        | "object.nested"
+        | "shallow"
+        | "constant"
+        | "tuple[0]"
+        | "tuple[1]"
+        | "union.flag"
+        | "union.ordinal"
+        | "union.cardinal"
+        | `array[${number}].inner`
+        | "conditional"
+      >
+    >;
+
+    type res2 = Call<Objects.TerminalPaths, unknown>;
+    //   ^?
+    type test2 = Expect<Equal<res2, string>>;
+
+    type res3 = Call<Objects.TerminalPaths, any>;
+    //   ^?
+    type test3 = Expect<Equal<res3, string>>;
+
+    type res4 = Call<Objects.TerminalPaths, { f: any }>;
+    //   ^?
+    type test4 = Expect<Equal<res4, "f" | `f.${string}`>>;
+
+    type res5 = Call<Objects.TerminalPaths, [0, 1]>;
+    //   ^?
+    type test5 = Expect<Equal<res5, "[0]" | "[1]">>;
+
+    type res6 = Call<Objects.TerminalPaths, boolean[]>;
+    //   ^?
+    type test6 = Expect<Equal<res6, `[${number}]`>>;
+
+    const readonlyObj = { a: 1, b: 2, c: [{ d: 3 }, { e: 4 }] } as const;
+    type res7 = Call<Objects.TerminalPaths, typeof readonlyObj>;
+    //   ^?
+    type test7 = Expect<
+      Equal<res7, "a" | "b" | "c[0].d" | "c[1].d" | "c[0].e" | "c[1].e">
+    >;
+  });
+
+  it("DeepEntries", () => {
+    type res1 = Call<
+      //   ^?
+      Objects.DeepEntries,
+      { a: string; b: { c: number; d: [{ f: boolean }] } }
+    >;
+
+    type test1 = Expect<
+      Equal<res1, ["a", string] | ["b.c", number] | ["b.d[0].f", boolean]>
+    >;
+  });
+
+  describe("FromDeepEntries", () => {
+    type res1 = Call<
+      Objects.FromDeepEntries,
+      ["a", string] | ["b.c", number] | ["b.d[0].f", boolean]
+    >;
+
+    type test1 = Expect<
+      Equal<
+        res1,
+        {
+          a: string;
+          b: {
+            c: number;
+            d: {
+              0: {
+                f: boolean;
+              };
+            };
+          };
+        }
+      >
+    >;
+  });
+
+  it("DeepEntries >> FromDeepEntries identity", () => {
+    type expected1 = {
+      a: string;
+      b: {
+        c: number;
+        d: {
+          0: {
+            f: boolean;
+          };
+        };
+      };
+    };
+    type res1 = Pipe<expected1, [Objects.DeepEntries, Objects.FromDeepEntries]>;
+
+    type test1 = Expect<Equal<res1, expected1>>;
+  });
 });
