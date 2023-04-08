@@ -38,12 +38,11 @@ export namespace Match {
   export type With<pattern, handler> = Impl.With<pattern, handler>;
 
   /**
-   * Returns the Nth parameter of a function.
+   * Matches over discriminated union.
    *
    * @param Discriminant - Discriminant field.
    * @param Body - Matching functions.
    * @param Union - Union for matching.
-   * @returns The Nth parameter of the function.
    *
    * @example
    * ```ts
