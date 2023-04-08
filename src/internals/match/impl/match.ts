@@ -1,4 +1,4 @@
-import { arg, Eval, Fn, PartialApply, unset } from "../../core/Core";
+import { arg, Eval, Call, Fn, PartialApply, unset } from "../../core/Core";
 import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
 
@@ -73,3 +73,11 @@ export type Match<value, patterns extends With<any, any>[]> = patterns extends [
   : never;
 
 export type With<pattern, handler> = { pattern: pattern; handler: handler };
+
+export type DiscriminatedUnion<
+  Discriminator extends PropertyKey,
+  Body extends Record<Union[Discriminator], Fn>,
+  Union extends {[K in Discriminator]: PropertyKey},
+> = Union extends any
+    ? Call<Body[Union[Discriminator]], Union>
+  : never;

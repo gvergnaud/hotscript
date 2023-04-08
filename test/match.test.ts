@@ -1,22 +1,24 @@
 import {
   Booleans,
-  Eval,
+  Eval, Fn,
   Functions,
   Match,
   Numbers,
   Objects,
   Strings,
   Tuples,
-  Unions,
+  Unions
 } from "../src/index";
 import {
   arg0,
   arg1,
   ComposeLeft,
+  Compose,
   Constant,
   Pipe,
 } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
+import { DiscriminatedUnion } from "../src/internals/match/impl/match";
 
 describe("Match", () => {
   it("should match with regular types", () => {
@@ -193,6 +195,31 @@ describe("Match", () => {
       type res2 = RouteToParams<"/dashboard/<dashId:string>">;
       //    ^?
       type test2 = Expect<Equal<res2, { dashId: string }>>;
+    });
+  });
+
+
+  describe("DiscriminatedUnion", () => {
+    it("Match with discriminant", () => {
+      type AorB =
+        | {
+            type: 'a' | 'c'
+            a: 'aaa',
+            c: false
+          }
+        | {
+            type: 'b',
+            b: 123
+        }
+
+      type res1 = DiscriminatedUnion<'type', {
+        //  ^?
+        a: ComposeLeft<[Objects.Get<"a">, Strings.Uppercase]>,
+        b: ComposeLeft<[Objects.Get<"b">, Numbers.Negate]>,
+        c: Objects.Get<"c">,
+      }, AorB>
+
+      type test1 = Expect<Equal<res1, -123 | 'AAA' | false>>;
     });
   });
 });

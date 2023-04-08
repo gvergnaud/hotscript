@@ -36,4 +36,37 @@ interface MatchFn extends Fn {
 
 export namespace Match {
   export type With<pattern, handler> = Impl.With<pattern, handler>;
+
+  /**
+   * Returns the Nth parameter of a function.
+   *
+   * @param Discriminant - Discriminant field.
+   * @param Body - Matching functions.
+   * @param Union - Union for matching.
+   * @returns The Nth parameter of the function.
+   *
+   * @example
+   * ```ts
+   * type AorB =
+   *   | {
+   *       type: "a" | "c";
+   *       a: "aaa";
+   *       c: false;
+   *     }
+   *   | {
+   *       type: "b";
+   *       b: 123;
+   *     };
+   *
+   * type T0 = DiscriminatedUnion<'type', {
+   *         a: ComposeLeft<[Objects.Get<"a">, Strings.Uppercase]>,
+   *         b: ComposeLeft<[Objects.Get<"b">, Numbers.Negate]>,
+   *         c: ComposeLeft<[Objects.Get<"c">]>,
+   * }, AorB> // -123 | 'AAA' | false
+   */
+  export type DiscriminatedUnion<
+    Discriminator extends PropertyKey,
+    Body extends Record<Union[Discriminator], Fn>,
+    Union extends {[K in Discriminator]: PropertyKey},
+  > = Impl.DiscriminatedUnion<Discriminator, Body, Union>;
 }
