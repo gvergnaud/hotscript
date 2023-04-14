@@ -182,10 +182,13 @@ type res5 = Pipe<
   - [x] Keys
   - [x] Values
   - [x] AllPaths
+  - [x] TerminalPaths
   - [x] Create
   - [x] Get
   - [x] FromEntries
   - [x] Entries
+  - [x] FromDeepEntries
+  - [x] DeepEntries
   - [x] MapValues
   - [x] MapKeys
   - [x] Assign

@@ -5,6 +5,7 @@ import {
   IsTuple,
   Prettify,
   Primitive,
+  RecursivePrettify,
   UnionToIntersection,
 } from "../../helpers";
 
@@ -168,3 +169,43 @@ export type AllPaths<T, ParentPath extends string = never> = T extends Primitive
         | AllPaths<T[key], JoinPath<ParentPath, key, ".">>
     : never
   : ParentPath;
+
+export type TerminalPaths<
+  T,
+  ParentPath extends string = never
+> = T extends Primitive
+  ? ParentPath
+  : unknown extends T
+  ? JoinPath<ParentPath, string, ".">
+  : T extends readonly any[]
+  ? Keys<T> extends infer key extends string | number
+    ? TerminalPaths<T[number], JoinPath<ParentPath, `[${key}]`>>
+    : never
+  : keyof T extends infer key extends keyof T & string
+  ? key extends any
+    ? TerminalPaths<T[key], JoinPath<ParentPath, key, ".">>
+    : never
+  : ParentPath;
+
+export type DeepEntries<T> = TerminalPaths<T> extends infer keys extends string | number
+  ? {
+      [K in keys]: [K, GetFromPath<T, K>];
+    }[keys]
+  : never;
+
+type BuildDeepObject<pathList, Value> = pathList extends [
+  infer First extends PropertyKey,
+  ...infer Rest
+]
+  ? number extends First
+    ? BuildDeepObject<Rest, Value>[]
+    : { [key in First]: BuildDeepObject<Rest, Value> }
+  : Value;
+
+export type FromDeepEntries<entries extends [PropertyKey, any]> = RecursivePrettify<
+  UnionToIntersection<
+    entries extends [infer K, infer V]
+      ? BuildDeepObject<ParsePath<K>, V>
+      : never
+  >
+>;
