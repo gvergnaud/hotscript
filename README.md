@@ -29,20 +29,20 @@ HotScript is a work-in-progress library, so expect **breaking changes** in its A
 
 [Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgFQK5gA26AztgMoxTAB2A5mXAHJ4gBG6UJcAvnAGZQIIOACIAFhBgkAxtTAxRAbgBQKgPTq4YKOhgxgnALTA6NaOhUwAnhji6SARjgBeFGnQAeFXDibfAHoA-D5wANqO2ABM2ADM2AAscYkAupihYaG++ESkAHQAsgCGYJ4s7JwkeQCCACa1nrEAfE3pvtkExFUAUhC0nqJ5oq1ZcJTU9FXkRMAwA0Mj7bid+cWl47QMeTgQ5RxQi+05XYUlZaz7VXUNjgAMLW1HK1OsoSkqTUpAA)
 
+<!-- prettier-ignore -->
 ```ts
 import { Pipe, Tuples, Strings, Numbers } from "hotscript";
 
-// prettier-ignore
 type res1 = Pipe<
-  //  ^? 95
-  [1, 2, 3, 4, 3, 4],
+  //  ^? 62
+  [1, 2, 3, 4],
   [
-    Tuples.Map<Numbers.Add<3>>,
-    Tuples.Join<".">,
-    Strings.Split<".">,
-    Tuples.Map<Strings.ToNumber>,
-    Tuples.Map<Numbers.Add<10>>,
-    Tuples.Sum
+    Tuples.Map<Numbers.Add<3>>,       //  [4, 5, 6, 7]
+    Tuples.Join<".">,                 //  "4.5.6.7"
+    Strings.Split<".">,               //  ["4", "5", "6", "7"]
+    Tuples.Map<Strings.Prepend<"1">>, //  ["14", "15", "16", "17"]
+    Tuples.Map<Strings.ToNumber>,     //  [14, 15, 16, 17]
+    Tuples.Sum                        //  62
   ]
 >;
 ```
