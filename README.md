@@ -122,142 +122,142 @@ type res5 = Pipe<
 >;
 ```
 
-## TODO
+## API
 
-- [ ] Core
-  - [x] Pipe
-  - [x] PipeRight
-  - [x] Call
-  - [x] Apply
-  - [x] PartialApply
-  - [x] Compose
-  - [x] ComposeLeft
-- [ ] Function
-  - [x] ReturnType
-  - [x] Parameters
-  - [x] Parameter n
+- [x] Core
+  - [x] `Pipe<Input, Fn[]>`
+  - [x] `PipeRight<Fn[], Input>`
+  - [x] `Call<Fn, Arg>`
+  - [x] `Apply<Fn, Arg[]>`
+  - [x] `PartialApply<Fn, Arg[]>`
+  - [x] `Compose<Fn[]>`
+  - [x] `ComposeLeft<Fn[]>`
+- [x] Function
+  - [x] `ReturnType<Fn>`
+  - [x] `Parameters<Fn>`
+  - [x] `Parameter<N, Fn>`
 - [ ] Tuples
-  - [x] Create
-  - [x] Partition
-  - [x] IsEmpty
-  - [x] Zip
-  - [x] ZipWith
-  - [x] Sort
-  - [x] Head
-  - [x] At
-  - [x] Tail
-  - [x] Last
-  - [x] FlatMap
-  - [x] Find
-  - [x] Drop n
-  - [x] Take n
-  - [x] TakeWhile
-  - [x] GroupBy
-  - [x] Join separator
-  - [x] Map
-  - [x] Filter
-  - [x] Reduce
-  - [x] ReduceRight
-  - [x] Every
-  - [x] Some
-  - [x] ToUnion
-  - [x] ToIntersection
-  - [x] Prepend
-  - [x] Append
-  - [x] Concat
-  - [x] Min
-  - [x] Max
-  - [x] Sum
+  - [x] `Create<X> -> [X]`
+  - [x] `Partition<Tuple>`
+  - [x] `IsEmpty<Tuple>`
+  - [x] `Zip<...Tuple[]>`
+  - [x] `ZipWith<Fn, ...Tuple[]>`
+  - [x] `Sort<Tuple>`
+  - [x] `Head<Tuple>`
+  - [x] `Tail<Tuple>`
+  - [x] `At<N, Tuple>`
+  - [x] `Last<Tuple>`
+  - [x] `FlatMap<Fn, Tuple>`
+  - [x] `Find<Fn, Tuple>`
+  - [x] `Drop<N, Tuple>`
+  - [x] `Take<N, Tuple>`
+  - [x] `TakeWhile<Fn, Tuple>`
+  - [x] `GroupBy<Fn, Tuple>`
+  - [x] `Join<Str, Tuple>`
+  - [x] `Map<Fn, Tuple>`
+  - [x] `Filter<Fn, Tuple>`
+  - [x] `Reduce<Fn, Init, Tuple>`
+  - [x] `ReduceRight<Fn, Init, Tuple>`
+  - [x] `Every<Fn, Tuple>`
+  - [x] `Some<Fn, Tuple>`
+  - [x] `ToUnion<Tuple>`
+  - [x] `ToIntersection<Tuple>`
+  - [x] `Prepend<X, Tuple>`
+  - [x] `Append<X, Tuple>`
+  - [x] `Concat<T1, T2>`
+  - [x] `Min<Tuple>`
+  - [x] `Max<Tuple>`
+  - [x] `Sum<Tuple>`
 - [ ] Object
-  - [x] Readonly
-  - [x] Mutable
-  - [x] Required
-  - [x] Partial
-  - [x] ReadonlyDeep
-  - [x] MutableDeep
-  - [x] RequiredDeep
-  - [x] PartialDeep
-  - [x] Update
-  - [x] Record
-  - [x] Keys
-  - [x] Values
-  - [x] AllPaths
-  - [x] Create
-  - [x] Get
-  - [x] FromEntries
-  - [x] Entries
-  - [x] MapValues
-  - [x] MapKeys
-  - [x] Assign
-  - [x] Pick
-  - [x] PickBy
-  - [x] Omit
-  - [x] OmitBy
-  - [x] CamelCase
-  - [x] CamelCaseDeep
-  - [x] SnakeCase
-  - [x] SnakeCaseDeep
-  - [x] KebabCase
-  - [x] KebabCaseDeep
+  - [x] `Readonly<Obj>`
+  - [x] `Mutable<Obj>`
+  - [x] `Required<Obj>`
+  - [x] `Partial<Obj>`
+  - [x] `ReadonlyDeep<Obj>`
+  - [x] `MutableDeep<Obj>`
+  - [x] `RequiredDeep<Obj>`
+  - [x] `PartialDeep<Obj>`
+  - [x] `Update<Path, Fn | V, Obj>`
+  - [x] `Record<Key, Value>`
+  - [x] `Keys<Obj>`
+  - [x] `Values<Obj>`
+  - [x] `AllPaths<Obj>`
+  - [x] `Create<Pattern, X>`
+  - [x] `Get<Path, Obj>`
+  - [x] `FromEntries<[Key, Value]>`
+  - [x] `Entries<Obj>`
+  - [x] `MapValues<Fn, Obj>`
+  - [x] `MapKeys<Fn, Obj>`
+  - [x] `Assign<...Obj>`
+  - [x] `Pick<Key, Obj>`
+  - [x] `PickBy<Fn, Obj>`
+  - [x] `Omit<Key, Obj>`
+  - [x] `OmitBy<Fn, Obj>`
+  - [x] `CamelCase<Obj>`
+  - [x] `CamelCaseDeep<Obj>`
+  - [x] `SnakeCase<Obj>`
+  - [x] `SnakeCaseDeep<Obj>`
+  - [x] `KebabCase<Obj>`
+  - [x] `KebabCaseDeep<Obj>`
 - [ ] Union
-  - [x] Map
-  - [x] Extract
-  - [x] ExtractBy
-  - [x] Exclude
-  - [x] ExcludeBy
-  - [x] NonNullable
-  - [x] ToTuple
-  - [x] ToIntersection
+  - [x] `Map<Fn, U>`
+  - [x] `Extract<T, U>`
+  - [x] `ExtractBy<Fn, U>`
+  - [x] `Exclude<T, U>`
+  - [x] `ExcludeBy<Fn, U>`
+  - [x] `NonNullable<U>`
+  - [x] `ToTuple<U>`
+  - [x] `ToIntersection<U>`
 - [ ] String
-  - [x] Length
-  - [x] TrimLeft
-  - [x] TrimRight
-  - [x] Trim
-  - [x] Join
-  - [x] Replace
-  - [x] Slice
-  - [x] Split
-  - [x] Repeat
-  - [x] StartsWith
-  - [x] EndsWith
-  - [x] ToTuple
-  - [x] ToNumber
-  - [x] ToString
-  - [x] Prepend
-  - [x] Append
-  - [x] Uppercase
-  - [x] Lowercase
-  - [x] Capitalize
-  - [x] Uncapitalize
-  - [x] SnakeCase
-  - [x] CamelCase
-  - [x] KebabCase
-  - [x] Compare
-  - [x] Equal
-  - [x] NotEqual
-  - [x] LessThan
-  - [x] LessThanOrEqual
-  - [x] GreaterThan
-  - [x] GreaterThanOrEqual
+  - [x] `Length<Str>`
+  - [x] `TrimLeft<Str>`
+  - [x] `TrimRight<Str>`
+  - [x] `Trim<Str>`
+  - [x] `Join<Sep, Str>`
+  - [x] `Replace<From, To, Str>`
+  - [x] `Slice<Start, End, Str>`
+  - [x] `Split<Sep, Str>`
+  - [x] `Repeat<N, Str>`
+  - [x] `StartsWith<S, Str>`
+  - [x] `EndsWith<E, Str>`
+  - [x] `ToTuple<Str>`
+  - [x] `ToNumber<Str>`
+  - [x] `ToString<Str>`
+  - [x] `Prepend<Start, Str>`
+  - [x] `Append<End, Str>`
+  - [x] `Uppercase<Str>`
+  - [x] `Lowercase<Str>`
+  - [x] `Capitalize<Str>`
+  - [x] `Uncapitalize<Str>`
+  - [x] `SnakeCase<Str>`
+  - [x] `CamelCase<Str>`
+  - [x] `KebabCase<Str>`
+  - [x] `Compare<Str, Str>`
+  - [x] `Equal<Str, Str>`
+  - [x] `NotEqual<Str, Str>`
+  - [x] `LessThan<Str, Str>`
+  - [x] `LessThanOrEqual<Str, Str>`
+  - [x] `GreaterThan<Str, Str>`
+  - [x] `GreaterThanOrEqual<Str, Str>`
 - [ ] Number
-  - [x] Add
-  - [x] Multiply
-  - [x] Subtract
-  - [x] Negate
-  - [x] Power
-  - [x] Div
-  - [x] Mod
-  - [x] Abs
-  - [x] Compare
-  - [x] GreaterThan
-  - [x] GreaterThanOrEqual
-  - [x] LessThan
-  - [x] LessThanOrEqual
+  - [x] `Add<N, M>`
+  - [x] `Multiply<N, M>`
+  - [x] `Subtract<N, M>`
+  - [x] `Negate<N>`
+  - [x] `Power<N, M>`
+  - [x] `Div<N, M>`
+  - [x] `Mod<N, M>`
+  - [x] `Abs<N>`
+  - [x] `Compare<N, M>`
+  - [x] `GreaterThan<N, M>`
+  - [x] `GreaterThanOrEqual<N, M>`
+  - [x] `LessThan<N, M>`
+  - [x] `LessThanOrEqual<N, M>`
 - [ ] Boolean
-  - [x] And
-  - [x] Or
-  - [x] XOr
-  - [x] Not
-  - [x] Extends
-  - [x] Equals
-  - [x] DoesNotExtend
+  - [x] `And<Bool, Bool>`
+  - [x] `Or<Bool, Bool>`
+  - [x] `XOr<Bool, Bool>`
+  - [x] `Not<Bool>`
+  - [x] `Extends<A, B>`
+  - [x] `Equals<A, B>`
+  - [x] `DoesNotExtend<A, B>`
