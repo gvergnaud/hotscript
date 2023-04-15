@@ -742,6 +742,11 @@ export namespace Parser {
     [Many<Sequence<[Parser, Skip<Sep>]>>, Parser]
   >;
 
+  export type SepByLiteral<Parser, Sep extends string> = SepBy<
+    Parser,
+    Literal<Sep>
+  >;
+
   /**
    * Parser that matches 3 parsers in sequence but discards the result of the enclosing parsers.
    * @param Open - the parser to match before the parser to match
@@ -761,6 +766,12 @@ export namespace Parser {
     [Skip<Open>, Parser, Skip<Close>]
   >;
 
+  export type BetweenLiterals<
+    Open extends string,
+    Parser,
+    Close extends string
+  > = Between<Literal<Open>, Parser, Literal<Close>>;
+
   /**
    * Parser that matches the given prefix parser and the given parser and discards the result of the prefix parser.
    * @param Prefix - the parser to match before the parser to match and discard
@@ -769,13 +780,18 @@ export namespace Parser {
    *
    * @example
    * ```ts
-   * type T0 = Call<Prefix<Literal<":">, Alpha>, ":a">;
+   * type T0 = Call<PrefixBy<Literal<":">, Alpha>, ":a">;
    * //   ^? type T0 = Ok< "a", "" >
-   * type T1 = Call<Prefix<Literal<":">, Alpha>, "a">;
+   * type T1 = Call<PrefixBy<Literal<":">, Alpha>, "a">;
    * //   ^? type T1 = Error<{ message: "Expected Literal(':') - Received 'a'"; cause: "";}>
    * ```
    */
-  export type Prefix<Prefix, Parser> = Sequence<[Skip<Prefix>, Parser]>;
+  export type PrefixBy<Prefix, Parser> = Sequence<[Skip<Prefix>, Parser]>;
+
+  export type PrefixByLiteral<Prefix extends string, Parser> = PrefixBy<
+    Literal<Prefix>,
+    Parser
+  >;
 
   /**
    * Parser that matches the given parser and the given suffix parser and discards the result of the suffix parser.
@@ -791,7 +807,12 @@ export namespace Parser {
    * //   ^? type T1 = Error<{ message: "Expected Literal(':') - Received ''"; cause: "";}>
    * ```
    */
-  export type Suffix<Parser, Suffix> = Sequence<[Parser, Skip<Suffix>]>;
+  export type SuffixBy<Parser, Suffix> = Sequence<[Parser, Skip<Suffix>]>;
+
+  export type SuffixByLiteral<Parser, Suffix extends string> = SuffixBy<
+    Parser,
+    Literal<Suffix>
+  >;
 
   /**
    * Parser that matches whitespace characters.

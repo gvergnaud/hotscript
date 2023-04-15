@@ -291,5 +291,9 @@ type res5 = Pipe<
   - [x] Word
   - [x] SepBy
   - [x] Between
-  - [x] Prefix
-  - [x] Sufix
+  - [x] PrefixBy
+  - [x] SufixBy
+  - [x] SepByLiteral
+  - [x] BetweenLiterals
+  - [x] PrefixByLiteral
+  - [x] SufixByLiteral

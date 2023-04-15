@@ -387,7 +387,7 @@ describe("Parser", () => {
     type ERE_quant = P.Choice<
       [
         P.Literal<"*" | "+" | "?">,
-        P.Between<P.Literal<"{">, P.Digits, P.Literal<"}">>,
+        P.BetweenLiterals<"{", P.Digits, "}">,
         P.Sequence<[P.Literal<"{">, P.Digits, P.Literal<",">, P.Literal<"}">]>,
         P.Sequence<
           [P.Literal<"{">, P.Digits, P.Literal<",">, P.Digits, P.Literal<"}">]
@@ -426,19 +426,17 @@ describe("Parser", () => {
     // -------------------------------------------------------------
 
     type path = P.Map<
-      P.Sequence<
-        [P.Skip<P.Literal<"/">>, P.SepBy<path_segment, P.Literal<"/">>]
-      >,
+      P.PrefixByLiteral<"/", P.SepByLiteral<path_segment, "/">>,
       Objects.FromArray
     >;
     type path_segment = P.Choice<[path_parameter, P.Skip<P.Word>]>;
-    type path_parameter = P.Between<
-      P.Literal<"{">,
+    type path_parameter = P.BetweenLiterals<
+      "{",
       P.Sequence<
         [
           P.Trim<P.Word>,
           P.Map<
-            P.Optional<P.Prefix<P.Literal<":">, type>>,
+            P.Optional<P.PrefixByLiteral<":", type>>,
             Match<
               [
                 Match.With<["string"], string>,
@@ -450,7 +448,7 @@ describe("Parser", () => {
           >
         ]
       >,
-      P.Literal<"}">
+      "}"
     >;
     type type = P.Trim<P.Literal<"string" | "number" | "boolean">>;
 
