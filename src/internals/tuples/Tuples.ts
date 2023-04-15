@@ -1,13 +1,9 @@
-import { Functions as F, Functions } from "../functions/Functions";
 import { Numbers as N, Numbers } from "../numbers/Numbers";
 
 import {
   Apply,
   args,
   Call,
-  Call2,
-  Call3,
-  Eval,
   Fn,
   PartialApply,
   Pipe,
@@ -36,8 +32,8 @@ export namespace Tuples {
    * @returns The element at the specified index.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.At, 1, ["a", "b", "c"]>; // "b"
-   * type T1 = Eval<Tuples.At<1, ["a", "b", "c"]>>; // "b"
+   * type T0 = Call<Tuples.At, 1, ["a", "b", "c"]>; // "b"
+   * type T1 = Call<Tuples.At<1, ["a", "b", "c"]>>; // "b"
    * type T2 = Call<Tuples.At<1>, ["a", "b", "c"]>; // "b"
    * ```
    */
@@ -68,7 +64,7 @@ export namespace Tuples {
    * ```ts
    * type T0 = Call<Tuples.IsEmpty, []>; // true
    * type T1 = Call<Tuples.IsEmpty, [1, 2, 3]>; // false
-   * type T2 = Eval<Tuples.IsEmpty<[]>>; // true
+   * type T2 = Call<Tuples.IsEmpty<[]>>; // true
    * ```
    */
   export type IsEmpty<tuple = unset> = PartialApply<IsEmptyFn, [tuple]>;
@@ -84,7 +80,7 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.ToUnion, [1, 2, 3]>; // 1 | 2 | 3
-   * type T1 = Eval<Tuples.ToUnion<[1, 2, 3]>>; // 1 | 2 | 3
+   * type T1 = Call<Tuples.ToUnion<[1, 2, 3]>>; // 1 | 2 | 3
    * ```
    */
   export type ToUnion<tuple extends readonly any[] | _ | unset = unset> =
@@ -106,7 +102,7 @@ export namespace Tuples {
 
   interface ToIntersectionFn extends Fn {
     return: this["args"] extends [infer tuples extends readonly any[], ...any]
-      ? Eval<Tuples.Reduce<IntersectFn, unknown, tuples>>
+      ? Call<Tuples.Reduce<IntersectFn, unknown, tuples>>
       : never;
   }
 
@@ -227,19 +223,19 @@ export namespace Tuples {
 
   interface FlatMapFn extends Fn {
     return: ReduceImpl<
-      this["arg1"],
+      FlatMapReducer<Extract<this["arg0"], Fn>>,
       [],
-      FlatMapReducer<Extract<this["arg0"], Fn>>
+      this["arg1"]
     >;
   }
 
-  type ReduceImpl<xs, acc, fn extends Fn> = xs extends [
+  type ReduceImpl<fn extends Fn, acc, xs> = xs extends [
     infer first,
     ...infer rest
   ]
-    ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
+    ? ReduceImpl<fn, Call<fn, acc, first>, rest>
     : xs extends readonly [infer first, ...infer rest]
-    ? ReduceImpl<rest, Call2<fn, acc, first>, fn>
+    ? ReduceImpl<fn, Call<fn, acc, first>, rest>
     : acc;
 
   /**
@@ -261,14 +257,14 @@ export namespace Tuples {
   > = PartialApply<ReduceFn, [fn, init, tuple]>;
 
   interface ReduceFn extends Fn {
-    return: ReduceImpl<this["arg2"], this["arg1"], Extract<this["arg0"], Fn>>;
+    return: ReduceImpl<Extract<this["arg0"], Fn>, this["arg1"], this["arg2"]>;
   }
 
   type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
     ...infer rest,
     infer last
   ]
-    ? ReduceRightImpl<rest, Call2<fn, acc, last>, fn>
+    ? ReduceRightImpl<rest, Call<fn, acc, last>, fn>
     : acc;
 
   /**
@@ -323,9 +319,9 @@ export namespace Tuples {
 
   export interface FilterFn extends Fn {
     return: ReduceImpl<
-      this["arg1"],
+      FilterReducer<Extract<this["arg0"], Fn>>,
       [],
-      FilterReducer<Extract<this["arg0"], Fn>>
+      this["arg1"]
     >;
   }
 
@@ -333,7 +329,7 @@ export namespace Tuples {
     infer first,
     ...infer rest
   ]
-    ? Call2<fn, first, index["length"]> extends true
+    ? Call<fn, first, index["length"]> extends true
       ? first
       : FindImpl<rest, fn, [...index, any]>
     : never;
@@ -374,7 +370,7 @@ export namespace Tuples {
   >;
 
   interface SumFn extends Fn {
-    return: ReduceImpl<this["arg0"], 0, N.Add>;
+    return: ReduceImpl<N.Add, 0, this["arg0"]>;
   }
 
   type DropImpl<
@@ -454,7 +450,7 @@ export namespace Tuples {
     index extends any[] = [],
     output extends any[] = []
   > = xs extends readonly [infer head, ...infer tail]
-    ? Call2<fn, head, index["length"]> extends true
+    ? Call<fn, head, index["length"]> extends true
       ? TakeWhileImpl<tail, fn, [...index, any], [...output, head]>
       : output
     : output;
@@ -535,7 +531,7 @@ export namespace Tuples {
     infer head,
     ...infer tail
   ]
-    ? Eval<
+    ? Call<
         Tuples.Partition<PartialApply<predicateFn, [_, head]>, tail>
       > extends [infer left extends any[], infer right extends any[]]
       ? [...SortImpl<left, predicateFn>, head, ...SortImpl<right, predicateFn>]
@@ -576,8 +572,8 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.Join<",">,["a","b","c"]>; // "a,b,c"
-   * type T1 = Call2<Tuples.Join,",",["a","b","c"]>; // "a,b,c"
-   * type T2 = Eval<Tuples.Join<",",["a","b","c"]>>; // "a,b,c"
+   * type T1 = Call<Tuples.Join,",",["a","b","c"]>; // "a,b,c"
+   * type T2 = Call<Tuples.Join<",",["a","b","c"]>>; // "a,b,c"
    * ```
    */
   export type Join<
@@ -587,7 +583,7 @@ export namespace Tuples {
 
   interface JoinFn extends Fn {
     return: this["args"] extends [infer Sep extends string, infer Tuple]
-      ? ReduceImpl<Tuple, "", JoinReducer<Sep>>
+      ? ReduceImpl<JoinReducer<Sep>, "", Tuple>
       : never;
   }
 
@@ -639,7 +635,7 @@ export namespace Tuples {
    * @returns [...tuple1, ...tuple2]
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.Concat, [1], [2, 3]>; // [1, 2, 3]
+   * type T0 = Call<Tuples.Concat, [1], [2, 3]>; // [1, 2, 3]
    * ```
    */
   export type Concat<tuple1 = unset, tuple2 = unset> = PartialApply<
@@ -696,7 +692,7 @@ export namespace Tuples {
 
   interface ZipWithMapper<fn extends Fn, arrs extends unknown[][]> extends Fn {
     return: this["args"] extends [infer Index extends number, ...any]
-      ? Apply<fn, Eval<Tuples.Map<Tuples.At<Index>, arrs>>>
+      ? Apply<fn, Call<Tuples.Map<Tuples.At<Index>, arrs>>>
       : never;
   }
 
@@ -725,8 +721,8 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.Zip, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
-   * type T1 = Eval<Tuples.Zip<[1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T0 = Call<Tuples.Zip, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Call<Tuples.Zip<[1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
    * ```
    */
   export type Zip<
@@ -757,9 +753,9 @@ export namespace Tuples {
    * @returns The zipped tuple.
    * @example
    * ```ts
-   * type T0 = Call2<Tuples.ZipWith<args>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
-   * type T1 = Eval<Tuples.ZipWith<args, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
-   * type T3 = Call2<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
+   * type T0 = Call<Tuples.ZipWith<args>, [1, 2, 3], [10, 2, 5]>; // [[1, 10], [2, 2], [3, 5]]
+   * type T1 = Call<Tuples.ZipWith<args, [1, 2, 3], [10, 2, 5]>>; // [[1, 10], [2, 2], [3, 5]]
+   * type T3 = Call<Tuples.ZipWith<N.Add>, [1, 2, 3], [10, 2, 5]>; // [11, 4, 8]
    * ```
    */
   export type ZipWith<
@@ -832,9 +828,9 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.Range<3>, 7>; // [3, 4, 5, 6, 7]
-   * type T1 = Eval<Tuples.Range<_, 10>, 5>; // [5, 6, 7, 8, 9, 10]
-   * type T3 = Eval<Tuples.Range< -2, 2>, 5>; // [-2, 1, 0, 1, 2]
-   * type T4 = Eval<Tuples.Range< -5, -2>, 5>; // [-5, -4, -3, -2]
+   * type T1 = Call<Tuples.Range<_, 10>, 5>; // [5, 6, 7, 8, 9, 10]
+   * type T3 = Call<Tuples.Range< -2, 2>, 5>; // [-2, 1, 0, 1, 2]
+   * type T4 = Call<Tuples.Range< -5, -2>, 5>; // [-5, -4, -3, -2]
    * ```
    */
   export type Range<
@@ -847,7 +843,7 @@ export namespace Tuples {
       infer start extends number,
       infer end extends number
     ]
-      ? Call2<Numbers.LessThanOrEqual, start, end> extends true
+      ? Call<Numbers.LessThanOrEqual, start, end> extends true
         ? Pipe<
             start,
             [Numbers.Sub<end, _>, Numbers.Add<1>, Numbers.Abs]
@@ -867,7 +863,7 @@ export namespace Tuples {
     : RangeImpl<
         start,
         length,
-        [...output, Eval<Numbers.Add<start, output["length"]>>]
+        [...output, Call<Numbers.Add<start, output["length"]>>]
       >;
 
   /**
@@ -877,8 +873,8 @@ export namespace Tuples {
    * @example
    * ```ts
    * type T0 = Call<Tuples.Length, [1, 2, 3]>; // 3
-   * type T1 = Eval<Tuples.Length, []>; 0
-   * type T2 = Eval<Tuples.Length, ['a']>; 1
+   * type T1 = Call<Tuples.Length, []>; 0
+   * type T2 = Call<Tuples.Length, ['a']>; 1
    * ```
    */
   export type Length<tuple extends readonly any[] | _ | unset = unset> =
@@ -898,7 +894,7 @@ export namespace Tuples {
    * ```ts
    * type T0 = Call<Tuples.Min, [1, 2, 3]>; // 1
    * type T1 = Call<Tuples.Min, [-1, -2, -3]>; // -3
-   * type T2 = Eval<Tuples.Min, []>; never
+   * type T2 = Call<Tuples.Min, []>; never
    * ```
    */
   export type Min<tuple extends readonly any[] | _ | unset = unset> =
@@ -928,7 +924,7 @@ export namespace Tuples {
    * ```ts
    * type T0 = Call<Tuples.Max, [1, 2, 3]>; // 3
    * type T1 = Call<Tuples.Max, [-1, -2, -3]>; // -1
-   * type T2 = Eval<Tuples.Max, []>; never
+   * type T2 = Call<Tuples.Max, []>; never
    * ```
    */
   export type Max<tuple extends readonly any[] | _ | unset = unset> =

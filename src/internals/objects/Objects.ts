@@ -1,5 +1,5 @@
 import { IsArrayStrict, Prettify } from "../helpers";
-import { Call, Call2, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Call, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Std } from "../std/Std";
 import { Strings } from "../strings/Strings";
 import * as Impl from "./impl/objects";
@@ -32,7 +32,7 @@ export namespace Objects {
   }
 
   type MapValuesImpl<T, fn extends Fn> = {
-    [K in keyof T]: Call2<fn, T[K], K>;
+    [K in keyof T]: Call<fn, T[K], K>;
   };
 
   /**
@@ -273,7 +273,7 @@ export namespace Objects {
     entries extends [PropertyKey, any],
     fn extends Fn
   > = entries extends any
-    ? Call2<fn, entries[1], entries[0]> extends true
+    ? Call<fn, entries[1], entries[0]> extends true
       ? entries
       : never
     : never;
@@ -304,7 +304,7 @@ export namespace Objects {
     entries extends [PropertyKey, any],
     fn extends Fn
   > = entries extends any
-    ? Call2<fn, entries[1], entries[0]> extends true
+    ? Call<fn, entries[1], entries[0]> extends true
       ? never
       : entries
     : never;
@@ -316,8 +316,8 @@ export namespace Objects {
    * @example
    * ```ts
    * type T0 = Call<Objects.Assign<{ a: string }>, { b: number }>; // { a: string, b: number }
-   * type T1 = Eval<Objects.Assign<{ a: string }, { b: number }>>; // { a: string, b: number }
-   * type T2 = Eval<Objects.Assign<{ a: 1 }, { b: 1 }, { c: 1 }>>; // { a: 1, b: 1, c: 1 }
+   * type T1 = Call<Objects.Assign<{ a: string }, { b: number }>>; // { a: string, b: number }
+   * type T2 = Call<Objects.Assign<{ a: 1 }, { b: 1 }, { c: 1 }>>; // { a: 1, b: 1, c: 1 }
    * ```
    */
   export type Assign<
@@ -340,7 +340,7 @@ export namespace Objects {
    * @example
    * ```ts
    * type T0 = Call<Objects.Readonly, { a: 1; b: true }>; // { readonly a:1; readonly b: true}
-   * type T1 = Eval<Objects.Readonly<{ a: 1; b: true }>>; // { readonly a:1; readonly b: true}
+   * type T1 = Call<Objects.Readonly<{ a: 1; b: true }>>; // { readonly a:1; readonly b: true}
    * ```
    */
   export type Readonly<value = unset> = PartialApply<ReadonlyFn, [value]>;
@@ -357,7 +357,7 @@ export namespace Objects {
    * @example
    * ```ts
    * type T0 = Call<Objects.Required, { a?: 1; b?: true }>; // { a:1; b: true}
-   * type T1 = Eval<Objects.Required<{ a?: 1; b?: true }>>; // { a:1; b: true}
+   * type T1 = Call<Objects.Required<{ a?: 1; b?: true }>>; // { a:1; b: true}
    * ```
    */
   export type Required<value = unset> = PartialApply<RequiredFn, [value]>;
@@ -374,7 +374,7 @@ export namespace Objects {
    * @example
    * ```ts
    * type T0 = Call<Objects.Partial, { a: 1; b: true }>; // { a?:1; b?: true}
-   * type T1 = Eval<Objects.Partial<{ a: 1; b: true }>>; // { a?:1; b?: true}
+   * type T1 = Call<Objects.Partial<{ a: 1; b: true }>>; // { a?:1; b?: true}
    * ```
    */
   export type Partial<value = unset> = PartialApply<PartialFn, [value]>;

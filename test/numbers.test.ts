@@ -1,4 +1,4 @@
-import { Call, Call2, Eval, Numbers, Tuples, _, T } from "../src/index";
+import { Call, Numbers, Tuples, _, T } from "../src/index";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Numbers", () => {
@@ -18,7 +18,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Add<1, 2>>;
+      type res1 = Call<Numbers.Add<1, 2>>;
       //    ^?
 
       type test1 = Expect<Equal<res1, 3>>;
@@ -31,7 +31,7 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, -6>>;
 
-      type res2 = Call2<Numbers.Sub, 0, 1>;
+      type res2 = Call<Numbers.Sub, 0, 1>;
       //    ^?
       type test2 = Expect<Equal<res2, -1>>;
     });
@@ -43,7 +43,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Sub<1, 2>>;
+      type res1 = Call<Numbers.Sub<1, 2>>;
       //    ^?
       type test1 = Expect<Equal<res1, -1>>;
     });
@@ -66,11 +66,11 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 12>>;
 
-      type res2 = Call2<Numbers.Mul, 3, 2>;
+      type res2 = Call<Numbers.Mul, 3, 2>;
       //    ^?
       type test2 = Expect<Equal<res2, 6>>;
 
-      type res3 = Call2<Numbers.Mul, 3, -2>;
+      type res3 = Call<Numbers.Mul, 3, -2>;
       //    ^?
       type test3 = Expect<Equal<res3, -6>>;
     });
@@ -82,7 +82,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Mul<3, 2>>;
+      type res1 = Call<Numbers.Mul<3, 2>>;
       //    ^?
       type test1 = Expect<Equal<res1, 6>>;
     });
@@ -94,7 +94,7 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 3>>;
 
-      type res2 = Call2<Numbers.Div, 6, 2>;
+      type res2 = Call<Numbers.Div, 6, 2>;
       //    ^?
       type test2 = Expect<Equal<res2, 3>>;
     });
@@ -106,7 +106,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Div<6, 2>>;
+      type res1 = Call<Numbers.Div<6, 2>>;
       //    ^?
       type test1 = Expect<Equal<res1, 3>>;
     });
@@ -114,7 +114,7 @@ describe("Numbers", () => {
 
   describe("Mod", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res2 = Call2<Numbers.Mod, 5, 3>;
+      type res2 = Call<Numbers.Mod, 5, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, 2>>;
     });
@@ -126,7 +126,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Mod<5, 3>>;
+      type res1 = Call<Numbers.Mod<5, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, 2>>;
     });
@@ -140,7 +140,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Negate<100>>;
+      type res1 = Call<Numbers.Negate<100>>;
       //    ^?
       type test1 = Expect<Equal<res1, -100>>;
     });
@@ -154,7 +154,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Abs<-100>>;
+      type res1 = Call<Numbers.Abs<-100>>;
       //    ^?
       type test1 = Expect<Equal<res1, 100>>;
     });
@@ -166,11 +166,11 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 64>>;
 
-      type res2 = Call2<Numbers.Power, 2, 3>;
+      type res2 = Call<Numbers.Power, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, 8>>;
 
-      type res3 = Call2<Numbers.Power, 2, -3>;
+      type res3 = Call<Numbers.Power, 2, -3>;
       //    ^?
       type test3 = Expect<Equal<res3, 0>>;
     });
@@ -182,7 +182,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Power<2, 3>>;
+      type res1 = Call<Numbers.Power<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, 8>>;
     });
@@ -194,11 +194,11 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 1>>;
 
-      type res2 = Call2<Numbers.Min, 2, 3>;
+      type res2 = Call<Numbers.Min, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, 2>>;
 
-      type res3 = Call2<Numbers.Min, 2, -3>;
+      type res3 = Call<Numbers.Min, 2, -3>;
       //    ^?
       type test3 = Expect<Equal<res3, -3>>;
     });
@@ -210,7 +210,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Min<2, 3>>;
+      type res1 = Call<Numbers.Min<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, 2>>;
     });
@@ -222,11 +222,11 @@ describe("Numbers", () => {
       //    ^?
       type test1 = Expect<Equal<res1, 3>>;
 
-      type res2 = Call2<Numbers.Max, 2, 3>;
+      type res2 = Call<Numbers.Max, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, 3>>;
 
-      type res3 = Call2<Numbers.Max, 2, -3>;
+      type res3 = Call<Numbers.Max, 2, -3>;
       //    ^?
       type test3 = Expect<Equal<res3, 2>>;
     });
@@ -238,7 +238,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Max<2, 3>>;
+      type res1 = Call<Numbers.Max<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, 3>>;
     });
@@ -246,15 +246,15 @@ describe("Numbers", () => {
 
   describe("Compare", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res1 = Call2<Numbers.Compare, 3, 2>;
+      type res1 = Call<Numbers.Compare, 3, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, 1>>;
 
-      type res2 = Call2<Numbers.Compare, 2, 3>;
+      type res2 = Call<Numbers.Compare, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, -1>>;
 
-      type res3 = Call2<Numbers.Compare, 2, 2>;
+      type res3 = Call<Numbers.Compare, 2, 2>;
       //    ^?
       type test3 = Expect<Equal<res3, 0>>;
     });
@@ -266,7 +266,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.Compare<2, 3>>;
+      type res1 = Call<Numbers.Compare<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, -1>>;
     });
@@ -274,15 +274,15 @@ describe("Numbers", () => {
 
   describe("LessThan", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res1 = Call2<Numbers.LessThan, 3, 2>;
+      type res1 = Call<Numbers.LessThan, 3, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, false>>;
 
-      type res2 = Call2<Numbers.LessThan, 2, 3>;
+      type res2 = Call<Numbers.LessThan, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, true>>;
 
-      type res3 = Call2<Numbers.LessThan, 2, 2>;
+      type res3 = Call<Numbers.LessThan, 2, 2>;
       //    ^?
       type test3 = Expect<Equal<res3, false>>;
     });
@@ -294,7 +294,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.LessThan<2, 3>>;
+      type res1 = Call<Numbers.LessThan<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, true>>;
     });
@@ -302,15 +302,15 @@ describe("Numbers", () => {
 
   describe("LessThanOrEqual", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res1 = Call2<Numbers.LessThanOrEqual, 3, 2>;
+      type res1 = Call<Numbers.LessThanOrEqual, 3, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, false>>;
 
-      type res2 = Call2<Numbers.LessThanOrEqual, 2, 3>;
+      type res2 = Call<Numbers.LessThanOrEqual, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, true>>;
 
-      type res3 = Call2<Numbers.LessThanOrEqual, 2, 2>;
+      type res3 = Call<Numbers.LessThanOrEqual, 2, 2>;
       //    ^?
       type test3 = Expect<Equal<res3, true>>;
     });
@@ -322,7 +322,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.LessThanOrEqual<2, 3>>;
+      type res1 = Call<Numbers.LessThanOrEqual<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, true>>;
     });
@@ -330,15 +330,15 @@ describe("Numbers", () => {
 
   describe("GreaterThan", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res1 = Call2<Numbers.GreaterThan, 3, 2>;
+      type res1 = Call<Numbers.GreaterThan, 3, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, true>>;
 
-      type res2 = Call2<Numbers.GreaterThan, 2, 3>;
+      type res2 = Call<Numbers.GreaterThan, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, false>>;
 
-      type res3 = Call2<Numbers.GreaterThan, 2, 2>;
+      type res3 = Call<Numbers.GreaterThan, 2, 2>;
       //    ^?
       type test3 = Expect<Equal<res3, false>>;
     });
@@ -350,13 +350,13 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.GreaterThan<2, 3>>;
+      type res1 = Call<Numbers.GreaterThan<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, false>>;
     });
 
     it("should reverse it's function arguments when partial applied", () => {
-      type res4 = Eval<Numbers.GreaterThan<1, 2>>;
+      type res4 = Call<Numbers.GreaterThan<1, 2>>;
       type test4 = Expect<Equal<res4, false>>;
 
       type res5 = Call<Numbers.GreaterThan<_, 2>, 1>;
@@ -375,15 +375,15 @@ describe("Numbers", () => {
 
   describe("GreaterThanOrEqual", () => {
     it("can be called without any pre-filled arguments", () => {
-      type res1 = Call2<Numbers.GreaterThanOrEqual, 3, 2>;
+      type res1 = Call<Numbers.GreaterThanOrEqual, 3, 2>;
       //    ^?
       type test1 = Expect<Equal<res1, true>>;
 
-      type res2 = Call2<Numbers.GreaterThanOrEqual, 2, 3>;
+      type res2 = Call<Numbers.GreaterThanOrEqual, 2, 3>;
       //    ^?
       type test2 = Expect<Equal<res2, false>>;
 
-      type res3 = Call2<Numbers.GreaterThanOrEqual, 2, 2>;
+      type res3 = Call<Numbers.GreaterThanOrEqual, 2, 2>;
       //    ^?
       type test3 = Expect<Equal<res3, true>>;
     });
@@ -395,7 +395,7 @@ describe("Numbers", () => {
     });
 
     it("can be called with 1 pre-filled arguments", () => {
-      type res1 = Eval<Numbers.GreaterThanOrEqual<2, 3>>;
+      type res1 = Call<Numbers.GreaterThanOrEqual<2, 3>>;
       //    ^?
       type test1 = Expect<Equal<res1, false>>;
     });

@@ -1,4 +1,4 @@
-import { Eval, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Call, Fn, PartialApply, unset, _ } from "../core/Core";
 import * as Impl from "./impl/numbers";
 import { Functions } from "../functions/Functions";
 
@@ -11,8 +11,8 @@ export namespace Numbers {
    * @returns the sum of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Add<1, 2>>; // 3
-   * type T1 = Eval<Numbers.Add<999999999999999999999999999n, 2>>; // 1000000000000000000000000001n
+   * type T0 = Call<Numbers.Add<1, 2>>; // 3
+   * type T1 = Call<Numbers.Add<999999999999999999999999999n, 2>>; // 1000000000000000000000000001n
    * ```
    */
   export type Add<
@@ -38,8 +38,8 @@ export namespace Numbers {
    * @returns the difference of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Sub<1, 2>>; // -1
-   * type T1 = Eval<Numbers.Sub<1000000000000000000000000001n, 2>>; // 999999999999999999999999999n
+   * type T0 = Call<Numbers.Sub<1, 2>>; // -1
+   * type T1 = Call<Numbers.Sub<1000000000000000000000000001n, 2>>; // 999999999999999999999999999n
    * ```
    */
   export type Sub<
@@ -65,8 +65,8 @@ export namespace Numbers {
    * @returns the product of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Mul<99, 3>>; // 297
-   * type T1 = Eval<Numbers.Mul<999999999999999999999999999n, 2>>; // 1999999999999999999999999998n
+   * type T0 = Call<Numbers.Mul<99, 3>>; // 297
+   * type T1 = Call<Numbers.Mul<999999999999999999999999999n, 2>>; // 1999999999999999999999999998n
    * ```
    */
   export type Mul<
@@ -92,8 +92,8 @@ export namespace Numbers {
    * @returns the quotient of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Div<99, 3>>; // 33
-   * type T1 = Eval<Numbers.Div<999999999999999999999999999n, 4>>; // 249999999999999999999999999n
+   * type T0 = Call<Numbers.Div<99, 3>>; // 33
+   * type T1 = Call<Numbers.Div<999999999999999999999999999n, 4>>; // 249999999999999999999999999n
    * ```
    */
   export type Div<
@@ -119,8 +119,8 @@ export namespace Numbers {
    * @returns the remainder of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Mod<100, 3>>; // 1
-   * type T1 = Eval<Numbers.Mod<999999999999999999999999999n, 4>>; // 3n
+   * type T0 = Call<Numbers.Mod<100, 3>>; // 1
+   * type T1 = Call<Numbers.Mod<999999999999999999999999999n, 4>>; // 3n
    * ```
    */
   export type Mod<
@@ -145,8 +145,8 @@ export namespace Numbers {
    * @returns the negated number
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Negate<1>>; // -1
-   * type T1 = Eval<Numbers.Negate<999999999999999999999999999n>>; // -999999999999999999999999999n
+   * type T0 = Call<Numbers.Negate<1>>; // -1
+   * type T1 = Call<Numbers.Negate<999999999999999999999999999n>>; // -999999999999999999999999999n
    * ```
    */
   export type Negate<n extends number | bigint | _ | unset = unset> =
@@ -165,8 +165,8 @@ export namespace Numbers {
    * @returns the absolute value of the number
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Abs<-1>>; // 1
-   * type T1 = Eval<Numbers.Abs<999999999999999999999999999n>>; // 999999999999999999999999999n
+   * type T0 = Call<Numbers.Abs<-1>>; // 1
+   * type T1 = Call<Numbers.Abs<999999999999999999999999999n>>; // 999999999999999999999999999n
    * ```
    */
   export type Abs<n extends number | bigint | _ | unset = unset> = PartialApply<
@@ -187,7 +187,7 @@ export namespace Numbers {
    * @returns the maximum values between the two
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Max<1, 2>>; // 2
+   * type T0 = Call<Numbers.Max<1, 2>>; // 2
    * ```
    */
   export type Max<
@@ -209,7 +209,7 @@ export namespace Numbers {
    * @returns the minimum values between the two
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Min<1, 2>>; // 1
+   * type T0 = Call<Numbers.Min<1, 2>>; // 1
    * ```
    */
   export type Min<
@@ -232,7 +232,7 @@ export namespace Numbers {
    * @returns the power of the two numbers
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Power<2, 128>>; // 340282366920938463463374607431768211456
+   * type T0 = Call<Numbers.Power<2, 128>>; // 340282366920938463463374607431768211456
    * ```
    */
   export type Power<
@@ -258,9 +258,9 @@ export namespace Numbers {
    * @returns -1 if n1 < n2, 0 if n1 === n2, 1 if n1 > n2
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Compare<1, 2>>; // -1
-   * type T1 = Eval<Numbers.Compare<999999999999999999999999999n, 4>>; // 1
-   * type T2 = Eval<Numbers.Compare<999999999999999999999999999n, 999999999999999999999999999n>>; // 0
+   * type T0 = Call<Numbers.Compare<1, 2>>; // -1
+   * type T1 = Call<Numbers.Compare<999999999999999999999999999n, 4>>; // 1
+   * type T2 = Call<Numbers.Compare<999999999999999999999999999n, 999999999999999999999999999n>>; // 0
    * ```
    */
   export type Compare<
@@ -286,8 +286,8 @@ export namespace Numbers {
    * @returns true if n1 === n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.Equal<1, 2>>; // false
-   * type T1 = Eval<Numbers.Equal<2, 2>>; // true
+   * type T0 = Call<Numbers.Equal<1, 2>>; // false
+   * type T1 = Call<Numbers.Equal<2, 2>>; // true
    * ```
    */
   export type Equal<
@@ -313,8 +313,8 @@ export namespace Numbers {
    * @returns true if n1 !== n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.NotEqual<1, 2>>; // true
-   * type T1 = Eval<Numbers.NotEqual<2, 2>>; // false
+   * type T0 = Call<Numbers.NotEqual<1, 2>>; // true
+   * type T1 = Call<Numbers.NotEqual<2, 2>>; // false
    * ```
    */
   export type NotEqual<
@@ -340,9 +340,9 @@ export namespace Numbers {
    * @returns true if n1 < n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.LessThan<1, 2>>; // true
-   * type T1 = Eval<Numbers.LessThan<2, 2>>; // false
-   * type T2 = Eval<Numbers.LessThan<3, 2>>; // false
+   * type T0 = Call<Numbers.LessThan<1, 2>>; // true
+   * type T1 = Call<Numbers.LessThan<2, 2>>; // false
+   * type T2 = Call<Numbers.LessThan<3, 2>>; // false
    * ```
    */
   export type LessThan<
@@ -368,9 +368,9 @@ export namespace Numbers {
    * @returns true if n1 <= n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.LessThanOrEqual<1, 2>>; // true
-   * type T1 = Eval<Numbers.LessThanOrEqual<2, 2>>; // true
-   * type T2 = Eval<Numbers.LessThanOrEqual<3, 2>>; // false
+   * type T0 = Call<Numbers.LessThanOrEqual<1, 2>>; // true
+   * type T1 = Call<Numbers.LessThanOrEqual<2, 2>>; // true
+   * type T2 = Call<Numbers.LessThanOrEqual<3, 2>>; // false
    * ```
    */
   export type LessThanOrEqual<
@@ -399,9 +399,9 @@ export namespace Numbers {
    * @returns true if n1 > n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.GreaterThan<1, 2>>; // false
-   * type T1 = Eval<Numbers.GreaterThan<2, 2>>; // false
-   * type T2 = Eval<Numbers.GreaterThan<3, 2>>; // true
+   * type T0 = Call<Numbers.GreaterThan<1, 2>>; // false
+   * type T1 = Call<Numbers.GreaterThan<2, 2>>; // false
+   * type T2 = Call<Numbers.GreaterThan<3, 2>>; // true
    * ```
    */
   export type GreaterThan<
@@ -427,9 +427,9 @@ export namespace Numbers {
    * @returns true if n1 >= n2, false otherwise
    * @example
    * ```ts
-   * type T0 = Eval<Numbers.GreaterThanOrEqual<1, 2>>; // false
-   * type T1 = Eval<Numbers.GreaterThanOrEqual<2, 2>>; // true
-   * type T2 = Eval<Numbers.GreaterThanOrEqual<3, 2>>; // true
+   * type T0 = Call<Numbers.GreaterThanOrEqual<1, 2>>; // false
+   * type T1 = Call<Numbers.GreaterThanOrEqual<2, 2>>; // true
+   * type T2 = Call<Numbers.GreaterThanOrEqual<3, 2>>; // true
    * ```
    */
   export type GreaterThanOrEqual<

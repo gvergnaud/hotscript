@@ -1,4 +1,4 @@
-import { Call2 } from "../../core/Core";
+import { Call } from "../../core/Core";
 import { Numbers } from "../../numbers/Numbers";
 import { StringToTuple } from "./split";
 import { Equal as _Equal } from "../../helpers";
@@ -37,7 +37,7 @@ type CharacterCompare<
   ? 0
   : Char1 extends keyof ascii
   ? Char2 extends keyof ascii
-    ? Call2<Numbers.Compare, ascii[Char1], ascii[Char2]>
+    ? Call<Numbers.Compare, ascii[Char1], ascii[Char2]>
     : 1
   : -1;
 

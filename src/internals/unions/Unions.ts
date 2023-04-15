@@ -1,4 +1,4 @@
-import { Call, Eval, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Call, Fn, PartialApply, unset, _ } from "../core/Core";
 import { Functions } from "../functions/Functions";
 import { UnionToIntersection, UnionToTuple } from "../helpers";
 import { Std } from "../std/Std";
@@ -70,9 +70,9 @@ export namespace Unions {
    * @example
    * ```ts
    * type T0 = Call<Unions.Range<3>, 7>; // 3 | 4 | 5 | 6 | 7
-   * type T1 = Eval<Unions.Range<_, 10>, 5>; // 5 | 6 | 7 | 8 | 9 | 10
-   * type T3 = Eval<Unions.Range< -2, 2>, 5>; // -2 | 1 | 0 | 1 | 2
-   * type T4 = Eval<Unions.Range< -5, -2>, 5>; // -5 | -4 | -3 | -2
+   * type T1 = Call<Unions.Range<_, 10>, 5>; // 5 | 6 | 7 | 8 | 9 | 10
+   * type T3 = Call<Unions.Range< -2, 2>, 5>; // -2 | 1 | 0 | 1 | 2
+   * type T4 = Call<Unions.Range< -5, -2>, 5>; // -5 | -4 | -3 | -2
    * ```
    */
   export type Range<
@@ -85,7 +85,7 @@ export namespace Unions {
       infer start extends number,
       infer end extends number
     ]
-      ? Eval<Tuples.Range<start, end>>[number]
+      ? Call<Tuples.Range<start, end>>[number]
       : never;
   }
 
@@ -115,7 +115,7 @@ export namespace Unions {
    * ```ts
    * type T0 = Call<Unions.NonNullable, "a" | 1 | null | undefined>; // 1 | "a"
    * type T1 = Pipe<"a" | 1 | null | undefined, [U.NonNullable]>; // 1 | "a"
-   * type T2 = Eval<Unions.NonNullable<"a" | 1 | null | undefined>>; // 1 | "a"
+   * type T2 = Call<Unions.NonNullable<"a" | 1 | null | undefined>>; // 1 | "a"
    * ```
    */
   export type NonNullable<union = unset> = PartialApply<NonNullableFn, [union]>;

@@ -1,5 +1,5 @@
-import { Call, F, _ } from "../src/index";
-import { Call2 } from "../src/internals/core/Core";
+import { F, _ } from "../src/index";
+import { Call } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Functions", () => {
@@ -13,7 +13,7 @@ describe("Functions", () => {
     type res1 = Call<F.Parameter<0>, (a: string, b: number) => void>;
     //   ^?
     type tes1 = Expect<Equal<res1, string>>;
-    type res2 = Call2<F.Parameter, (a: string, b: number) => void, 0>;
+    type res2 = Call<F.Parameter, (a: string, b: number) => void, 0>;
     //   ^?
     type tes2 = Expect<Equal<res2, string>>;
   });

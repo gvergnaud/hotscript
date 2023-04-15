@@ -37,8 +37,8 @@ export namespace Functions {
    * @example
    * ```ts
    * type T0 = Call<Parameter<1>, (a: number, b: string) => void>; // number
-   * type T1 = Call2<Parameter, (a: number, b: string) => void, 1>; // string
-   * type T2 = Eval<Parameter<(a: number, b: string) => void, 0>>; // number
+   * type T1 = Call<Parameter, (a: number, b: string) => void, 1>; // string
+   * type T2 = Call<Parameter<(a: number, b: string) => void, 0>>; // number
    */
   export type Parameter<
     N extends number | _ | unset = unset,
@@ -58,7 +58,7 @@ export namespace Functions {
    * @example
    * ```ts
    * type T0 = Call<ReturnType, (a: number, b: string) => number>; // number
-   * type T1 = Eval<ReturnType<(a: number, b: string) => number>>; // number
+   * type T1 = Call<ReturnType<(a: number, b: string) => number>>; // number
    * ```
    */
   export type ReturnType<

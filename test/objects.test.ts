@@ -5,15 +5,12 @@ import {
   arg1,
   arg2,
   arg3,
-  Call,
   ComposeLeft,
   Constant,
-  Eval,
-  Fn,
+  Call,
   Pipe,
   _,
 } from "../src/internals/core/Core";
-import { Functions } from "../src/internals/functions/Functions";
 import { Strings } from "../src/internals/strings/Strings";
 import { Objects } from "../src/internals/objects/Objects";
 import { Tuples } from "../src/internals/tuples/Tuples";
@@ -198,7 +195,7 @@ describe("Objects", () => {
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { readonly a: 1; readonly b: true }>>;
-    type res2 = Eval<
+    type res2 = Call<
       //   ^?
       Objects.Readonly<{ a: 1; b: true }>
     >;
@@ -212,7 +209,7 @@ describe("Objects", () => {
       { a?: 1; b?: true }
     >;
     type tes1 = Expect<Equal<res1, { a: 1; b: true }>>;
-    type res2 = Eval<
+    type res2 = Call<
       //   ^?
       Objects.Required<{ a?: 1; b?: true }>
     >;
@@ -226,7 +223,7 @@ describe("Objects", () => {
       { a: 1; b: true }
     >;
     type tes1 = Expect<Equal<res1, { a?: 1; b?: true }>>;
-    type res2 = Eval<
+    type res2 = Call<
       //   ^?
       Objects.Partial<{ a: 1; b: true }>
     >;
@@ -459,7 +456,7 @@ describe("Objects", () => {
     });
 
     it("can be called with 2 pre-filled arguments", () => {
-      type res1 = Eval<Objects.Assign<{ a: string }, { b: number }>>;
+      type res1 = Call<Objects.Assign<{ a: string }, { b: number }>>;
       //    ^?
       type test1 = Expect<Equal<res1, { a: string; b: number }>>;
     });
@@ -586,7 +583,7 @@ describe("Objects", () => {
 
   describe("Get", () => {
     it("should retrieve a deep property", () => {
-      type res1 = Eval<
+      type res1 = Call<
         //   ^?
         Objects.Get<"a.b.c.d", { a: { b: { c: { d: string } } } }>
       >;
@@ -605,7 +602,7 @@ describe("Objects", () => {
         | { a: { b: string | { c: { d: string } } } }
         | { a: { b: { c: { d: number } } } };
 
-      type res1 = Eval<Objects.Get<"a.b.c.d", input>>;
+      type res1 = Call<Objects.Get<"a.b.c.d", input>>;
       //    ^?
       type test1 = Expect<Equal<res1, string | number | undefined>>;
 
@@ -615,19 +612,19 @@ describe("Objects", () => {
     });
 
     it("should support arrays", () => {
-      type res1 = Eval<Objects.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
+      type res1 = Call<Objects.Get<"a.b[0].d", { a: { b: { d: string }[] } }>>;
       //   ^?
       type test1 = Expect<Equal<res1, string>>;
     });
 
     it("should support tuples", () => {
       type input = { a: { b: [{ d: string }, "hello"] } };
-      type res1 = Eval<Objects.Get<"a.b[0].d", input>>;
+      type res1 = Call<Objects.Get<"a.b[0].d", input>>;
       //   ^?
 
       type test1 = Expect<Equal<res1, string>>;
 
-      type res2 = Eval<Objects.Get<"a.b[1]", input>>;
+      type res2 = Call<Objects.Get<"a.b[1]", input>>;
       //   ^?
       type test2 = Expect<Equal<res2, "hello">>;
     });
@@ -640,7 +637,7 @@ describe("Objects", () => {
       number
     >;
     type tes1 = Expect<Equal<res1, { a: number; b: number }>>;
-    type res2 = Eval<
+    type res2 = Call<
       //   ^?
       Objects.Record<"a" | "b", number>
     >;

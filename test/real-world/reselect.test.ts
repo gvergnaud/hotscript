@@ -57,7 +57,7 @@ describe("Reselect", () => {
    * ```
    */
   interface GetUnknownPadding<argsList extends any[][]> extends H.Fn {
-    return: H.Eval<
+    return: H.Call<
       H.Tuples.Map<
         H.ComposeLeft<
           [

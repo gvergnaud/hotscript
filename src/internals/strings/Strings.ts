@@ -445,9 +445,9 @@ export namespace Strings {
    * @returns The result of the comparison.
    * @example
    * ```ts
-   * type T0 = Call2<Strings.Compare,"abc","def">; // -1
-   * type T1 = Call2<Strings.Compare,"def","abc">; // 1
-   * type T2 = Call2<Strings.Compare,"abc","abc">; // 0
+   * type T0 = Call<Strings.Compare,"abc","def">; // -1
+   * type T1 = Call<Strings.Compare,"def","abc">; // 1
+   * type T2 = Call<Strings.Compare,"abc","abc">; // 0
    * ```
    */
   export type Compare<
@@ -474,9 +474,9 @@ export namespace Strings {
    * @returns True if the first string is lexically less than the second string, false otherwise.
    * @example
    * ```ts
-   * type T0 = Call2<Strings.LessThan,"abc","def">; // true
-   * type T1 = Call2<Strings.LessThan,"def","abc">; // false
-   * type T2 = Call2<Strings.LessThan,"abc","abc">; // false
+   * type T0 = Call<Strings.LessThan,"abc","def">; // true
+   * type T1 = Call<Strings.LessThan,"def","abc">; // false
+   * type T2 = Call<Strings.LessThan,"abc","abc">; // false
    * ```
    */
   export type LessThan<
@@ -503,9 +503,9 @@ export namespace Strings {
    * @returns True if the first string is lexically less than or equal to the second string, false otherwise.
    * @example
    * ```ts
-   * type T0 = Call2<Strings.LessThanOrEqual,"abc","def">; // true
-   * type T1 = Call2<Strings.LessThanOrEqual,"def","abc">; // false
-   * type T2 = Call2<Strings.LessThanOrEqual,"abc","abc">; // true
+   * type T0 = Call<Strings.LessThanOrEqual,"abc","def">; // true
+   * type T1 = Call<Strings.LessThanOrEqual,"def","abc">; // false
+   * type T2 = Call<Strings.LessThanOrEqual,"abc","abc">; // true
    */
   export type LessThanOrEqual<
     n1 extends string | _ | unset = unset,
@@ -534,9 +534,9 @@ export namespace Strings {
    * @returns True if the first string is lexically greater than the second string, false otherwise.
    * @example
    * ```ts
-   * type T0 = Call2<Strings.GreaterThan,"abc","def">; // false
-   * type T1 = Call2<Strings.GreaterThan,"def","abc">; // true
-   * type T2 = Call2<Strings.GreaterThan,"abc","abc">; // false
+   * type T0 = Call<Strings.GreaterThan,"abc","def">; // false
+   * type T1 = Call<Strings.GreaterThan,"def","abc">; // true
+   * type T2 = Call<Strings.GreaterThan,"abc","abc">; // false
    * ```
    */
   export type GreaterThan<
@@ -563,9 +563,9 @@ export namespace Strings {
    * @returns True if the first string is lexically greater than or equal to the second string, false otherwise.
    * @example
    * ```ts
-   * type T0 = Call2<Strings.GreaterThanOrEqual,"abc","def">; // false
-   * type T1 = Call2<Strings.GreaterThanOrEqual,"def","abc">; // true
-   * type T2 = Call2<Strings.GreaterThanOrEqual,"abc","abc">; // true
+   * type T0 = Call<Strings.GreaterThanOrEqual,"abc","def">; // false
+   * type T1 = Call<Strings.GreaterThanOrEqual,"def","abc">; // true
+   * type T2 = Call<Strings.GreaterThanOrEqual,"abc","abc">; // true
    * ```
    */
   export type GreaterThanOrEqual<

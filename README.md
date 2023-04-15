@@ -37,12 +37,12 @@ type res1 = Pipe<
   //  ^? 62
   [1, 2, 3, 4],
   [
-    Tuples.Map<Numbers.Add<3>>,       //  [4, 5, 6, 7]
-    Tuples.Join<".">,                 //  "4.5.6.7"
-    Strings.Split<".">,               //  ["4", "5", "6", "7"]
-    Tuples.Map<Strings.Prepend<"1">>, //  ["14", "15", "16", "17"]
-    Tuples.Map<Strings.ToNumber>,     //  [14, 15, 16, 17]
-    Tuples.Sum                        //  62
+    Tuples.Map<Numbers.Add<3>>,       // [4, 5, 6, 7]
+    Tuples.Join<".">,                 // "4.5.6.7"
+    Strings.Split<".">,               // ["4", "5", "6", "7"]
+    Tuples.Map<Strings.Prepend<"1">>, // ["14", "15", "16", "17"]
+    Tuples.Map<Strings.ToNumber>,     // [14, 15, 16, 17]
+    Tuples.Sum                        // 62
   ]
 >;
 ```

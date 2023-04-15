@@ -1,4 +1,4 @@
-import { arg, Eval, Fn, PartialApply, unset } from "../../core/Core";
+import { arg, Call, Fn, PartialApply, unset } from "../../core/Core";
 import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
 
@@ -67,7 +67,7 @@ export type Match<value, patterns extends With<any, any>[]> = patterns extends [
 ]
   ? DoesMatch<value, pattern> extends true
     ? handler extends Fn
-      ? Eval<PartialApply<Extract<handler, Fn>, ExtractArgs<value, pattern>>>
+      ? Call<PartialApply<Extract<handler, Fn>, ExtractArgs<value, pattern>>>
       : handler
     : Match<value, restPatterns>
   : never;

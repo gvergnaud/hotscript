@@ -1,11 +1,11 @@
 import { unset, _ } from "../../core/Core";
-import { IsNever } from "../../helpers";
+import { Equal, IsNever } from "../../helpers";
 
-type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
+export type ExcludePlaceholders<xs, output extends any[] = []> = xs extends [
   infer first,
   ...infer rest
 ]
-  ? first extends _
+  ? Equal<first, _> extends true
     ? ExcludePlaceholders<rest, output>
     : ExcludePlaceholders<rest, [...output, first]>
   : output;

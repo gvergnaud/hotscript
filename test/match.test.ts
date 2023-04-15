@@ -1,6 +1,6 @@
 import {
   Booleans,
-  Eval,
+  Call,
   Functions,
   Match,
   Numbers,
@@ -20,7 +20,7 @@ import { Equal, Expect } from "../src/internals/helpers";
 
 describe("Match", () => {
   it("should match with regular types", () => {
-    type MatchTest<T> = Eval<
+    type MatchTest<T> = Call<
       Match<
         T,
         [
@@ -46,7 +46,7 @@ describe("Match", () => {
   });
 
   it("should work with patterns destructuring arguments", () => {
-    type MatchTest<T> = Eval<
+    type MatchTest<T> = Call<
       Match<
         T,
         [
@@ -87,7 +87,7 @@ describe("Match", () => {
   });
 
   it("should work with constrained arguments", () => {
-    type MatchTest<T> = Eval<
+    type MatchTest<T> = Call<
       Match<
         T,
         [
@@ -112,7 +112,7 @@ describe("Match", () => {
   });
 
   it("Handlers can also be regular values", () => {
-    type MatchTest<T> = Eval<
+    type MatchTest<T> = Call<
       Match<
         T,
         [
@@ -139,7 +139,7 @@ describe("Match", () => {
 
   describe("Composition", () => {
     it("Map and Match", () => {
-      type Transform<xs extends any[]> = Eval<
+      type Transform<xs extends any[]> = Call<
         Tuples.Map<
           Match<
             [

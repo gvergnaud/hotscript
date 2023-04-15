@@ -1,4 +1,4 @@
-import { MergeArgs } from "./impl/MergeArgs";
+import { ExcludePlaceholders, MergeArgs } from "./impl/MergeArgs";
 import { Head } from "../helpers";
 
 declare const rawArgs: unique symbol;
@@ -69,99 +69,35 @@ export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
 })["return"];
 
 /**
- * Call a HOTScript function with the only one argument.
+ * Calls a HOTScript function.
  *
  * @param fn - The function to call.
- * @param arg1 - The argument to pass to the function.
- * @returns The result of the function.
+ * @param ...args - optional arguments
  *
  * @example
  * ```ts
- * type T0 = Call<Numbers.Negate, 1>; // -1
+ * type T0 = Call<Numbers.Add<1, 2>>; // 3
+ * type T1 = Call<Numbers.Add<1>, 2>; // 3
+ * type T2 = Call<Numbers.Add, 1, 2>; // 3
+ * type T3 = Call<
+ *    Tuples.Map<Strings.Split<".">, ["a.b", "b.c"]>
+ * >; // [["a", "b"], ["b", "c"]]
  * ```
  */
-export type Call<fn extends Fn, arg1> = (fn & {
-  [rawArgs]: [arg1];
-})["return"];
-
-/**
- * Call a HOTScript function like a normal Utility type.
- *
- * @param fn - The function to call.
- *
- * @example
- * ```ts
- * type T0 = Eval<Numbers.Add<1, 2>>; // 3
- * type T1 = Eval<Numbers.Negate<1>>; // -1
- * ```
- */
-export type Eval<fn extends Fn> = (fn & {
-  [rawArgs]: [];
-})["return"];
-
-/**
- * Call a HOTScript function with the two arguments.
- *
- * @param fn - The function to call.
- * @param arg1 - The first argument to pass to the function.
- * @param arg2 - The second argument to pass to the function.
- * @returns The result of the function.
- *
- * @example
- * ```ts
- * type T0 = Call2<Numbers.Add, 1, 2>; // 3
- * ```
- */
-export type Call2<fn extends Fn, arg1, arg2> = (fn & {
-  [rawArgs]: [arg1, arg2];
-})["return"];
-
-/**
- * Call a HOTScript function with the three arguments.
- *
- * @param fn - The function to call.
- * @param arg1 - The first argument to pass to the function.
- * @param arg2 - The second argument to pass to the function.
- * @param arg3 - The third argument to pass to the function.
- * @returns The result of the function.
- */
-export type Call3<fn extends Fn, arg1, arg2, arg3> = (fn & {
-  [rawArgs]: [arg1, arg2, arg3];
-})["return"];
-
-/**
- * Call a HOTScript function with the four arguments.
- *
- * @param fn - The function to call.
- * @param arg1 - The first argument to pass to the function.
- * @param arg2 - The second argument to pass to the function.
- * @param arg3 - The third argument to pass to the function.
- * @param arg4 - The fourth argument to pass to the function.
- * @returns The result of the function.
- */
-export type Call4<fn extends Fn, arg1, arg2, arg3, arg4> = (fn & {
-  [rawArgs]: [arg1, arg2, arg3, arg4];
-})["return"];
-
-/**
- * Call a HOTScript function with the five arguments.
- *
- * @param fn - The function to call.
- * @param arg1 - The first argument to pass to the function.
- * @param arg2 - The second argument to pass to the function.
- * @param arg3 - The third argument to pass to the function.
- * @param arg4 - The fourth argument to pass to the function.
- * @param arg5 - The fifth argument to pass to the function.
- * @returns The result of the function.
- */
-export type Call5<fn extends Fn, arg1, arg2, arg3, arg4, arg5> = (fn & {
-  args: [arg1, arg2, arg3, arg4, arg5];
+export type Call<
+  fn extends Fn,
+  arg0 = _,
+  arg1 = _,
+  arg2 = _,
+  arg3 = _
+> = (fn & {
+  [rawArgs]: ExcludePlaceholders<[arg0, arg1, arg2, arg3]>;
 })["return"];
 
 /**
  * Pipe a value through a list of functions.
  * @description This is the same as the pipe operator in other languages.
- * Evaluates the first function with the initial value, then passes the result to the second function, and so on.
+ * Calls the first function with the initial value, then passes the result to the second function, and so on.
  *
  * @param acc - The initial value to pass to the first function.
  * @param xs - The list of functions to pipe the value through.
@@ -182,7 +118,7 @@ export type Pipe<acc, xs extends Fn[]> = xs extends [
 /**
  * Pipe a value through a list of functions.
  * @description This is the same as the pipe operator in other languages.
- * Evaluates the last function with the initial value, then passes the result to the second to last function, and so on.
+ * Calls the last function with the initial value, then passes the result to the second to last function, and so on.
  *
  * @param xs - The list of functions to pipe the value through.
  * @param acc - The initial value to pass to the last function.

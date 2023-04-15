@@ -10,8 +10,6 @@ sidebar_position: 0
 
 ## `PipeRight`
 
-## `Call`
-
 ## `Apply`
 
-## `Eval`
+## `Call`
