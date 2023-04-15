@@ -412,10 +412,10 @@ describe("Parser", () => {
 
   it("should parse complex endpoint routing grammar", () => {
     // examples route:
-    // /api/v1/users/<id:number>/posts/<postId:number>/comments/<commentId:number>
-    // /api/v2/emails/<email:string>/lists/<listEmail:string>
+    // /api/v1/users/{id:number}/posts/{postId:number}/comments/{commentId:number}
+    // /api/v2/emails/{email:string}/lists/{listEmail:string}
 
-    // The grammar is defined as a recursive grammar for Extended Regular Expressions:
+    // The grammar is defined as a recursive grammar for routing paths.
     // -------------------------------------------------------------
     // | path = path_segment ( / path_segment )*
     // | path_segment = path_parameter | path_literal
