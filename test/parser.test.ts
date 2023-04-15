@@ -460,6 +460,7 @@ describe("Parser", () => {
 
     // should allow to cast to number or boolean
     type res1 =
+      //  ^?
       PathParams<"/api/v1/users/{ id : number }/posts/{postId:number}/comments/{commentId:number}/active/{active:boolean}">;
     type test1 = Expect<
       Equal<
@@ -470,10 +471,12 @@ describe("Parser", () => {
 
     // should default to string
     type res2 = PathParams<"/api/v2/emails/{email}/lists/{listEmail}">;
+    //    ^?
     type test2 = Expect<Equal<res2, { email: string; listEmail: string }>>;
 
     // should error
     type res3 =
+      //  ^?
       PathParams<"/api/v2/emails/{email:string}/lists/{listEmail:string">;
     type test3 = Expect<
       Equal<
