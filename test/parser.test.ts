@@ -325,4 +325,157 @@ describe("Parser", () => {
       type test4 = Expect<Equal<res4, { a: { b: { c: { d: 8 } } } }>>;
     });
   });
+
+  it("should parse regex grammar", () => {
+    // The grammar is defined as a recursive grammar for Extended Regular Expressions:
+    // -------------------------------------------------------------
+    // | ERE = ERE_branch (| ERE_branch)*
+    // | ERE_branch = ERE_expr+
+    // | ERE_expr = ERE_term ERE_quant*
+    // | ERE_term = ERE_atom | ERE_group | ERE_assertion
+    // | ERE_atom = ERE_char | ERE_quoted_char | . | ERE_char_class | \d | \D | \s | \S | \w | \W | \t | \r | \v | \f | \n
+    // | ERE_group = ( ERE ) | (?<name> ERE ) | (?: ERE ) | \ Digit | \k<name>
+    // | ERE_assertion = ^ | $ | \b | \B | (?= ERE ) | (?! ERE ) | (?<= ERE ) | (?<! ERE )
+    // | ERE_char = any char exept ^ . [ $ ( ) | * + ? { \
+    // | ERE_any_char_class = any char exept ]
+    // | ERE_quoted_char = one of the following char sequences: \^ \. \[ \$ \( \) \| \* \+ \? \{ \\
+    // | ERE_quant = * | + | ? | { Digits } | { Digits , } | { Digits , Digits }
+    // | ERE_char_class = [ ERE_char_class_expr+ ] | [^ ERE_char_class_expr+ ]
+    // | ERE_char_class_expr = ERE_range | ERE_any_char_class
+    // | ERE_range = ERE_char - ERE_char
+    // | name = word
+    // -------------------------------------------------------------
+
+    type ERE = P.Choice<[ERE_branch, P.SepBy<ERE_branch, P.Literal<"|">>]>;
+    type ERE_branch = P.Many<ERE_expr>;
+    type ERE_expr = P.Sequence<[ERE_term, P.Many<ERE_quant>]>;
+    type ERE_term = P.Choice<[ERE_atom, ERE_group, ERE_assertion]>;
+    type ERE_atom = P.Choice<
+      [
+        ERE_char,
+        ERE_quoted_char,
+        // prettier-ignore
+        P.Literal<"." | "\\d" | "\\D" | "\\s" | "\\S" | "\\w" | "\\W" | "\\t" | "\\r" | "\\v" | "\\f" | "\\n">,
+        ERE_char_class
+      ]
+    >;
+    type ERE_group = P.Choice<
+      [
+        P.Between<P.Literal<"(">, ERE, P.Literal<")">>,
+        P.Between<P.Literal<"(?<">, ERE, P.Literal<")">>,
+        P.Between<P.Literal<"(?:">, ERE, P.Literal<")">>,
+        P.Sequence<[P.Literal<"\\">, P.Digits]>,
+        P.Sequence<[P.Literal<"\\k<">, P.Word, P.Literal<">">]>
+      ]
+    >;
+    type ERE_assertion = P.Choice<
+      [
+        P.Literal<"^" | "$" | "\\b" | "\\B">,
+        P.Between<P.Literal<"(?=">, ERE, P.Literal<")">>,
+        P.Between<P.Literal<"(?!">, ERE, P.Literal<")">>,
+        P.Between<P.Literal<"(?<=">, ERE, P.Literal<")">>,
+        P.Between<P.Literal<"(?<!">, ERE, P.Literal<")">>
+      ]
+    >;
+    // prettier-ignore
+    type ERE_char = P.NotLiteral<"^" | "." | "[" | "$" | "(" | ")" | "|" | "*" | "+" | "?" | "{" | "\\" | "]" | "-">;
+    type ERE_any_char_class = P.NotLiteral<"]">;
+    // prettier-ignore
+    type ERE_quoted_char = P.Literal<
+      "\\^" | "\\." | "\\[" | "\\$" | "\\(" | "\\)" | "\\|" | "\\*" | "\\+" | "\\?" | "\\{" | "\\\\"
+    >;
+    type ERE_quant = P.Choice<
+      [
+        P.Literal<"*" | "+" | "?">,
+        P.Between<P.Literal<"{">, P.Digits, P.Literal<"}">>,
+        P.Sequence<[P.Literal<"{">, P.Digits, P.Literal<",">, P.Literal<"}">]>,
+        P.Sequence<
+          [P.Literal<"{">, P.Digits, P.Literal<",">, P.Digits, P.Literal<"}">]
+        >
+      ]
+    >;
+    type ERE_char_class = P.Choice<
+      [
+        P.Between<P.Literal<"[">, P.Many<ERE_char_class_expr>, P.Literal<"]">>,
+        P.Between<P.Literal<"[^">, P.Many<ERE_char_class_expr>, P.Literal<"]">>
+      ]
+    >;
+    type ERE_char_class_expr = P.Choice<[ERE_range, ERE_any_char_class]>;
+    type ERE_range = P.Sequence<[ERE_char, P.Literal<"-">, ERE_char]>;
+
+    type RegExpr<T extends string> = Eval<
+      P.Parse<P.Sequence<[ERE, P.EndOfInput]>, T>
+    >;
+
+    type test1 = RegExpr<"a+[a-zA-Z]">;
+  });
+
+  it("should parse complex endpoint routing grammar", () => {
+    // examples route:
+    // /api/v1/users/<id:number>/posts/<postId:number>/comments/<commentId:number>
+    // /api/v2/emails/<email:string>/lists/<listEmail:string>
+
+    // The grammar is defined as a recursive grammar for Extended Regular Expressions:
+    // -------------------------------------------------------------
+    // | path = path_segment ( / path_segment )*
+    // | path_segment = path_parameter | path_literal
+    // | path_parameter = < name : type >
+    // | path_literal = word
+    // | name = word
+    // | type = string | number | boolean
+    // -------------------------------------------------------------
+
+    type path = P.Map<
+      P.Sequence<
+        [P.Skip<P.Literal<"/">>, P.SepBy<path_segment, P.Literal<"/">>]
+      >,
+      Objects.FromArray
+    >;
+    type path_segment = P.Choice<[path_parameter, P.Skip<P.Word>]>;
+    type path_parameter = P.Between<
+      P.Literal<"<">,
+      P.Sequence<[P.Word, P.Skip<P.Literal<":">>, type]>,
+      P.Literal<">">
+    >;
+    type type = P.Map<
+      P.Choice<
+        [P.Literal<"string">, P.Literal<"number">, P.Literal<"boolean">]
+      >,
+      Match<
+        [
+          Match.With<"string", string>,
+          Match.With<"number", number>,
+          Match.With<"boolean", boolean>
+        ]
+      >
+    >;
+
+    type PathParams<T extends string> = Eval<
+      P.Parse<P.Map<P.Sequence<[path, P.EndOfInput]>, Tuples.At<0>>, T>
+    >;
+
+    type res1 =
+      PathParams<"/api/v1/users/<id:number>/posts/<postId:number>/comments/<commentId:number>">;
+    type test1 = Expect<
+      Equal<res1, { id: number; postId: number; commentId: number }>
+    >;
+
+    type res2 =
+      PathParams<"/api/v2/emails/<email:string>/lists/<listEmail:string>">;
+    type test2 = Expect<Equal<res2, { email: string; listEmail: string }>>;
+
+    // should error
+    type res3 =
+      PathParams<"/api/v2/emails/<email:string>/lists/<listEmail:string">;
+    type test3 = Expect<
+      Equal<
+        res3,
+        {
+          message: never;
+          input: "<listEmail:string";
+          cause: "Expected 'literal('>')' - Received '' | Expected 'word()' - Received '<listEmail:string'";
+        }
+      >
+    >;
+  });
 });
