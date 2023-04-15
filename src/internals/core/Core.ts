@@ -202,8 +202,11 @@ type ComposeLeftImpl<fns extends Fn[], args extends any[]> = fns extends [
   : Head<args>;
 
 /**
- * Partially applies the passed arguments to the function and returns a new function.
- * The new function will have the applied arguments passed to the original function
+ * `PartialApply` Pre applies some arguments to a function.
+ * it takes a `Fn`, and a list of pre applied arguments,
+ * and returns a new function taking the rest of these arguments.
+ *
+ * Most functions in HOTScript are already partially applicable (curried).
  *
  * @param fn - The function to partially apply.
  * @param partialArgs - The arguments to partially apply.
@@ -211,7 +214,15 @@ type ComposeLeftImpl<fns extends Fn[], args extends any[]> = fns extends [
  *
  * @example
  * ```ts
- * type T0 = Call<PartialApply<Parameter, [_, (a: number, b: string) => void]>, 1> ; // [b: string]
+ * interface Append extends Fn {
+ *    return: [...this['arg1'], this['arg0']]
+ * }
+ *
+ * type Append1 = PartialApply<Append, [1]>
+ * type T0 = Call<Append1, [0]>; // [0, 1]
+ *
+ * type AppendTo123 = PartialApply<Append, [_, [1, 2, 3]]>
+ * type T1 = Call<AppendTo123, 4>; // [1, 2, 3, 4]
  */
 export interface PartialApply<fn extends Fn, partialArgs extends unknown[]>
   extends Fn {
