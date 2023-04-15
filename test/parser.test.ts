@@ -419,7 +419,7 @@ describe("Parser", () => {
     // -------------------------------------------------------------
     // | path = path_segment ( / path_segment )*
     // | path_segment = path_parameter | path_literal
-    // | path_parameter = < name : type >
+    // | path_parameter = { name : type } | { name }
     // | path_literal = word
     // | name = word
     // | type = string | number | boolean
@@ -433,47 +433,55 @@ describe("Parser", () => {
     >;
     type path_segment = P.Choice<[path_parameter, P.Skip<P.Word>]>;
     type path_parameter = P.Between<
-      P.Literal<"<">,
-      P.Sequence<[P.Word, P.Skip<P.Literal<":">>, type]>,
-      P.Literal<">">
-    >;
-    type type = P.Map<
-      P.Choice<
-        [P.Literal<"string">, P.Literal<"number">, P.Literal<"boolean">]
-      >,
-      Match<
+      P.Literal<"{">,
+      P.Sequence<
         [
-          Match.With<"string", string>,
-          Match.With<"number", number>,
-          Match.With<"boolean", boolean>
+          P.Trim<P.Word>,
+          P.Map<
+            P.Optional<P.Prefix<P.Literal<":">, type>>,
+            Match<
+              [
+                Match.With<["string"], string>,
+                Match.With<["number"], number>,
+                Match.With<["boolean"], boolean>,
+                Match.With<any, string>
+              ]
+            >
+          >
         ]
-      >
+      >,
+      P.Literal<"}">
     >;
+    type type = P.Trim<P.Literal<"string" | "number" | "boolean">>;
 
     type PathParams<T extends string> = Eval<
       P.Parse<P.Map<P.Sequence<[path, P.EndOfInput]>, Tuples.At<0>>, T>
     >;
 
+    // should allow to cast to number or boolean
     type res1 =
-      PathParams<"/api/v1/users/<id:number>/posts/<postId:number>/comments/<commentId:number>">;
+      PathParams<"/api/v1/users/{ id : number }/posts/{postId:number}/comments/{commentId:number}/active/{active:boolean}">;
     type test1 = Expect<
-      Equal<res1, { id: number; postId: number; commentId: number }>
+      Equal<
+        res1,
+        { id: number; postId: number; commentId: number; active: boolean }
+      >
     >;
 
-    type res2 =
-      PathParams<"/api/v2/emails/<email:string>/lists/<listEmail:string>">;
+    // should default to string
+    type res2 = PathParams<"/api/v2/emails/{email}/lists/{listEmail}">;
     type test2 = Expect<Equal<res2, { email: string; listEmail: string }>>;
 
     // should error
     type res3 =
-      PathParams<"/api/v2/emails/<email:string>/lists/<listEmail:string">;
+      PathParams<"/api/v2/emails/{email:string}/lists/{listEmail:string">;
     type test3 = Expect<
       Equal<
         res3,
         {
           message: never;
-          input: "<listEmail:string";
-          cause: "Expected 'literal('>')' - Received '' | Expected 'word()' - Received '<listEmail:string'";
+          input: "{listEmail:string";
+          cause: "Expected 'literal('}')' - Received '' | Expected 'word()' - Received '{listEmail:string'";
         }
       >
     >;

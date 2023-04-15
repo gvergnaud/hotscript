@@ -762,6 +762,38 @@ export namespace Parser {
   >;
 
   /**
+   * Parser that matches the given prefix parser and the given parser and discards the result of the prefix parser.
+   * @param Prefix - the parser to match before the parser to match and discard
+   * @param Parser - the parser to match
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Prefix<Literal<":">, Alpha>, ":a">;
+   * //   ^? type T0 = Ok< "a", "" >
+   * type T1 = Call<Prefix<Literal<":">, Alpha>, "a">;
+   * //   ^? type T1 = Error<{ message: "Expected Literal(':') - Received 'a'"; cause: "";}>
+   * ```
+   */
+  export type Prefix<Prefix, Parser> = Sequence<[Skip<Prefix>, Parser]>;
+
+  /**
+   * Parser that matches the given parser and the given suffix parser and discards the result of the suffix parser.
+   * @param Parser - the parser to match
+   * @param Suffix - the parser to match after the parser to match and discard
+   * @returns an Ok type if the parser matches or an error
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<Suffix<Alpha, Literal<":">>, "a:">;
+   * //   ^? type T0 = Ok< "a", "" >
+   * type T1 = Call<Suffix<Alpha, Literal<":">>, "a">;
+   * //   ^? type T1 = Error<{ message: "Expected Literal(':') - Received ''"; cause: "";}>
+   * ```
+   */
+  export type Suffix<Parser, Suffix> = Sequence<[Parser, Skip<Suffix>]>;
+
+  /**
    * Parser that matches whitespace characters.
    * @returns an Ok type if the parser matches or an error
    *
