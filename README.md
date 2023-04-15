@@ -1,6 +1,8 @@
 # Higher-Order TypeScript (HOTScript)
 
-A library of composable functions for the type-level! Transform your TypeScript types in any way you want using functions you already know.
+A library of composable functions for the type level!
+
+Transform your TypeScript types in any way you want using functions you already know.
 
 ![image](https://user-images.githubusercontent.com/9265418/223854503-b54f6a62-9f21-4953-aaa3-5d54699516a7.png)
 
@@ -127,7 +129,7 @@ type res5 = Pipe<
 - [x] Core
   - [x] `Pipe<Input, Fn[]>`
   - [x] `PipeRight<Fn[], Input>`
-  - [x] `Call<Fn, Arg>`
+  - [x] `Call<Fn, ...Arg>`
   - [x] `Apply<Fn, Arg[]>`
   - [x] `PartialApply<Fn, Arg[]>`
   - [x] `Compose<Fn[]>`
