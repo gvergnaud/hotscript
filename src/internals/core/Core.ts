@@ -4,6 +4,8 @@ import { Head } from "../helpers";
 declare const rawArgs: unique symbol;
 type rawArgs = typeof rawArgs;
 
+type GetArg<T extends Fn, Index extends number> = T[rawArgs] extends { [I in Index]: unknown } ? T[rawArgs][Index] : never
+
 /**
  * Base type for all functions
  * @description You need to extend this type to create a new function that can be used in the HOTScript library.
@@ -20,10 +22,10 @@ type rawArgs = typeof rawArgs;
 export interface Fn {
   [rawArgs]: unknown;
   args: this[rawArgs] extends infer args extends unknown[] ? args : never;
-  arg0: this[rawArgs] extends [infer arg, ...any] ? arg : never;
-  arg1: this[rawArgs] extends [any, infer arg, ...any] ? arg : never;
-  arg2: this[rawArgs] extends [any, any, infer arg, ...any] ? arg : never;
-  arg3: this[rawArgs] extends [any, any, any, infer arg, ...any] ? arg : never;
+  arg0: GetArg<this, 0>;
+  arg1: GetArg<this, 1>;
+  arg2: GetArg<this, 2>;
+  arg3: GetArg<this, 3>;
   return: unknown;
 }
 
