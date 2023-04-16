@@ -27,15 +27,18 @@ export interface Fn {
   return: unknown;
 }
 
+declare const unset: unique symbol;
+declare const _: unique symbol;
+
 /**
  * A placeholder type that can be used to indicate that a parameter is not set.
  */
-export type unset = "@hotscript/unset";
+export type unset = typeof unset;
 
 /**
  * A placeholder type that can be used to indicate that a parameter is to partially applied.
  */
-export type _ = "@hotscript/placeholder";
+export type _ = typeof _;
 
 export interface arg<Index extends number, Constraint = unknown> extends Fn {
   return: this["args"][Index] extends infer arg extends Constraint
