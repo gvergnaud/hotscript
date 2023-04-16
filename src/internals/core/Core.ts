@@ -7,7 +7,7 @@ type rawArgs = typeof rawArgs;
 /**
  * Base type for all functions
  * @description You need to extend this type to create a new function that can be used in the HOTScript library.
- * usually you will just convert some typescript utility time you already have to a hotscript function.
+ * usually you will just convert some typescript utility type you already have to a hotscript function.
  * This way you can use the HOTScript library to create more complex functions.
  *
  * @example
