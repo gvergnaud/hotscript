@@ -5,16 +5,25 @@ declare const rawArgs: unique symbol;
 type rawArgs = typeof rawArgs;
 
 /**
- * Base type for all functions
- * @description You need to extend this type to create a new function that can be used in the HOTScript library.
- * usually you will just convert some typescript utility time you already have to a hotscript function.
- * This way you can use the HOTScript library to create more complex functions.
+ * Base interface for all functions.
+ *
+ * @description You need to extend this interface to create a function
+ * that can be composed with other HOTScript functions.
+ * Usually you will just convert some utility type you already have
+ * by wrapping it inside a HOTScript function.
+ *
+ * Use `this['args']`, `this['arg0']`, `this['arg1']` etc to access
+ * function arguments.
+ *
+ * The `return` property is the value returned by your function.
  *
  * @example
  * ```ts
  * export interface CustomOmitFn extends Fn {
- *  return: this[args] extends [infer obj, infer keys] ? Omit<obj, keys> : never;
+ *  return: Omit<this['arg0'], this['arg1']>
  * }
+ *
+ * type T = Call<CustomOmitFn, { a, b, c }, 'a'> // { b, c }
  * ```
  */
 export interface Fn {
