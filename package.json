@@ -7,7 +7,7 @@
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc src/index.ts -d --emitDeclarationOnly --outDir dist",
+    "build": "tsc -d --emitDeclarationOnly --outDir dist",
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest",
     "clear-test": "jest --clearCache",
