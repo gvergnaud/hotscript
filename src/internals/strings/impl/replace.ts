@@ -1,4 +1,9 @@
 import { Fn } from "../../core/Core";
+import { Split } from "../../helpers";
+
+import { ParseRegExp, ReplaceWithRegExp } from "type-level-regexp/regexp";
+
+type SupportedRegExpReplaceFlags = "i" | "g" | "ig" | "gi";
 
 export type Replace<
   Str,
@@ -16,6 +21,22 @@ export interface ReplaceReducer<To extends string> extends Fn {
     infer From extends string,
     ...any
   ]
-    ? Replace<Str, From, To>
+    ? Str extends Str
+      ? From extends `/${infer RegExp}/`
+        ? ReplaceWithRegExp<Str, ParseRegExp<RegExp>, To, never>
+        : From extends `/${infer RegExp}/${SupportedRegExpReplaceFlags}`
+        ? ReplaceWithRegExp<
+            Str,
+            ParseRegExp<RegExp>,
+            To,
+            Split<
+              From extends `/${RegExp}/${infer Flags extends SupportedRegExpReplaceFlags}`
+                ? Flags
+                : never,
+              ""
+            >[number]
+          >
+        : Replace<Str, From, To>
+      : never
     : never;
 }

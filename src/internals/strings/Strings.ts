@@ -118,12 +118,14 @@ export namespace Strings {
   /**
    * Replace all instances of a substring in a string.
    * @param args[0] - The string to replace.
-   * @param from - The substring to replace.
-   * @param to - The substring to replace with.
+   * @param from - The substring to replace or a RegExp pattern (support `i` flag).
+   * @param to - The substring to replace with, can include special replacement patterns when replacing with a RegExp. see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement for more details.
    * @returns The replaced string.
    * @example
    * ```ts
    * type T0 = Call<Strings.Replace<".","/">,"a.b.c.d">; // "a/b/c/d"
+   * type T1 = Call<S.Replace<"/b(\\w+):\\s(?<year>\\d{4})/(?<month>\\d{1,2})/(?<day>\\d{1,2})/i", "My b$1 is $<month>.$<day>, $2">, "Birthday: 1991/9/15">; // "My birthday is 9.15, 1991"
+   * ```
    */
   export type Replace<
     from extends string | unset | _ = unset,
