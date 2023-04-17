@@ -1,5 +1,4 @@
 import {
-  Apply,
   Call,
   ComposeLeft,
   Fn,
@@ -146,7 +145,7 @@ export namespace Strings {
       infer Str,
       ...any
     ]
-      ? Apply<Impl.Match, [Str, RawRegExp]>
+      ? Call<Impl.Match, Str, RawRegExp>
       : never;
   }
 
@@ -172,7 +171,7 @@ export namespace Strings {
       infer Str,
       ...any
     ]
-      ? Apply<Impl.MatchAll, [Str, RawRegExp]>
+      ? Call<Impl.MatchAll, Str, RawRegExp>
       : never;
   }
 
