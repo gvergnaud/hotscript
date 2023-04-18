@@ -1,7 +1,12 @@
 import { Fn } from "../../core/Core";
 import { Split } from "../../helpers";
 
-import { ParseRegExp, ReplaceWithRegExp } from "type-level-regexp/regexp";
+import {
+  Flag,
+  Matcher,
+  ParseRegExp,
+  ReplaceWithRegExp,
+} from "type-level-regexp/regexp";
 
 type SupportedRegExpReplaceFlags = "i" | "g" | "ig" | "gi";
 
@@ -15,6 +20,16 @@ export type Replace<
     : Str
   : Str;
 
+type ResovleRegExpReplaceOrError<
+  Str extends string,
+  RegExp extends string,
+  To extends string,
+  FlagUnion extends Flag,
+  ParsedResult = ParseRegExp<RegExp>
+> = ParsedResult extends Matcher[]
+  ? ReplaceWithRegExp<Str, ParsedResult, To, FlagUnion>
+  : ParsedResult;
+
 export interface ReplaceReducer<To extends string> extends Fn {
   return: this["args"] extends [
     infer Str extends string,
@@ -23,11 +38,11 @@ export interface ReplaceReducer<To extends string> extends Fn {
   ]
     ? Str extends Str
       ? From extends `/${infer RegExp}/`
-        ? ReplaceWithRegExp<Str, ParseRegExp<RegExp>, To, never>
+        ? ResovleRegExpReplaceOrError<Str, RegExp, To, never>
         : From extends `/${infer RegExp}/${SupportedRegExpReplaceFlags}`
-        ? ReplaceWithRegExp<
+        ? ResovleRegExpReplaceOrError<
             Str,
-            ParseRegExp<RegExp>,
+            RegExp,
             To,
             Split<
               From extends `/${RegExp}/${infer Flags extends SupportedRegExpReplaceFlags}`
