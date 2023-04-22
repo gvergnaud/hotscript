@@ -63,6 +63,26 @@ describe("Strings", () => {
           }
         >
       >;
+
+      type res2 = $<
+      //    ^?
+      Strings.Match<"/a(?<g1>\\w*)(?<g2>\\d+)(?<g3>\\w*)(?<g4>\\w+)/">,
+      "abcd1234xyz"
+    >;
+    type test2 = Expect<
+      Equal<
+        res2,
+        ["abcd1234xyz", "bcd123", "4", "xy", "z"] & {
+          index: 0;
+          groups: {
+              g1: "bcd123";
+              g2: "4";
+              g3: "xy";
+              g4: "z";
+          };
+      }
+      >
+    >;
     });
 
     it("support pattern without wrapping with `/<pattern>/`", () => {
