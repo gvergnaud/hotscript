@@ -160,6 +160,7 @@ type res5 = Pipe<
   - [x] `Filter<Fn, Tuple>`
   - [x] `Reduce<Fn, Init, Tuple>`
   - [x] `ReduceRight<Fn, Init, Tuple>`
+  - [x] `Reverse<Tuple>`
   - [x] `Every<Fn, Tuple>`
   - [x] `Some<Fn, Tuple>`
   - [x] `ToUnion<Tuple>`

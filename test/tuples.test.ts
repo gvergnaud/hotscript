@@ -148,6 +148,12 @@ describe("Tuples", () => {
     type tes3 = Expect<Equal<res3, "b">>;
   });
 
+  it("Reverse", () => {
+    type res1 = Call<Tuples.Reverse, ["a", "b", "c", 2, "d"]>;
+    //   ^?
+    type tes1 = Expect<Equal<res1, ["d", 2, "c", "b", "a"]>>;
+  });
+
   it("Drop", () => {
     type res1 = Call<Tuples.Drop<1>, ["a", "b", "c", 2, "d"]>;
     //   ^?

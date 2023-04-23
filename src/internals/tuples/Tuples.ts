@@ -260,6 +260,26 @@ export namespace Tuples {
     return: ReduceImpl<Extract<this["arg0"], Fn>, this["arg1"], this["arg2"]>;
   }
 
+  type ReverseImpl<tuple> = tuple extends [infer first, ...infer rest]
+    ? [...ReverseImpl<rest>, first]
+    : [];
+
+  /**
+   * Reverse a tuple.
+   * @params args[0] - A tuple.
+   * @return Reversed tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<T.Reverse,[1,2,3]>; // [3,2,1]
+   * ```
+   */
+  export type Reverse<tuple extends readonly any[] | unset = unset> =
+    PartialApply<ReverseFn, [tuple]>;
+
+  interface ReverseFn extends Fn {
+    return: ReverseImpl<this["arg0"]>;
+  }
+
   type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
     ...infer rest,
     infer last
