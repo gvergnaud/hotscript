@@ -1,4 +1,4 @@
-import { Fn, PartialApply, unset, _, Call } from "../core/Core";
+import { Fn, PartialApply, unset, _ } from "../core/Core";
 
 export namespace Functions {
   type ParametersImpl<fn> = fn extends (...args: infer args) => any

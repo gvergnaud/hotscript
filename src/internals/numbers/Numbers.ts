@@ -1,6 +1,5 @@
-import { Call, Fn, PartialApply, unset, _ } from "../core/Core";
+import { Fn, PartialApply, unset, _ } from "../core/Core";
 import * as Impl from "./impl/numbers";
-import { Functions } from "../functions/Functions";
 
 export namespace Numbers {
   /**

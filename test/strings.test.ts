@@ -1,4 +1,4 @@
-import { _, $, Numbers, Strings, Tuples } from "../src/index";
+import { _, $, Strings } from "../src/index";
 import { Compose } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 

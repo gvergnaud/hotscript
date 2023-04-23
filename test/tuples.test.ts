@@ -2,7 +2,6 @@ import { Booleans } from "../src/internals/booleans/Booleans";
 import { Call, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
-import { Objects } from "../src/internals/objects/Objects";
 import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 

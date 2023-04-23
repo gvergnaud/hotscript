@@ -10,12 +10,7 @@ import {
   unset,
   _,
 } from "../core/Core";
-import {
-  Iterator,
-  Prettify,
-  Stringifiable,
-  UnionToIntersection,
-} from "../helpers";
+import { Iterator, Prettify, Stringifiable } from "../helpers";
 import { Objects } from "../objects/Objects";
 import * as NumberImpls from "../numbers/impl/numbers";
 import { Std } from "../std/Std";

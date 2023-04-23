@@ -1,7 +1,6 @@
 import {
   Booleans,
   Call,
-  Functions,
   Match,
   Numbers,
   Objects,
