@@ -29,7 +29,7 @@ HotScript is a work-in-progress library, so expect **breaking changes** in its A
 
 #### Transforming a list
 
-[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgFQK5gA26AztgMoxTAB2A5mXAHJ4gBG6UJcAvnAGZQIIOACIAFhBgkAxtTAxRAbgBQKgPTq4YKOhgxgnALTA6NaOhUwAnhji6SARjgBeFGnQAeFXDibfAHoA-D5wANqO2ABM2ADM2AAscYkAupihYaG++ESkAHQAsgCGYJ4s7JwkeQCCACa1nrEAfE3pvtkExFUAUhC0nqJ5oq1ZcJTU9FXkRMAwA0Mj7bid+cWl47QMeTgQ5RxQi+05XYUlZaz7VXUNjgAMLW1HK1OsoSkqTUpAA)
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAbzgBWGApgGjgFQK5gA26AztgMoxTAB2A5mXAHJ4gBG6UJcAvnAGZQIIOACIAFhBgkAxtTAxRAbgBQKmAE8McKKQCMcALwo06ADwq4cAPTWrAPQD8cAGwAmS3ADae7G+wAzNgALAC6mJ5enlb4RKQAdACyAIZgZizsnCTxAIIAJnlmAQB8xdhWFTZ2XsHYAKzYLtgA7KHRuATE2QBSELRmovGiZZWjY1a2YsHxdfEu8c2i7ZTU9NnkRMAwA0Mj4+OTXqLBotiidadiLpeii22VsV1JqWYrtAzxyLoYNIWiesMRod-icznoLmDrmC7u1HgkUmk3mt4jgIBkOFA9hVDnpanBwdg9E18a1YZ0EuRWPtqQc7O5PG1ikogA)
 
 <!-- prettier-ignore -->
 ```ts
