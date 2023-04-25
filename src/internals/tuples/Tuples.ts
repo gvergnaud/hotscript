@@ -690,6 +690,39 @@ export namespace Tuples {
     >;
   }
 
+  /**
+   * SplitAt takes an index and a tuple, splits the tuple
+   * at the provided index and returns the list of elements
+   * before this index and the list of elements after this
+   * index as a [before[], after[]] tuple.
+   *
+   * @param index - the index at which to split the list
+   * @param tuple - The list to split
+   * @returns A [before[], after[]] tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.SplitAt<2>, [1, 2, 3, 4]>; // [[1, 2], [3, 4]]
+   * type T1 = Call<Tuples.SplitAt<2>, [1]>; // [[1], []]
+   * ```
+   */
+  export type SplitAt<
+    index extends number | unset | _ = unset,
+    tuple extends unknown[] | unset | _ = unset
+  > = PartialApply<SplitAtFn, [index, tuple]>;
+
+  export interface SplitAtFn extends Fn {
+    return: this["args"] extends [
+      infer index extends number,
+      infer tuple extends any[],
+      ...any
+    ]
+      ? [
+          TakeImpl<tuple, Iterator.Iterator<index>>,
+          DropImpl<tuple, Iterator.Iterator<index>>
+        ]
+      : never;
+  }
+
   interface ZipWithMapper<fn extends Fn, arrs extends unknown[][]> extends Fn {
     return: this["args"] extends [infer Index extends number, ...any]
       ? Apply<fn, Call<Tuples.Map<Tuples.At<Index>, arrs>>>

@@ -162,6 +162,7 @@ type res5 = Pipe<
   - [x] `ReduceRight<Fn, Init, Tuple>`
   - [x] `Every<Fn, Tuple>`
   - [x] `Some<Fn, Tuple>`
+  - [x] `SplitAt<N, Tuple>`
   - [x] `ToUnion<Tuple>`
   - [x] `ToIntersection<Tuple>`
   - [x] `Prepend<X, Tuple>`

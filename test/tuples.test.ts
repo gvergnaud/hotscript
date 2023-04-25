@@ -327,6 +327,16 @@ describe("Tuples", () => {
     type test2 = Expect<Equal<res2, undefined>>;
   });
 
+  it("SplitAt", () => {
+    type res0 = Call<Tuples.SplitAt<2>, [1, 2, 3, 4]>;
+    //    ^?
+    type test0 = Expect<Equal<res0, [[1, 2], [3, 4]]>>;
+
+    type res1 = Call<Tuples.SplitAt<2>, [1]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [[1], []]>>;
+  });
+
   it("IsEmpty", () => {
     type res1 = Call<
       //    ^?
