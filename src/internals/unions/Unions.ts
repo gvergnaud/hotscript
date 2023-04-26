@@ -1,5 +1,4 @@
 import { Call, Fn, PartialApply, unset, _ } from "../core/Core";
-import { Functions } from "../functions/Functions";
 import { UnionToIntersection, UnionToTuple } from "../helpers";
 import { Std } from "../std/Std";
 import { Tuples } from "../tuples/Tuples";

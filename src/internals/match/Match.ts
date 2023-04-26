@@ -1,5 +1,4 @@
 import { Fn, PartialApply, unset, _ } from "../core/Core";
-import { Functions } from "../functions/Functions";
 import * as Impl from "./impl/match";
 
 /**

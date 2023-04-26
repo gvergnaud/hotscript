@@ -10,12 +10,7 @@ import {
   unset,
   _,
 } from "../core/Core";
-import {
-  Iterator,
-  Prettify,
-  Stringifiable,
-  UnionToIntersection,
-} from "../helpers";
+import { Iterator, Prettify, Stringifiable } from "../helpers";
 import { Objects } from "../objects/Objects";
 import * as NumberImpls from "../numbers/impl/numbers";
 import { Std } from "../std/Std";
@@ -258,6 +253,33 @@ export namespace Tuples {
 
   interface ReduceFn extends Fn {
     return: ReduceImpl<Extract<this["arg0"], Fn>, this["arg1"], this["arg2"]>;
+  }
+
+  type ReverseImpl<tuple> = any[] extends tuple
+    ? tuple
+    : ReverseRecImpl<tuple, []>;
+
+  type ReverseRecImpl<tuple, acc extends unknown[]> = tuple extends [
+    infer first,
+    ...infer rest
+  ]
+    ? ReverseRecImpl<rest, [first, ...acc]>
+    : acc;
+
+  /**
+   * Reverse a tuple.
+   * @params args[0] - A tuple.
+   * @return Reversed tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<T.Reverse,[1,2,3]>; // [3,2,1]
+   * ```
+   */
+  export type Reverse<tuple extends readonly unknown[] | unset = unset> =
+    PartialApply<ReverseFn, [tuple]>;
+
+  interface ReverseFn extends Fn {
+    return: ReverseImpl<this["arg0"]>;
   }
 
   type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [

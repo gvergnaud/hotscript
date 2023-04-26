@@ -1,4 +1,4 @@
-import { Pipe, Fn, B, U, F, Call, Unions, _ } from "../src/index";
+import { Pipe, Fn, B, U, Call, Unions, _ } from "../src/index";
 import { Compose } from "../src/internals/core/Core";
 import { Equal, Expect, Extends } from "../src/internals/helpers";
 
