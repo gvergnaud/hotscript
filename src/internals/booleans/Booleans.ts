@@ -1,8 +1,6 @@
 import { Equal, Every, Some } from "../helpers";
 import { Compose, Fn, PartialApply, unset } from "../core/Core";
 
-import { Functions } from "../functions/Functions";
-
 export namespace Booleans {
   type ExtendsImpl<a, b> = [a] extends [b] ? true : false;
 

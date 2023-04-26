@@ -1,5 +1,4 @@
 import { arg, Call, Fn, PartialApply, unset } from "../../core/Core";
-import { Functions } from "../../functions/Functions";
 import { Primitive, UnionToIntersection } from "../../helpers";
 
 type GetWithDefault<Obj, K, Def> = K extends keyof Obj ? Obj[K] : Def;

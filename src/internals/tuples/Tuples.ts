@@ -10,12 +10,7 @@ import {
   unset,
   _,
 } from "../core/Core";
-import {
-  Iterator,
-  Prettify,
-  Stringifiable,
-  UnionToIntersection,
-} from "../helpers";
+import { Iterator, Prettify, Stringifiable } from "../helpers";
 import { Objects } from "../objects/Objects";
 import * as NumberImpls from "../numbers/impl/numbers";
 import { Std } from "../std/Std";
@@ -258,6 +253,33 @@ export namespace Tuples {
 
   interface ReduceFn extends Fn {
     return: ReduceImpl<Extract<this["arg0"], Fn>, this["arg1"], this["arg2"]>;
+  }
+
+  type ReverseImpl<tuple> = any[] extends tuple
+    ? tuple
+    : ReverseRecImpl<tuple, []>;
+
+  type ReverseRecImpl<tuple, acc extends unknown[]> = tuple extends [
+    infer first,
+    ...infer rest
+  ]
+    ? ReverseRecImpl<rest, [first, ...acc]>
+    : acc;
+
+  /**
+   * Reverse a tuple.
+   * @params args[0] - A tuple.
+   * @return Reversed tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<T.Reverse,[1,2,3]>; // [3,2,1]
+   * ```
+   */
+  export type Reverse<tuple extends readonly unknown[] | unset = unset> =
+    PartialApply<ReverseFn, [tuple]>;
+
+  interface ReverseFn extends Fn {
+    return: ReverseImpl<this["arg0"]>;
   }
 
   type ReduceRightImpl<xs, acc, fn extends Fn> = xs extends [
@@ -688,6 +710,39 @@ export namespace Tuples {
       Extract<this["arg0"], Fn>,
       Extract<this["arg1"], any[]>
     >;
+  }
+
+  /**
+   * SplitAt takes an index and a tuple, splits the tuple
+   * at the provided index and returns the list of elements
+   * before this index and the list of elements after this
+   * index as a [before[], after[]] tuple.
+   *
+   * @param index - the index at which to split the list
+   * @param tuple - The list to split
+   * @returns A [before[], after[]] tuple.
+   * @example
+   * ```ts
+   * type T0 = Call<Tuples.SplitAt<2>, [1, 2, 3, 4]>; // [[1, 2], [3, 4]]
+   * type T1 = Call<Tuples.SplitAt<2>, [1]>; // [[1], []]
+   * ```
+   */
+  export type SplitAt<
+    index extends number | unset | _ = unset,
+    tuple extends unknown[] | unset | _ = unset
+  > = PartialApply<SplitAtFn, [index, tuple]>;
+
+  export interface SplitAtFn extends Fn {
+    return: this["args"] extends [
+      infer index extends number,
+      infer tuple extends any[],
+      ...any
+    ]
+      ? [
+          TakeImpl<tuple, Iterator.Iterator<index>>,
+          DropImpl<tuple, Iterator.Iterator<index>>
+        ]
+      : never;
   }
 
   interface ZipWithMapper<fn extends Fn, arrs extends unknown[][]> extends Fn {

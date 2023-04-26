@@ -2,7 +2,6 @@ import { Booleans } from "../src/internals/booleans/Booleans";
 import { Call, Fn, Pipe, _ } from "../src/internals/core/Core";
 import { Equal, Expect } from "../src/internals/helpers";
 import { Numbers } from "../src/internals/numbers/Numbers";
-import { Objects } from "../src/internals/objects/Objects";
 import { Strings } from "../src/internals/strings/Strings";
 import { Tuples } from "../src/internals/tuples/Tuples";
 
@@ -146,6 +145,12 @@ describe("Tuples", () => {
     type res3 = Call<Tuples.Find<IsSecond, ["a", "b", "c", 2, "d"]>>;
     //   ^?
     type tes3 = Expect<Equal<res3, "b">>;
+  });
+
+  it("Reverse", () => {
+    type res1 = Call<Tuples.Reverse, ["a", "b", "c", 2, "d"]>;
+    //   ^?
+    type tes1 = Expect<Equal<res1, ["d", 2, "c", "b", "a"]>>;
   });
 
   it("Drop", () => {
@@ -325,6 +330,16 @@ describe("Tuples", () => {
       Tuples.At<6, [1, "a", 2, "b", 3, "c"]>
     >;
     type test2 = Expect<Equal<res2, undefined>>;
+  });
+
+  it("SplitAt", () => {
+    type res0 = Call<Tuples.SplitAt<2>, [1, 2, 3, 4]>;
+    //    ^?
+    type test0 = Expect<Equal<res0, [[1, 2], [3, 4]]>>;
+
+    type res1 = Call<Tuples.SplitAt<2>, [1]>;
+    //    ^?
+    type test1 = Expect<Equal<res1, [[1], []]>>;
   });
 
   it("IsEmpty", () => {
