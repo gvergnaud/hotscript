@@ -1,6 +1,6 @@
 import { Call, Fn } from "../../core/Core";
-import { Split } from "../../helpers";
 import { T } from "../../..";
+import { RegExp } from "./regexp";
 
 import {
   ParseRegExp,
@@ -10,8 +10,6 @@ import {
   Matcher,
 } from "type-level-regexp/regexp";
 
-type SupportedRegExpReplaceFlags = "i" | "g" | "ig" | "gi";
-
 type PrettifyRegExpMatchArray<RegExpMatchResult> = RegExpMatchResult extends {
   _matchArray: infer MatchArray;
   index: infer Index;
@@ -20,40 +18,27 @@ type PrettifyRegExpMatchArray<RegExpMatchResult> = RegExpMatchResult extends {
   ? MatchArray & { index: Index; groups: Groups }
   : null;
 
-interface PrettifyRegExpMatchArrayFn extends Fn {
-  return: this["args"] extends [infer RegExpMatchResult, ...any]
-    ? PrettifyRegExpMatchArray<RegExpMatchResult>
-    : never;
-}
-
-type ResovleRegExpMatchOrError<
-  Str extends string,
-  RegExp extends string,
-  FlagUnion extends Flag,
-  ParsedResult = ParseRegExp<RegExp>
-> = ParsedResult extends Matcher[]
-  ? "g" extends FlagUnion
-    ? MatchRegExp<Str, ParsedResult, FlagUnion>
-    : PrettifyRegExpMatchArray<MatchRegExp<Str, ParsedResult, FlagUnion>>
-  : ParsedResult;
-
 export interface Match extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    infer RawRegExp extends string,
+    RegExp<infer RegExpPattern, infer Flags>,
     ...any
   ]
     ? Str extends Str
-      ? RawRegExp extends `/${infer RegExp}/`
-        ? ResovleRegExpMatchOrError<Str, RegExp, never>
-        : RawRegExp extends `/${infer RegExp}/${SupportedRegExpReplaceFlags}`
-        ? RawRegExp extends `/${RegExp}/${infer Flags}`
-          ? Split<Flags, "">[number] extends infer FlagsUnion extends Flag
-            ? ResovleRegExpMatchOrError<Str, RegExp, FlagsUnion>
-            : never
-          : never
-        : ResovleRegExpMatchOrError<Str, RawRegExp, never>
+      ? ParseRegExp<RegExpPattern> extends infer ParsedResult
+        ? ParsedResult extends Matcher[]
+          ? "g" extends Flags
+            ? MatchRegExp<Str, ParsedResult, Flags>
+            : PrettifyRegExpMatchArray<MatchRegExp<Str, ParsedResult, Flags>>
+          : ParsedResult
+        : never
       : never
+    : never;
+}
+
+interface PrettifyRegExpMatchArrayFn extends Fn {
+  return: this["args"] extends [infer RegExpMatchResult, ...any]
+    ? PrettifyRegExpMatchArray<RegExpMatchResult>
     : never;
 }
 
@@ -73,26 +58,12 @@ type ResovleRegExpMatchAllOrError<
 export interface MatchAll extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    infer RawRegExp extends string,
+    RegExp<infer RegExpPattern, infer Flags>,
     ...any
   ]
     ? Str extends Str
-      ? RawRegExp extends `/${infer RegExp}/g`
-        ? ResovleRegExpMatchAllOrError<Str, RegExp, "g">
-        : RawRegExp extends `/${infer RegExp}/${Exclude<
-            SupportedRegExpReplaceFlags,
-            "i"
-          >}`
-        ? ResovleRegExpMatchAllOrError<
-            Str,
-            RegExp,
-            Split<
-              RawRegExp extends `/${RegExp}/${infer Flags extends SupportedRegExpReplaceFlags}`
-                ? Flags
-                : never,
-              ""
-            >[number]
-          >
+      ? "g" extends Flags
+        ? ResovleRegExpMatchAllOrError<Str, RegExpPattern, Flags>
         : TypeError & {
             msg: "MatchAll called with a non-global RegExp argument";
           }
