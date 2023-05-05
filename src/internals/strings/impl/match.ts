@@ -1,6 +1,7 @@
 import { Call, Fn } from "../../core/Core";
 import { T } from "../../..";
-import { RegExp } from "./regexp";
+
+import { RegExpStruct } from "./regexp";
 
 import {
   ParseRegExp,
@@ -21,7 +22,7 @@ type PrettifyRegExpMatchArray<RegExpMatchResult> = RegExpMatchResult extends {
 export interface Match extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    RegExp<infer RegExpPattern, infer Flags>,
+    RegExpStruct<infer RegExpPattern, infer Flags>,
     ...any
   ]
     ? Str extends Str
@@ -58,7 +59,7 @@ type ResovleRegExpMatchAllOrError<
 export interface MatchAll extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    RegExp<infer RegExpPattern, infer Flags>,
+    RegExpStruct<infer RegExpPattern, infer Flags>,
     ...any
   ]
     ? Str extends Str

@@ -27,7 +27,7 @@ export namespace Strings {
   export type RegExp<
     Pattern extends string,
     Flags extends Impl.SupportedRegExpFlags = never
-  > = Impl.RegExp<Pattern, Flags>;
+  > = Impl.RegExpStruct<Pattern, Flags>;
 
   /**
    * Get the length of a string.
@@ -204,7 +204,15 @@ export namespace Strings {
       infer Str,
       ...any
     ]
-      ? Call<Tuples.Reduce<Impl.ReplaceReducer<To>, Str>, H.UnionToTuple<From>>
+      ? keyof RegExp<string> extends keyof From
+        ? Call<
+            Tuples.Reduce<Impl.ReplaceWithRegExpReducer<To>, Str>,
+            H.UnionToTuple<From>
+          >
+        : Call<
+            Tuples.Reduce<Impl.ReplaceReducer<To>, Str>,
+            H.UnionToTuple<From>
+          >
       : never;
   }
 
