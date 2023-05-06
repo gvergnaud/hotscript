@@ -1,9 +1,6 @@
 import { ExcludePlaceholders, MergeArgs } from "./impl/MergeArgs";
 import { Head } from "../helpers";
 
-const rawArgs = Symbol("@hotscript/rawArgs");
-type rawArgs = typeof rawArgs;
-
 /**
  * Base interface for all functions.
  *
@@ -27,27 +24,24 @@ type rawArgs = typeof rawArgs;
  * ```
  */
 export interface Fn {
-  [rawArgs]: unknown;
-  args: this[rawArgs] extends infer args extends unknown[] ? args : never;
-  arg0: this[rawArgs] extends [infer arg, ...any] ? arg : never;
-  arg1: this[rawArgs] extends [any, infer arg, ...any] ? arg : never;
-  arg2: this[rawArgs] extends [any, any, infer arg, ...any] ? arg : never;
-  arg3: this[rawArgs] extends [any, any, any, infer arg, ...any] ? arg : never;
+  ["__args"]: unknown;
+  args: this["__args"] extends infer args extends unknown[] ? args : never;
+  arg0: this["__args"] extends [infer arg, ...any] ? arg : never;
+  arg1: this["__args"] extends [any, infer arg, ...any] ? arg : never;
+  arg2: this["__args"] extends [any, any, infer arg, ...any] ? arg : never;
+  arg3: this["__args"] extends [any, any, any, infer arg, ...any] ? arg : never;
   return: unknown;
 }
-
-const unset = Symbol("@hotscript/unset");
-const _ = Symbol("@hotscript/_");
 
 /**
  * A placeholder type that can be used to indicate that a parameter is not set.
  */
-export type unset = typeof unset;
+export type unset = { __tag: "@hotscript/unset" };
 
 /**
  * A placeholder type that can be used to indicate that a parameter is to partially applied.
  */
-export type _ = typeof _;
+export type _ = { __tag: "@hotscript/_" };
 
 export interface arg<Index extends number, Constraint = unknown> extends Fn {
   return: this["args"][Index] extends infer arg extends Constraint
@@ -77,7 +71,7 @@ export type arg3<Constraint = unknown> = arg<3, Constraint>;
  * ```
  */
 export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
-  [rawArgs]: args;
+  ["__args"]: args;
 })["return"];
 
 /**
@@ -103,7 +97,7 @@ export type Call<
   arg2 = _,
   arg3 = _
 > = (fn & {
-  [rawArgs]: ExcludePlaceholders<[arg0, arg1, arg2, arg3]>;
+  ["__args"]: ExcludePlaceholders<[arg0, arg1, arg2, arg3]>;
 })["return"];
 
 /**
