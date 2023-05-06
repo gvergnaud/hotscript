@@ -1,7 +1,7 @@
 import { ExcludePlaceholders, MergeArgs } from "./impl/MergeArgs";
 import { Head } from "../helpers";
 
-declare const rawArgs: unique symbol;
+const rawArgs = Symbol("@hotscript/rawArgs");
 type rawArgs = typeof rawArgs;
 
 /**
@@ -36,8 +36,8 @@ export interface Fn {
   return: unknown;
 }
 
-declare const unset: unique symbol;
-declare const _: unique symbol;
+const unset = Symbol("@hotscript/unset");
+const _ = Symbol("@hotscript/_");
 
 /**
  * A placeholder type that can be used to indicate that a parameter is not set.
