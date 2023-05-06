@@ -1,6 +1,6 @@
 {
   "name": "hotscript",
-  "version": "1.0.12",
+  "version": "1.0.13-test.0",
   "description": "A library of composable functions for the type-level! Transform your TypeScript types in any way you want using functions you already know.",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
