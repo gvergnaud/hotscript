@@ -17,6 +17,7 @@ import {
   arg3,
   args,
 } from "./internals/core/Core";
+import { Parser } from "./internals/parser/Parser";
 import { Functions } from "./internals/functions/Functions";
 import { Numbers } from "./internals/numbers/Numbers";
 import { Objects } from "./internals/objects/Objects";
@@ -53,6 +54,7 @@ export {
   Numbers,
   Tuples,
   Functions,
+  Parser,
   Booleans as B,
   Objects as O,
   Unions as U,
@@ -60,4 +62,5 @@ export {
   Numbers as N,
   Tuples as T,
   Functions as F,
+  Parser as P,
 };
