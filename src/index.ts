@@ -25,6 +25,7 @@ import { Tuples } from "./internals/tuples/Tuples";
 import { Unions } from "./internals/unions/Unions";
 import { Booleans } from "./internals/booleans/Booleans";
 import { Match } from "./internals/match/Match";
+import { Parser } from "./internals/parser/Parser";
 
 export {
   _,
@@ -53,6 +54,7 @@ export {
   Numbers,
   Tuples,
   Functions,
+  Parser,
   Booleans as B,
   Objects as O,
   Unions as U,
@@ -60,4 +62,5 @@ export {
   Numbers as N,
   Tuples as T,
   Functions as F,
+  Parser as P,
 };
