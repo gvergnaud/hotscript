@@ -1,4 +1,8 @@
+import { Call, PartialApply } from "../../core/Core";
 import * as H from "../../helpers";
+import { Tuples } from "../../tuples/Tuples";
+import { Match } from "./match";
+import { RegExpStruct } from "./regexp";
 
 type ConcatSplits<
   Parts extends string[],
@@ -22,14 +26,32 @@ type SplitManySep<
 /**
  * Split a string into a tuple.
  * @param Str - The string to split.
- * @param Sep - The separator to split on, can be a union of strings of more than one character.
+ * @param Sep - The separator to split on, can be a union of strings of more than one character, or a union of RegExp pattern `Strings.RegExp` (support `i` flag)
  * @returns The tuple of each split. if sep is an empty string, returns a tuple of each character.
  */
 export type Split<
   Str,
-  Sep extends string,
-  Seps = H.UnionToTuple<Sep>
-> = Seps extends string[]
+  Sep extends string | RegExpStruct<string, any>,
+  Seps = keyof RegExpStruct<string> extends keyof Sep
+    ? H.UnionToTuple<Sep> extends infer REs
+      ? H.UnionToTuple<
+          Call<
+            Tuples.FlatMap<PartialApply<Match, [Str]>>,
+            {
+              [K in keyof REs]: REs[K] extends RegExpStruct<
+                infer Pattern,
+                infer Flags
+              >
+                ? RegExpStruct<Pattern, Flags | "g">
+                : never;
+            }
+          >[number]
+        >
+      : never
+    : H.UnionToTuple<Sep>
+> = H.IsNever<Seps> extends true
+  ? [...(Str extends "" ? [] : [Str])]
+  : Seps extends string[]
   ? Str extends string
     ? SplitManySep<Str, Seps>
     : []

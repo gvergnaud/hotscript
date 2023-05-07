@@ -437,6 +437,21 @@ describe("Strings", () => {
     type res4 = $<Strings.Split<"--" | ".">, "1--2-3.4..5">;
     //    ^?
     type test4 = Expect<Equal<res4, ["1", "2-3", "4", "5"]>>;
+
+    it("supports RegExp pattern", () => {
+      type res5 = $<Strings.Split<Strings.RegExp<"-{2,4}|\\.">>, "1--2-3.4..5">;
+      //    ^?
+      type test5 = Expect<Equal<res5, ["1", "2-3", "4", "5"]>>;
+    });
+
+    it("supports union of RegExp pattern", () => {
+      type res6 = $<
+        //    ^?
+        Strings.Split<Strings.RegExp<"{|}"> | Strings.RegExp<"[*-.:]">>,
+        "{name:'foo',age:18}"
+      >;
+      type test6 = Expect<Equal<res6, ["name", "'foo'", "age", "18"]>>;
+    });
   });
 
   it("Repeat", () => {

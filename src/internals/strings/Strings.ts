@@ -237,21 +237,26 @@ export namespace Strings {
   /**
    * Split a string into a tuple of strings.
    * @param args[0] - The string to split.
-   * @param sep - The separator to split the string with.
+   * @param sep - The separator to split the string with, can be a union of strings or RegExp pattern `Strings.RegExp` (support `i` flag)
    * @returns The split string.
    * @warning - 🔥 using an empty sep with emojis in the string will destroy the emoji 🔥
    * @example
    * ```ts
    * type T0 = Call<Strings.Split<",">,"a,b,c">; // ["a","b","c"]
+   * type T1 = Call<Strings.Split<Strings.RegExp<"-{2,4}|\\.">>, "1--2-3.4..5">; // ["1", "2-3", "4", "5"]
    * ```
    */
   export type Split<
-    Sep extends string | unset | _ = unset,
+    Sep extends string | RegExp<string, any> | unset | _ = unset,
     Str extends string | unset | _ = unset
   > = PartialApply<SplitFn, [Sep, Str]>;
 
   export interface SplitFn extends Fn {
-    return: this["args"] extends [infer Sep extends string, infer Str, ...any]
+    return: this["args"] extends [
+      infer Sep extends string | RegExp<string, any>,
+      infer Str,
+      ...any
+    ]
       ? Impl.Split<Str, Sep>
       : never;
   }
