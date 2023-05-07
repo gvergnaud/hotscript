@@ -131,9 +131,9 @@ export namespace Strings {
   }
 
   /**
-   * Match a string against a regular expression (support `i` and `g` flags).
+   * Match a string against a regular expression `Strings.RegExp`  (support `i` and `g` flags).
    * @param args[0] - The string to match.
-   * @param RawRegExp - The regular expression to match. Support both "/<pattern>/<flags>" or "<patttern>" syntax.
+   * @param RawRegExp - The regular expression `Strings.RegExp` to match.
    * @returns The matched object with match array and `index` and `groups` properties.
    * ```ts
    * type T0 = Call<S.Match<S.RegExp<"A(?<g1>[b-e]{1,2})F", "i">>, "12aBef34">; // ["aBef", "Be"] & { index: 2; groups: { g1: "Be" } }
@@ -156,9 +156,9 @@ export namespace Strings {
   }
 
   /**
-   * Match a string against a regular expression, return an array of match objects.
+   * Match a string against a regular expression `Strings.RegExp`, return an array of match objects.
    * @param args[0] - The string to match.
-   * @param RawRegExp - The regular expression to match, `g` flag is required (also support `i` flag).
+   * @param RawRegExp - The regular expression `Strings.RegExp` to match, `g` flag is required (also support `i` flag).
    * @returns Array of matched object, each with a match array and `index` and `groups` properties.
    * ```ts
    * type T0 = Call<S.MatchAll<S.RegExp<"a(?<g1>[b-e]{1,2})f", "g" | "i">>, "12aBef34AeCf56">; // [["aBef", "Be"] & { index: 2; groups: { g1: "Be"; }; }, ["AeCf", "eC"] & { index: 8; groups: { g1: "eC"; }; }]
@@ -182,7 +182,7 @@ export namespace Strings {
   /**
    * Replace all instances of a substring in a string.
    * @param args[0] - The string to replace.
-   * @param from - The substring to replace or a RegExp pattern (support `i` flag).
+   * @param from - The substring to replace or a RegExp pattern `Strings.RegExp` (support `i` flag).
    * @param to - The substring to replace with, can include special replacement patterns when replacing with a RegExp. see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace#specifying_a_string_as_the_replacement for more details.
    * @returns The replaced string.
    * @example
