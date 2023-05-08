@@ -204,15 +204,7 @@ export namespace Strings {
       infer Str,
       ...any
     ]
-      ? keyof RegExp<string> extends keyof From
-        ? Call<
-            Tuples.Reduce<Impl.ReplaceWithRegExpReducer<To>, Str>,
-            H.UnionToTuple<From>
-          >
-        : Call<
-            Tuples.Reduce<Impl.ReplaceReducer<To>, Str>,
-            H.UnionToTuple<From>
-          >
+      ? Call<Tuples.Reduce<Impl.ReplaceReducer<To>, Str>, H.UnionToTuple<From>>
       : never;
   }
 

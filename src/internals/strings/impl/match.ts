@@ -1,15 +1,8 @@
-import { Call, Fn } from "../../core/Core";
-import { T } from "../../..";
+import { Fn } from "../../core/Core";
 
 import { RegExpStruct } from "./regexp";
 
-import {
-  ParseRegExp,
-  MatchRegExp,
-  MatchAllRegExp,
-  Flag,
-  Matcher,
-} from "type-level-regexp/regexp";
+import { MatchRegExp, MatchAllRegExp } from "type-level-regexp/regexp";
 
 type PrettifyRegExpMatchArray<RegExpMatchResult> = RegExpMatchResult extends {
   _matchArray: infer MatchArray;
@@ -22,49 +15,36 @@ type PrettifyRegExpMatchArray<RegExpMatchResult> = RegExpMatchResult extends {
 export interface Match extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    RegExpStruct<infer RegExpPattern, infer Flags>,
+    infer RE extends RegExpStruct<string, any>,
     ...any
   ]
     ? Str extends Str
-      ? ParseRegExp<RegExpPattern> extends infer ParsedResult
-        ? ParsedResult extends Matcher[]
-          ? "g" extends Flags
-            ? MatchRegExp<Str, ParsedResult, Flags>
-            : PrettifyRegExpMatchArray<MatchRegExp<Str, ParsedResult, Flags>>
-          : ParsedResult
-        : never
+      ? "g" extends RE["flags"]
+        ? MatchRegExp<Str, NonNullable<RE["parsedMatchers"]>, RE["flags"]>
+        : PrettifyRegExpMatchArray<
+            MatchRegExp<Str, NonNullable<RE["parsedMatchers"]>, RE["flags"]>
+          >
       : never
     : never;
 }
 
-interface PrettifyRegExpMatchArrayFn extends Fn {
-  return: this["args"] extends [infer RegExpMatchResult, ...any]
-    ? PrettifyRegExpMatchArray<RegExpMatchResult>
-    : never;
-}
-
-type ResovleRegExpMatchAllOrError<
-  Str extends string,
-  RegExp extends string,
-  FlagUnion extends Flag,
-  ParsedResult = ParseRegExp<RegExp>
-> = ParsedResult extends Matcher[]
-  ? MatchAllRegExp<Str, ParsedResult, FlagUnion> extends {
-      _matchedTuple: infer MatchTuple extends any[];
-    }
-    ? Call<T.Map<PrettifyRegExpMatchArrayFn>, MatchTuple>
-    : null
-  : ParsedResult;
-
 export interface MatchAll extends Fn {
   return: this["args"] extends [
     infer Str extends string,
-    RegExpStruct<infer RegExpPattern, infer Flags>,
+    infer RE extends RegExpStruct<string, any>,
     ...any
   ]
     ? Str extends Str
-      ? "g" extends Flags
-        ? ResovleRegExpMatchAllOrError<Str, RegExpPattern, Flags>
+      ? "g" extends RE["flags"]
+        ? MatchAllRegExp<Str, RE["parsedMatchers"], RE["flags"]> extends {
+            _matchedTuple: infer MatchTuple extends any[];
+          }
+          ? {
+              [Key in keyof MatchTuple]: PrettifyRegExpMatchArray<
+                MatchTuple[Key]
+              >;
+            }
+          : null
         : TypeError & {
             msg: "MatchAll called with a non-global RegExp argument";
           }

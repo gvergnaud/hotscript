@@ -45,6 +45,127 @@ describe("Strings", () => {
     type test2 = Expect<Equal<res2, "1">>;
   });
 
+  describe("RegExp", () => {
+    it("with valid RegExp Pattern return a object with `pattern`, `flags` and `parsedMatchers` props", () => {
+      type res1 = Omit<
+        Strings.RegExp<"(?:\\w{2,3})(?<g1>[a-z]+)\\k<g1>", "g" | "i">,
+        "type"
+      >;
+      //    ^?
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            pattern: "(?:\\w{2,3})(?<g1>[a-z]+)\\k<g1>";
+            flags: "g" | "i";
+            parsedMatchers: [
+              {
+                type: "repeat";
+                greedy: true;
+                from: "2";
+                to: "3";
+                value: [
+                  {
+                    type: "char";
+                  }
+                ];
+              },
+              {
+                type: "namedCapture";
+                name: "g1";
+                value: [
+                  {
+                    type: "oneOrMore";
+                    greedy: true;
+                    value: [
+                      {
+                        type: "charSet";
+                        value: "a-z";
+                      }
+                    ];
+                  }
+                ];
+              },
+              {
+                type: "backreference";
+                value: "g1";
+              }
+            ];
+          }
+        >
+      >;
+    });
+
+    it("return `SyntaxError` with error message when RegExp pattern is invalid", () => {
+      type res1 = Strings.RegExp<"foo(b(ar)baz">;
+      //    ^?
+
+      type test1 = Expect<
+        Equal<
+          res1,
+          {
+            type: "RegExpSyntaxError";
+            message: "Invalid regular expression, missing closing `)`";
+          } & SyntaxError
+        >
+      >;
+
+      type res2 = $<
+        //    ^?
+        Strings.Match<
+          //@ts-expect-error - { message: "Invalid regular expression, opening `(`"; type: "RegExpSyntaxError"; } & SyntaxError
+          Strings.RegExp<"foobar)baz">
+        >,
+        "foobarbaz"
+      >;
+
+      type res3 = Strings.RegExp<"foo[a-zbar", "g">;
+      //    ^?
+      type test3 = Expect<
+        Equal<
+          res3,
+          {
+            type: "RegExpSyntaxError";
+            message: "Invalid regular expression, missing closing `]`";
+          } & SyntaxError
+        >
+      >;
+      type res4 = Strings.RegExp<"foo?{2}bar", "g">;
+      //    ^?
+      type test4 = Expect<
+        Equal<
+          res4,
+          {
+            type: "RegExpSyntaxError";
+            message: "Invalid regular expression, the preceding token to {2} is not quantifiable";
+          } & SyntaxError
+        >
+      >;
+      type res5 = Strings.RegExp<"foo(?g1>bar)baz">;
+      //    ^?
+      type test5 = Expect<
+        Equal<
+          res5,
+          {
+            type: "RegExpSyntaxError";
+            message: "Invalid regular expression, invalid capture group name for capturing `bar`, possibly due to a missing opening '<' and group name";
+          } & SyntaxError
+        >
+      >;
+      type res6 = Strings.RegExp<"foo(?<g1bar)baz", "g">;
+      //    ^?
+      type test6 = Expect<
+        Equal<
+          res6,
+          {
+            type: "RegExpSyntaxError";
+            message: "Invalid regular expression, invalid capture group name of `g1bar`, possibly due to a missing closing '>' for group name";
+          } & SyntaxError
+        >
+      >;
+    });
+  });
+
   describe("Match", () => {
     it("support most basic RegExp tokens", () => {
       type res1 = $<
@@ -108,53 +229,6 @@ describe("Strings", () => {
       >;
       type test4 = Expect<
         Equal<res4, ["Cats", "coWs", "CAR", "cozY", "cOUch", "Comfort"]>
-      >;
-    });
-
-    it("return RegExp syntax errors and hints", () => {
-      type res5 = $<
-        //    ^?
-        Strings.Match<Strings.RegExp<"foo(b(ar)baz">>,
-        "missingClosing_foobarbaz"
-      >;
-      type test5 = Expect<
-        Equal<
-          res5,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, missing closing `)`";
-          } & SyntaxError
-        >
-      >;
-
-      type res6 = $<
-        //    ^?
-        Strings.Match<Strings.RegExp<"foo(?g1>bar)baz">>,
-        "invalidGroupName_foobarbaz"
-      >;
-      type test6 = Expect<
-        Equal<
-          res6,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, invalid capture group name for capturing `bar`, possibly due to a missing opening '<' and group name";
-          } & SyntaxError
-        >
-      >;
-
-      type res7 = $<
-        //    ^?
-        Strings.Match<Strings.RegExp<"foo[a-zbar", "g">>,
-        "withFlag_fooabar"
-      >;
-      type test7 = Expect<
-        Equal<
-          res7,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, missing closing `]`";
-          } & SyntaxError
-        >
       >;
     });
   });
@@ -252,53 +326,6 @@ describe("Strings", () => {
         >
       >;
     });
-
-    it("return RegExp syntax errors and hints", () => {
-      type res5 = $<
-        //    ^?
-        Strings.MatchAll<Strings.RegExp<"foo(b(ar)baz", "g">>,
-        "basicRegExp_foobarbaz"
-      >;
-      type test5 = Expect<
-        Equal<
-          res5,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, missing closing `)`";
-          } & SyntaxError
-        >
-      >;
-
-      type res6 = $<
-        //    ^?
-        Strings.MatchAll<Strings.RegExp<"foo(?<g1bar)baz", "g">>,
-        "foobarbaz"
-      >;
-      type test6 = Expect<
-        Equal<
-          res6,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, invalid capture group name of `g1bar`, possibly due to a missing closing '>' for group name";
-          } & SyntaxError
-        >
-      >;
-
-      type res7 = $<
-        //    ^?
-        Strings.Match<Strings.RegExp<"foo?{2}bar", "g">>,
-        "fooabar"
-      >;
-      type test7 = Expect<
-        Equal<
-          res7,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, the preceding token to {2} is not quantifiable";
-          } & SyntaxError
-        >
-      >;
-    });
   });
 
   describe("Replace", () => {
@@ -386,24 +413,6 @@ describe("Strings", () => {
         Equal<
           res10,
           '<Card class="bg-primary"><MyTitle>HotScript X type-level RegExp!</MyTitle><MyCardContent><p>Type level madness.</p><MyActionBtn>READ MORE</MyActionBtn></MyCardContent></MyCard>'
-        >
-      >;
-    });
-
-    it("return RegExp syntax errors and hints", () => {
-      type res11 = $<
-        //    ^?
-        Strings.Replace<Strings.RegExp<"(foo)+*baz">>,
-        "foobarbaz",
-        "replace"
-      >;
-      type test11 = Expect<
-        Equal<
-          res11,
-          {
-            type: "RegExpSyntaxError";
-            message: "Invalid regular expression, the preceding token to * is not quantifiable";
-          } & SyntaxError
         >
       >;
     });

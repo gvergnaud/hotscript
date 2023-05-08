@@ -33,17 +33,16 @@ export type Split<
   Str,
   Sep extends string | RegExpStruct<string, any>,
   Seps = keyof RegExpStruct<string> extends keyof Sep
-    ? H.UnionToTuple<Sep> extends infer REs
+    ? H.UnionToTuple<Sep> extends infer REs extends RegExpStruct<string, any>[]
       ? H.UnionToTuple<
           Call<
             Tuples.FlatMap<PartialApply<Match, [Str]>>,
             {
-              [K in keyof REs]: REs[K] extends RegExpStruct<
-                infer Pattern,
-                infer Flags
-              >
-                ? RegExpStruct<Pattern, Flags | "g">
-                : never;
+              [K in keyof REs]: RegExpStruct<
+                REs[K]["pattern"],
+                REs[K]["flags"] | "g",
+                REs[K]["parsedMatchers"]
+              >;
             }
           >[number]
         >
