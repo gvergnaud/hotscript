@@ -6,7 +6,7 @@
   "module": "./dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs && tsc src/index.ts --declaration --emitDeclarationOnly --outDir dist",
+    "build": "tsup src/index.ts --format esm,cjs && tsc --declaration --emitDeclarationOnly --outDir dist",
     "prepublishOnly": "npm run test && npm run build",
     "test": "jest",
     "clear-test": "jest --clearCache",
