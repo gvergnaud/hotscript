@@ -142,7 +142,7 @@ type res5 = Pipe<
   - [x] `Parameter<N, FunctionType>`: Extract the parameter at index `N` from a function type.
   - [x] `MapReturnType<Fn, FunctionType>`: Transform the return type of a function type using an `Fn`.
   - [x] `MapParameters<Fn, FunctionType>`: Transform the tuple of parameters of a function type using an `Fn`.
-- [ ] Tuples
+- [x] Tuples
   - [x] `Create<X> -> [X]`: Create a unary tuple from a type.
   - [x] `Partition<Fn, Tuple>`: Using a predicate `Fn`, turn a list of types into two lists `[Passing[], Rejected[]]`.
   - [x] `IsEmpty<Tuple>`: Check if a tuple is empty.
@@ -176,7 +176,7 @@ type res5 = Pipe<
   - [x] `Min<Tuple>`: Returns the minimum number in a list of number literal types.
   - [x] `Max<Tuple>`: Returns the maximum number in a list of number literal types.
   - [x] `Sum<Tuple>`: Add all numbers in a list of number literal types together.
-- [ ] Object
+- [x] Object
   - [x] `Readonly<Obj>`: Makes all object keys `readonly`.
   - [x] `Mutable<Obj>`: Removes `readonly` from all object keys.
   - [x] `Required<Obj>`: Makes all keys required.
@@ -186,7 +186,7 @@ type res5 = Pipe<
   - [x] `RequiredDeep<Obj>`: Recursively makes all keys required.
   - [x] `PartialDeep<Obj>`: Recursively makes all keys optional.
   - [x] `Update<Path, Fn | V, Obj>`: Immutably update an object's field under a certain path. Paths are dot-separated strings: `a.b.c`.
-  - [x] `Record<Key, Value>`: Creates an object type with keys of type Key and values of type Value.
+  - [x] `Record<Key, Value>`: Creates an object type with keys of type `Key` and values of type `Value`.
   - [x] `Keys<Obj>`: Extracts the keys from an object type `Obj`.
   - [x] `Values<Obj>`: Extracts the values from an object type `Obj`.
   - [x] `AllPaths<Obj>`: Extracts all possible paths of an object type `Obj`.
@@ -201,9 +201,9 @@ type res5 = Pipe<
   - [x] `MapValues<Fn, Obj>`: Transforms the values of an object type `Obj` using a mapper function `Fn`.
   - [x] `MapKeys<Fn, Obj>`: Transforms the keys of an object type `Obj` using a mapper function `Fn`.
   - [x] `Assign<...Obj>`: Merges multiple objects together.
-  - [x] `Pick<Key, Obj>`: Picks specific keys Key from an object type `Obj`.
+  - [x] `Pick<Key, Obj>`: Picks specific keys `Key` from an object type `Obj`.
   - [x] `PickBy<Fn, Obj>`: Picks keys from an object type `Obj` based on a predicate function `Fn`.
-  - [x] `Omit<Key, Obj>`: Omits specific keys Key from an object type `Obj`.
+  - [x] `Omit<Key, Obj>`: Omits specific keys `Key` from an object type `Obj`.
   - [x] `OmitBy<Fn, Obj>`: Omits keys from an object type `Obj` based on a predicate function `Fn`.
   - [x] `CamelCase<Obj>`: Converts the keys of an object type `Obj` to camelCase.
   - [x] `CamelCaseDeep<Obj>`: Recursively converts the keys of an object type `Obj` to camelCase.
@@ -211,7 +211,7 @@ type res5 = Pipe<
   - [x] `SnakeCaseDeep<Obj>`: Recursively converts the keys of an object `type` Obj to snake_case.
   - [x] `KebabCase<Obj>`: Converts the keys of an object type `Obj` to kebab-case.
   - [x] `KebabCaseDeep<Obj>`: Recursively converts the keys of an object type Obj to kebab-case.
-- [ ] Union
+- [x] Union
   - [x] `Map<Fn, U>`: Transforms each member of a union type `U` using a mapper function `Fn`.
   - [x] `Extract<T, U>`: Extracts the subset of a union type `U` that is assignable to type `T`.
   - [x] `ExtractBy<Fn, U>`: Extracts the subset of a union type`U`that satisfies the predicate function `Fn`.
@@ -220,7 +220,7 @@ type res5 = Pipe<
   - [x] `NonNullable<U>`: Removes null and undefined from a union type `U`.
   - [x] `ToTuple<U>`: Converts a union type`U`to a tuple type.
   - [x] `ToIntersection<U>`: Converts a union type`U`to an intersection type.
-- [ ] String
+- [x] String
   - [x] `Length<Str>`: Returns the length of a string type `Str`.
   - [x] `TrimLeft<Char, Str>`: Removes the specified character from the left side of a string type `Str`.
   - [x] `TrimRight<Char, Str>`: Removes the specified character from the right side of a string type `Str`.
@@ -251,7 +251,7 @@ type res5 = Pipe<
   - [x] `LessThanOrEqual<Str1, Str2>`: Checks if `Str1` is less than or equal to `Str2` in lexicographical order.
   - [x] `GreaterThan<Str1, Str2>`: Checks if `Str1` is greater than `Str2` in lexicographical order.
   - [x] `GreaterThanOrEqual<Str1, Str2>`: Checks if `Str1` is greater than or equal to `Str2` in lexicographical order.
-- [ ] Number
+- [x] Number
   - [x] `Add<N, M>`: Adds two number types `N` and `M`.
   - [x] `Multiply<N, M>`: Multiplies two number types `N` and `M`.
   - [x] `Subtract<N, M>`: Subtracts the number type `M` from `N`.
@@ -265,7 +265,7 @@ type res5 = Pipe<
   - [x] `GreaterThanOrEqual<N, M>`: Checks if the number type `N` is greater than or equal to `M`.
   - [x] `LessThan<N, M>`: Checks if the number type `N` is less than `M`.
   - [x] `LessThanOrEqual<N, M>`: Checks if the number type `N` is less than or equal to `M`.
-- [ ] Boolean
+- [x] Boolean
   - [x] `And<Bool1, Bool2>`: Performs a logical AND operation between two boolean types `Bool1` and `Bool2`.
   - [x] `Or<Bool1, Bool2>`: Performs a logical OR operation between two boolean types `Bool1` and `Bool2`.
   - [x] `XOr<Bool1, Bool2>`: Performs a logical XOR (exclusive OR) operation between two boolean types `Bool1` and `Bool2`.
