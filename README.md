@@ -138,6 +138,8 @@ type res5 = Pipe<
   - [x] `ReturnType<Fn>`
   - [x] `Parameters<Fn>`
   - [x] `Parameter<N, Fn>`
+  - [x] `MapReturnType<Fn, FunctionType>`
+  - [x] `MapParameters<Fn, FunctionType>`
 - [ ] Tuples
   - [x] `Create<X> -> [X]`
   - [x] `Partition<Tuple>`

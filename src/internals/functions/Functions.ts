@@ -1,4 +1,4 @@
-import { Fn, PartialApply, unset, _ } from "../core/Core";
+import { Fn, PartialApply, unset, _, Call } from "../core/Core";
 
 export namespace Functions {
   type ParametersImpl<fn> = fn extends (...args: infer args) => any
@@ -66,5 +66,63 @@ export namespace Functions {
   > = PartialApply<ReturnTypeFn, [fn]>;
   export interface ReturnTypeFn extends Fn {
     return: ReturnTypeImpl<this["arg0"]>;
+  }
+
+  /**
+   * Transforms the return type of a function type.
+   *
+   * @param fn - Type-level function to call on the return type.
+   * @param fnValue - The function type to update.
+   * @returns a function type with an updated return type.
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<
+   *   Functions.MapReturnType<Numbers.ToString>,
+   *   (a: number, b: string) => 1 | 2
+   * >;
+   * // => (a: number, b: string) => "1" | "2"
+   * ```
+   */
+  export type MapReturnType<
+    fn extends Fn | unset | _ = unset,
+    fnValue extends ((...args: any[]) => any) | _ | unset = unset
+  > = PartialApply<MapReturnTypeFn, [fn, fnValue]>;
+
+  export interface MapReturnTypeFn extends Fn {
+    return: this["args"] extends [infer fn extends Fn, infer fnValue]
+      ? fnValue extends (...args: infer args) => infer returnType
+        ? (...args: args) => Call<fn, returnType>
+        : never
+      : never;
+  }
+
+  /**
+   * Transforms the paramaters of a function type.
+   *
+   * @param fn - Type-level function to call on parameters.
+   * @param fnValue - The function type to update.
+   * @returns a function type with updated parameters.
+   *
+   * @example
+   * ```ts
+   * type T0 = Call<
+      F.MapParameters<Tuples.Map<Strings.ToNumber>>,
+      (a: "1" | "2", b: "3" | "4") => void
+    >;
+   * // => (a: 1 | 2, b: 3 | 4) => void
+   * ```
+   */
+  export type MapParameters<
+    fn extends Fn | unset | _ = unset,
+    fnValue extends ((...args: any[]) => any) | _ | unset = unset
+  > = PartialApply<MapParametersFn, [fn, fnValue]>;
+
+  export interface MapParametersFn extends Fn {
+    return: this["args"] extends [infer fn extends Fn, infer fnValue]
+      ? fnValue extends (...args: infer args) => infer returnType
+        ? (...args: Extract<Call<fn, args>, readonly any[]>) => returnType
+        : never
+      : never;
   }
 }
