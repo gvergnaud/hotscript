@@ -22,9 +22,12 @@ export type Values<src> = Keys<src> extends infer keys extends keyof src
   ? src[keys]
   : never;
 
-export type FromEntries<entries extends [PropertyKey, any]> = {
-  [entry in entries as entry[0]]: entry[1];
-};
+export type FromEntries<entries extends [PropertyKey, any]> =
+  | {
+      [entry in entries as entry[0]]: entry[1];
+    }
+  // prettifies the name.
+  | never;
 
 export type Entries<T> = Keys<T> extends infer keys extends keyof T
   ? {
