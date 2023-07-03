@@ -135,6 +135,7 @@ type res5 = Pipe<
   - [x] `Compose<Fn[]>`: Compose `Fn` functions from right to left.
   - [x] `ComposeLeft<Fn[]>`: Compose `Fn` functions from left to right.
   - [x] `args`, `arg0`, `arg1`, `arg2`, `arg3`: Access piped parameters (Useful in combination with `Objects.Create`).
+  - [x] `_`: Placeholder to partially apply any built-in functions, or functions created with `PartialApply`.
 - [x] Function
   - [x] `ReturnType<FunctionType>`: Extract the return type from a function type.
   - [x] `Parameters<FunctionType>`: Extract the parameters from a function type as a tuple.
