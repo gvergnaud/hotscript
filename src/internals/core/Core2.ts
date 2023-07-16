@@ -2,7 +2,6 @@ import { _, unset } from "./Core";
 import { ExcludePlaceholders, ExcludeUnset, MergeArgs } from "./impl/MergeArgs";
 import * as NumberImpl from "../numbers/impl/numbers";
 import * as StringImpl from "../strings/impl/strings";
-import { Iterator } from "../helpers";
 
 /**
  * Core
@@ -25,6 +24,21 @@ type Drop<
   ? Drop<tail, n, [...dropped, first]>
   : [];
 
+type ExcludePlaceholdersFromInputTypes<
+  inputTypes extends any[],
+  partialArgs extends any[],
+  result extends any[] = []
+> = [inputTypes, partialArgs] extends [
+  [infer fInput, ...infer rInput],
+  [infer fPartial, ...infer rPartial]
+]
+  ? ExcludePlaceholdersFromInputTypes<
+      rInput,
+      rPartial,
+      fPartial extends _ ? [...result, fInput] : result
+    >
+  : [...result, ...inputTypes];
+
 interface Ap<fn extends Fn, partialArgs extends any[] = []> extends Fn {
   name: "Ap";
 
@@ -34,15 +48,18 @@ interface Ap<fn extends Fn, partialArgs extends any[] = []> extends Fn {
   expectedArgsCount: fn["inputTypes"]["length"];
   providedArgsCount: ExcludePlaceholders<this["allArgs"]>["length"];
 
-  inputTypes: Drop<
-    fn["inputTypes"],
-    ExcludePlaceholders<partialArgs>["length"]
-  >;
+  inputTypes: ExcludePlaceholdersFromInputTypes<fn["inputTypes"], partialArgs>;
 
-  return: NumberImpl.Compare<
+  outputType: fn["outputType"];
+
+  isFullyApplied: NumberImpl.Compare<
     this["providedArgsCount"],
     this["expectedArgsCount"]
   > extends 1 | 0
+    ? true
+    : false;
+
+  return: this["isFullyApplied"] extends true
     ? Apply<fn, MergeArgs<this["argsArray"], partialArgs>>
     : Ap<fn, this["allArgs"]>;
 }
@@ -51,24 +68,40 @@ export type Apply<fn extends Fn, args extends any[]> = (fn & {
   args: args;
 })["return"];
 
+type AnyAp = Ap<any, any>;
+
 export type $<
   fn extends Fn,
-  arg0 extends fn["inputTypes"][0] | _ = unset,
-  arg1 extends fn["inputTypes"][1] | _ = unset,
-  arg2 extends fn["inputTypes"][2] | _ = unset,
-  arg3 extends fn["inputTypes"][3] | _ = unset
-> = Extract<
-  ((fn extends { name: "Ap" } ? fn : Ap<fn>) & {
-    args: ExcludeUnset<[arg0, arg1, arg2, arg3]>;
-  })["return"],
-  fn["outputType"]
+  arg0 extends fn["inputTypes"][0] | AnyAp | _ = unset,
+  arg1 extends fn["inputTypes"][1] | AnyAp | _ = unset,
+  arg2 extends fn["inputTypes"][2] | AnyAp | _ = unset,
+  arg3 extends fn["inputTypes"][3] | AnyAp | _ = unset,
+  ap extends AnyAp = fn extends { name: "Ap" } ? fn : Ap<fn>
+> = (ap & {
+  args: ExcludeUnset<[arg0, arg1, arg2, arg3]>;
+})["return"];
+
+type Args<fn extends Fn> = fn["args"];
+type Arg0<fn extends Fn> = Extract<
+  Extract<fn["args"], any[]>[0],
+  fn["inputTypes"][0]
+>;
+type Arg1<fn extends Fn> = Extract<
+  Extract<fn["args"], any[]>[1],
+  fn["inputTypes"][1]
+>;
+type Arg2<fn extends Fn> = Extract<
+  Extract<fn["args"], any[]>[2],
+  fn["inputTypes"][2]
+>;
+type Arg3<fn extends Fn> = Extract<
+  Extract<fn["args"], any[]>[3],
+  fn["inputTypes"][3]
 >;
 
-type Args<fn extends Fn> = Extract<fn["args"], fn["inputTypes"]>;
-type Arg0<fn extends Fn> = Extract<fn["args"], fn["inputTypes"]>[0];
-type Arg1<fn extends Fn> = Extract<fn["args"], fn["inputTypes"]>[1];
-type Arg2<fn extends Fn> = Extract<fn["args"], fn["inputTypes"]>[2];
-type Arg3<fn extends Fn> = Extract<fn["args"], fn["inputTypes"]>[3];
+/**
+ * Playground 👇
+ */
 
 type ExpectNumber<a extends number> = [a];
 // arguments are typed internally:
@@ -111,6 +144,7 @@ type DivBy2 = $<Div, _, 2>;
 //   ^?
 type q = $<DivBy2, 10>; // 5 ✅
 //   ^?
+
 type r = $<$<Div, _>, 10, 5>; // ✅
 //   ^?
 
@@ -121,20 +155,21 @@ type e = $<TakeStr, 10>;
 
 type TakeNum = $<TakeNumAndStr, _, "10">;
 //   ^?Ap<TakeNumAndStr, [_, "10"]>
-type s = $<TakeNum, 10>;
-//                  ~~ FIXME
+type s = $<TakeNum, 10>; // ✅
+type d = $<TakeNum, "10">;
+//                  ~~~~ ❌
 
 /**
  * Higher order
  */
 
-interface Map extends Fn<[Fn, any[]]> {
+interface Map<A = any, B = any> extends Fn<[Fn<[A], B>, A[]], B[]> {
   return: Args<this> extends [infer fn extends Fn, infer tuple]
     ? { [key in keyof tuple]: $<fn, tuple[key]> }
     : never;
 }
 
-type z2 = $<Map, $<Div, _, 2>, [2, 4, 6, 8, 10]>;
+type z2 = $<Map<number, number>, $<Div, _, 2>, [2, 4, 6, 8, 10]>;
 //   ^? [1, 2, 3, 4, 5]
 
 interface Add extends Fn<[number, number], number> {
@@ -192,20 +227,24 @@ interface ToNumber extends Fn<[string], number> {
 }
 
 interface Prepend extends Fn<[string, string], string> {
-  return: this["args"] extends [
-    infer first extends string,
-    infer str extends string
-  ]
-    ? `${first}${str}`
-    : never;
+  return: `${Arg0<this>}${Arg1<this>}`;
 }
 
-type Times10<T extends number> = $<ToNumber, $<Prepend, "1", $<ToString, T>>>;
+interface ToArray extends Fn<[any], [any]> {
+  return: [Arg0<this>];
+}
+
+type Times10<T extends number> = $<Prepend, "1", $<ToString, T>>;
+
+type test1 = Times10<10>;
+//    ^? 110
 
 type WrongComposition1<T extends string> = $<Prepend, "1", $<ToNumber, T>>;
 //                                                         ~~~~~~~~~~~~~~ ❌
 type WrongComposition2<T extends number> = $<Add, 1, $<ToString, T>>;
 //                                                   ~~~~~~~~~~~~~~ ❌
 
-type test1 = Times10<10>;
+type Test<T extends string> = $<Prepend, "1", T>;
+
+type test2 = Test<"10">;
 //    ^? 110
