@@ -232,13 +232,13 @@ type t8 = $<TakeNum, "10">;
  * Higher order
  */
 
-interface Map<A = unknown, B = unknown> extends Fn<[Fn<[A], B>, A[]], B[]> {
+interface Map<A = unknown, B = A> extends Fn<[Fn<[A], B>, A[]], B[]> {
   return: Args<this> extends [infer fn extends Fn, infer tuple]
     ? { [key in keyof tuple]: $<fn, tuple[key]> }
     : never;
 }
 
-type t9 = $<Map<number, number>, $.partial<Div, _, 2>, [2, 4, 6, 8, 10]>;
+type t9 = $<Map<number>, $.partial<Div, _, 2>, [2, 4, 6, 8, 10]>;
 //   ^? [1, 2, 3, 4, 5]
 type test9 = Expect<Equal<t9, [1, 2, 3, 4, 5]>>;
 
@@ -259,23 +259,22 @@ type ReduceImpl<fn extends Fn, acc, xs> = xs extends [
   ? ReduceImpl<fn, $<fn, acc, first>, rest>
   : acc;
 
-interface Reduce<A = unknown, B = unknown>
-  extends Fn<[Fn<[B, A], B>, B, A[]], B> {
+interface Reduce<A = unknown, B = A> extends Fn<[Fn<[B, A], B>, B, A[]], B> {
   return: Args<this> extends [infer fn extends Fn, infer acc, infer tuple]
     ? ReduceImpl<fn, acc, tuple>
     : never;
 }
 
-type t11 = $<Reduce<number, number>, Add, 0, [2, 4, 6, 8, 10]>;
+type t11 = $<Reduce<number>, Add, 0, [2, 4, 6, 8, 10]>;
 //   ^? 30
 type test11 = Expect<Equal<t11, 30>>;
 
-type t12 = $<Reduce<number, number>, Mul, 1, [2, 4, 6, 8, 10]>;
+type t12 = $<Reduce<number>, Mul, 1, [2, 4, 6, 8, 10]>;
 //   ^? 3840
 type test12 = Expect<Equal<t12, 3840>>;
 
 // @ts-expect-error
-type t13 = $<Reduce<number, number>, Mul, 1, ["2", "4", "6", "8", "10"]>;
+type t13 = $<Reduce<number>, Mul, 1, ["2", "4", "6", "8", "10"]>;
 //                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~ ❌
 
 // @ts-expect-error
@@ -335,23 +334,34 @@ type t18 = Test<"10">;
 //    ^? 110
 type test18 = Expect<Equal<t18, "110">>;
 
-type MapAdd1 = $.partial<Map<number>, $.partial<Add, 1>>;
-type Sum = $.partial<Reduce<number, number>, Add, 0>;
+type Sum = $.partial<Reduce<number>, Add, 0>;
 
-type t19 = $<
-  // ^?
+type Composition<T extends number[]> = $<
   $.pipe<
-    MapAdd1,
+    $.partial<Map<number>, $.partial<Add, 1>>,
+    $.partial<
+      Map<number>,
+      $.pipe<
+        $.partial<Add, 1>,
+        $.partial<Mul, 3>,
+        ToString,
+        $.partial<Prepend, "1">,
+        ToNumber
+      >
+    >,
     Sum,
     ToString,
     $.partial<Prepend, "1">,
     ToNumber,
-    $.partial<Mul, _, 10>,
+    $.partial<Mul, 10>,
     $.partial<Div, _, 2>,
     ToString,
     $.partial<Prepend, _, "10">,
     ToNumber
   >,
-  [1, 2, 3, 4]
+  T
 >;
-type test19 = Expect<Equal<t19, 57010>>;
+
+type t19 = Composition<[1, 2, 3, 4]>;
+//   ^?
+type test19 = Expect<Equal<t19, 682010>>;

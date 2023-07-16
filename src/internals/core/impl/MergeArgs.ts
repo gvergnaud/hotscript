@@ -14,7 +14,7 @@ export type ExcludeUnset<xs, output extends any[] = []> = xs extends [
   infer first,
   ...infer rest
 ]
-  ? Equal<first, unset> extends true
+  ? first extends unset
     ? ExcludeUnset<rest, output>
     : ExcludeUnset<rest, [...output, first]>
   : output;
