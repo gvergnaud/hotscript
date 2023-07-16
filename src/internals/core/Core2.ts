@@ -7,7 +7,7 @@ import * as StringImpl from "../strings/impl/strings";
  * Core
  */
 
-export interface Fn<input extends any[] = unknown[], output = unknown> {
+export interface Fn<input extends unknown[] = unknown[], output = unknown> {
   inputTypes: input;
   outputType: output;
   args: unknown;
@@ -15,9 +15,9 @@ export interface Fn<input extends any[] = unknown[], output = unknown> {
 }
 
 type Drop<
-  xs extends readonly any[],
+  xs extends readonly unknown[],
   n extends number,
-  dropped extends readonly any[] = []
+  dropped extends readonly unknown[] = []
 > = n extends dropped["length"]
   ? xs
   : xs extends readonly [infer first, ...infer tail]
@@ -25,9 +25,9 @@ type Drop<
   : [];
 
 type ExcludePlaceholdersFromInputTypes<
-  inputTypes extends any[],
-  partialArgs extends any[],
-  result extends any[] = []
+  inputTypes extends unknown[],
+  partialArgs extends unknown[],
+  result extends unknown[] = []
 > = [inputTypes, partialArgs] extends [
   [infer fInput, ...infer rInput],
   [infer fPartial, ...infer rPartial]
@@ -39,10 +39,10 @@ type ExcludePlaceholdersFromInputTypes<
     >
   : [...result, ...inputTypes];
 
-interface Ap<fn extends Fn, partialArgs extends any[] = []> extends Fn {
+interface Ap<fn extends Fn, partialArgs extends unknown[] = []> extends Fn {
   name: "Ap";
 
-  argsArray: Extract<this["args"], any[]>;
+  argsArray: Extract<this["args"], unknown[]>;
   allArgs: [...partialArgs, ...this["argsArray"]];
 
   expectedArgsCount: fn["inputTypes"]["length"];
@@ -64,11 +64,11 @@ interface Ap<fn extends Fn, partialArgs extends any[] = []> extends Fn {
     : Ap<fn, this["allArgs"]>;
 }
 
-export type Apply<fn extends Fn, args extends any[]> = (fn & {
+export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
   args: args;
 })["return"];
 
-type AnyAp = Ap<any, any>;
+type AnyAp = Ap<unknown, unknown>;
 
 export type $<
   fn extends Fn,
@@ -83,19 +83,19 @@ export type $<
 
 type Args<fn extends Fn> = fn["args"];
 type Arg0<fn extends Fn> = Extract<
-  Extract<fn["args"], any[]>[0],
+  Extract<fn["args"], unknown[]>[0],
   fn["inputTypes"][0]
 >;
 type Arg1<fn extends Fn> = Extract<
-  Extract<fn["args"], any[]>[1],
+  Extract<fn["args"], unknown[]>[1],
   fn["inputTypes"][1]
 >;
 type Arg2<fn extends Fn> = Extract<
-  Extract<fn["args"], any[]>[2],
+  Extract<fn["args"], unknown[]>[2],
   fn["inputTypes"][2]
 >;
 type Arg3<fn extends Fn> = Extract<
-  Extract<fn["args"], any[]>[3],
+  Extract<fn["args"], unknown[]>[3],
   fn["inputTypes"][3]
 >;
 
@@ -163,7 +163,7 @@ type d = $<TakeNum, "10">;
  * Higher order
  */
 
-interface Map<A = any, B = any> extends Fn<[Fn<[A], B>, A[]], B[]> {
+interface Map<A = unknown, B = unknown> extends Fn<[Fn<[A], B>, A[]], B[]> {
   return: Args<this> extends [infer fn extends Fn, infer tuple]
     ? { [key in keyof tuple]: $<fn, tuple[key]> }
     : never;
@@ -187,7 +187,8 @@ type ReduceImpl<fn extends Fn, acc, xs> = xs extends [
   ? ReduceImpl<fn, $<fn, acc, first>, rest>
   : acc;
 
-interface Reduce<A = any, B = any> extends Fn<[Fn<[B, A], B>, B, A[]], B> {
+interface Reduce<A = unknown, B = unknown>
+  extends Fn<[Fn<[B, A], B>, B, A[]], B> {
   return: Args<this> extends [infer fn extends Fn, infer acc, infer tuple]
     ? ReduceImpl<fn, acc, tuple>
     : never;
@@ -230,7 +231,7 @@ interface Prepend extends Fn<[string, string], string> {
   return: `${Arg0<this>}${Arg1<this>}`;
 }
 
-interface ToArray extends Fn<[any], [any]> {
+interface ToArray extends Fn<[unknown], [unknown]> {
   return: [Arg0<this>];
 }
 
