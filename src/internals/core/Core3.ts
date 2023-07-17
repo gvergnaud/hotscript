@@ -1,5 +1,5 @@
 import { _, unset } from "./Core";
-import { ExcludePlaceholders, ExcludeUnset, MergeArgs } from "./impl/MergeArgs";
+import { ExcludeUnset, MergeArgs } from "./impl/MergeArgs";
 import * as NumberImpl from "../numbers/impl/numbers";
 import * as StringImpl from "../strings/impl/strings";
 import { Equal, Expect } from "../helpers";
@@ -8,8 +8,18 @@ import { Equal, Expect } from "../helpers";
  * Core
  */
 
-export interface Fn<input extends unknown[] = unknown[], output = unknown> {
-  inputTypes: input;
+type Contra<t> = (a: t) => void;
+
+type GetInputTypes<fn> = fn extends {
+  inputTypes: Contra<infer I extends any[]>;
+}
+  ? I
+  : never;
+
+type GetOutputType<fn> = fn extends { outputType: infer O } ? O : never;
+
+export interface Fn<in input extends any = any, out output = unknown> {
+  inputTypes: Contra<input>;
   outputType: output;
   args: unknown;
   return: unknown;
@@ -41,7 +51,9 @@ interface Applied<fn extends Fn, partialArgs extends unknown[] = []>
   argsArray: Extract<this["args"], unknown[]>;
   allArgs: [...partialArgs, ...this["argsArray"]];
 
-  inputTypes: ExcludePlaceholdersFromInputTypes<fn["inputTypes"], partialArgs>;
+  inputTypes: Contra<
+    ExcludePlaceholdersFromInputTypes<GetInputTypes<fn>, partialArgs>
+  >;
 
   outputType: fn["outputType"];
 
@@ -71,60 +83,82 @@ interface Piped<fns extends Fn[]> extends Fn {
 namespace $ {
   export type partial<
     fn extends Fn,
-    arg0 extends fn["inputTypes"][0] | _ = unset,
-    arg1 extends fn["inputTypes"][1] | _ = unset,
-    arg2 extends fn["inputTypes"][2] | _ = unset,
-    arg3 extends fn["inputTypes"][3] | _ = unset
+    arg0 extends GetInputTypes<fn>[0] | _ = unset,
+    arg1 extends GetInputTypes<fn>[1] | _ = unset,
+    arg2 extends GetInputTypes<fn>[2] | _ = unset,
+    arg3 extends GetInputTypes<fn>[3] | _ = unset
   > = Applied<fn, ExcludeUnset<[arg0, arg1, arg2, arg3]>>;
 
-  type getOutputType<x> = x extends { outputType: infer O } ? O : never;
+  export type call<
+    fn extends Fn,
+    arg0 extends GetInputTypes<fn>[0] = unset,
+    arg1 extends GetInputTypes<fn>[1] = unset,
+    arg2 extends GetInputTypes<fn>[2] = unset,
+    arg3 extends GetInputTypes<fn>[3] = unset
+  > = Extract<
+    (fn & {
+      args: ExcludeUnset<[arg0, arg1, arg2, arg3]>;
+    })["return"],
+    fn["outputType"]
+  >;
 
   export type pipe<
     fn0 extends Fn,
-    fn1 extends Fn<[getOutputType<fn0>]> | unset = unset,
-    fn2 extends Fn<[getOutputType<fn1>]> | unset = unset,
-    fn3 extends Fn<[getOutputType<fn2>]> | unset = unset,
-    fn4 extends Fn<[getOutputType<fn3>]> | unset = unset,
-    fn5 extends Fn<[getOutputType<fn4>]> | unset = unset,
-    fn6 extends Fn<[getOutputType<fn5>]> | unset = unset,
-    fn7 extends Fn<[getOutputType<fn6>]> | unset = unset,
-    fn8 extends Fn<[getOutputType<fn7>]> | unset = unset,
-    fn9 extends Fn<[getOutputType<fn8>]> | unset = unset,
-    fn10 extends Fn<[getOutputType<fn9>]> | unset = unset,
-    fn11 extends Fn<[getOutputType<fn10>]> | unset = unset,
-    fn12 extends Fn<[getOutputType<fn11>]> | unset = unset,
-    fn13 extends Fn<[getOutputType<fn12>]> | unset = unset
+    fn1 extends Fn<[GetOutputType<fn0>]> | unset = unset,
+    fn2 extends Fn<[GetOutputType<fn1>]> | unset = unset,
+    fn3 extends Fn<[GetOutputType<fn2>]> | unset = unset,
+    fn4 extends Fn<[GetOutputType<fn3>]> | unset = unset,
+    fn5 extends Fn<[GetOutputType<fn4>]> | unset = unset,
+    fn6 extends Fn<[GetOutputType<fn5>]> | unset = unset,
+    fn7 extends Fn<[GetOutputType<fn6>]> | unset = unset,
+    fn8 extends Fn<[GetOutputType<fn7>]> | unset = unset,
+    fn9 extends Fn<[GetOutputType<fn8>]> | unset = unset,
+    fn10 extends Fn<[GetOutputType<fn9>]> | unset = unset,
+    fn11 extends Fn<[GetOutputType<fn10>]> | unset = unset,
+    fn12 extends Fn<[GetOutputType<fn11>]> | unset = unset,
+    fn13 extends Fn<[GetOutputType<fn12>]> | unset = unset,
+    fn14 extends Fn<[GetOutputType<fn13>]> | unset = unset,
+    fn15 extends Fn<[GetOutputType<fn14>]> | unset = unset,
+    fn16 extends Fn<[GetOutputType<fn15>]> | unset = unset,
+    fn17 extends Fn<[GetOutputType<fn16>]> | unset = unset,
+    fn18 extends Fn<[GetOutputType<fn17>]> | unset = unset,
+    fn19 extends Fn<[GetOutputType<fn18>]> | unset = unset,
+    fn20 extends Fn<[GetOutputType<fn19>]> | unset = unset
   > = Piped<
-    Extract<
-      ExcludeUnset<
-        [
-          fn0,
-          fn1,
-          fn2,
-          fn3,
-          fn4,
-          fn5,
-          fn6,
-          fn7,
-          fn8,
-          fn9,
-          fn10,
-          fn11,
-          fn12,
-          fn13
-        ]
-      >,
-      Fn[]
+    ExcludeUnset<
+      [
+        fn0,
+        fn1,
+        fn2,
+        fn3,
+        fn4,
+        fn5,
+        fn6,
+        fn7,
+        fn8,
+        fn9,
+        fn10,
+        fn11,
+        fn12,
+        fn13,
+        fn14,
+        fn15,
+        fn16,
+        fn17,
+        fn18,
+        fn19,
+        fn20
+      ]
     >
   >;
 }
 
 export type $<
   fn extends Fn,
-  arg0 extends fn["inputTypes"][0] = unset,
-  arg1 extends fn["inputTypes"][1] = unset,
-  arg2 extends fn["inputTypes"][2] = unset,
-  arg3 extends fn["inputTypes"][3] = unset
+  arg0 extends GetInputTypes<fn>[0] = unset,
+  arg1 extends GetInputTypes<fn>[1] = unset,
+  arg2 extends GetInputTypes<fn>[2] = unset,
+  arg3 extends GetInputTypes<fn>[3] = unset
 > = Extract<
   (fn & {
     args: ExcludeUnset<[arg0, arg1, arg2, arg3]>;
@@ -135,19 +169,19 @@ export type $<
 type Args<fn extends Fn> = fn["args"];
 type Arg0<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[0],
-  fn["inputTypes"][0]
+  GetInputTypes<fn>[0]
 >;
 type Arg1<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[1],
-  fn["inputTypes"][1]
+  GetInputTypes<fn>[1]
 >;
 type Arg2<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[2],
-  fn["inputTypes"][2]
+  GetInputTypes<fn>[2]
 >;
 type Arg3<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[3],
-  fn["inputTypes"][3]
+  GetInputTypes<fn>[3]
 >;
 
 /**
@@ -232,7 +266,7 @@ type t8 = $<TakeNum, "10">;
  * Higher order
  */
 
-interface Map<A = unknown, B = A> extends Fn<[Fn<[A], B>, A[]], B[]> {
+interface Map<A = any, B = A> extends Fn<[Fn<[A], B>, A[]], B[]> {
   return: Args<this> extends [infer fn extends Fn, infer tuple]
     ? { [key in keyof tuple]: $<fn, tuple[key]> }
     : never;
@@ -259,7 +293,7 @@ type ReduceImpl<fn extends Fn, acc, xs> = xs extends [
   ? ReduceImpl<fn, $<fn, acc, first>, rest>
   : acc;
 
-interface Reduce<A = unknown, B = A> extends Fn<[Fn<[B, A], B>, B, A[]], B> {
+interface Reduce<A = any, B = A> extends Fn<[Fn<[B, A], B>, B, A[]], B> {
   return: Args<this> extends [infer fn extends Fn, infer acc, infer tuple]
     ? ReduceImpl<fn, acc, tuple>
     : never;
@@ -275,7 +309,7 @@ type test12 = Expect<Equal<t12, 3840>>;
 
 // @ts-expect-error
 type t13 = $<Reduce<number>, Mul, 1, ["2", "4", "6", "8", "10"]>;
-//                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~ ❌
+//                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~ ❌
 
 // @ts-expect-error
 type t14 = $<Reduce, Mul, 1, "oops">;
@@ -311,7 +345,7 @@ interface Prepend extends Fn<[string, string], string> {
   return: `${Arg0<this>}${Arg1<this>}`;
 }
 
-interface ToArray extends Fn<[unknown], [unknown]> {
+interface ToArray<T = unknown> extends Fn<[T], [T]> {
   return: [Arg0<this>];
 }
 
@@ -322,6 +356,7 @@ type t17 = Times10<10>;
 type test17 = Expect<Equal<t17, "110">>;
 
 // @ts-expect-error
+// prettier-ignore
 type WrongComposition1<T extends string> = $<Prepend, "1", $<ToNumber, T>>;
 //                                                         ~~~~~~~~~~~~~~ ❌
 // @ts-expect-error
@@ -334,34 +369,49 @@ type t18 = Test<"10">;
 //    ^? 110
 type test18 = Expect<Equal<t18, "110">>;
 
-type Sum = $.partial<Reduce<number>, Add, 0>;
+type Sum = $.partial<Reduce, Add, 0>;
 
-type Composition<T extends number[]> = $<
-  $.pipe<
-    $.partial<Map<number>, $.partial<Add, 1>>,
-    $.partial<
-      Map<number>,
-      $.pipe<
-        $.partial<Add, 1>,
-        $.partial<Mul, 3>,
-        ToString,
-        $.partial<Prepend, "1">,
-        ToNumber
-      >
-    >,
-    Sum,
-    ToString,
-    $.partial<Prepend, "1">,
-    ToNumber,
-    $.partial<Mul, 10>,
-    $.partial<Div, _, 2>,
-    ToString,
-    $.partial<Prepend, _, "10">,
-    ToNumber
+type Composed = $.pipe<
+  $.partial<Map, $.partial<Add, 1>>,
+  $.partial<
+    Map,
+    $.pipe<
+      $.partial<Add, 1>,
+      $.partial<Mul, 3>,
+      ToString,
+      $.partial<Prepend, "1">,
+      ToNumber
+    >
   >,
-  T
+  $.partial<
+    Map,
+    $.pipe<
+      $.partial<Add, 1>,
+      $.partial<Mul, 3>,
+      ToString,
+      $.partial<Prepend, "1">,
+      ToNumber
+    >
+  >,
+  $.partial<
+    Map,
+    $.pipe<
+      $.partial<Add, 1>,
+      $.partial<Mul, 3>,
+      ToString,
+      $.partial<Prepend, "1">,
+      ToNumber
+    >
+  >,
+  $.partial<Map, $.partial<Add, 1>>,
+  Sum,
+  ToString,
+  $.partial<Prepend, "1">,
+  ToNumber,
+  $.partial<Mul, 10>,
+  $.partial<Div, _, 2>
 >;
 
-type t19 = Composition<[1, 2, 3, 4]>;
+type t19 = $<Composed, [1, 2, 3, 4]>;
 //   ^?
-type test19 = Expect<Equal<t19, 682010>>;
+type test19 = Expect<Equal<t19, 718140>>;

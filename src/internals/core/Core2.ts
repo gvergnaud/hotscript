@@ -55,6 +55,52 @@ interface Ap<fn extends Fn, partialArgs extends unknown[] = []> extends Fn {
     : Ap<fn, this["allArgs"]>;
 }
 
+namespace Tuple {
+  export type Last<xs> = xs extends [...any, infer last] ? last : never;
+}
+
+type ApplyLeftToRight<x extends any[], fns> = fns extends [
+  infer fn extends Fn,
+  ...infer restFns
+]
+  ? ApplyLeftToRight<[Apply<fn, x>], restFns>
+  : x[0];
+
+interface Piped<fns extends Fn[]> extends Fn {
+  name: "Pipe";
+
+  inputTypes: fns[0]["inputTypes"];
+  outputType: Extract<Tuple.Last<fns>, Fn>["outputType"];
+
+  return: ApplyLeftToRight<Extract<this["args"], any[]>, fns>;
+}
+
+type GetOutputType<x> = x extends { outputType: infer O } ? O : never;
+
+export type Pipe<
+  fn0 extends Fn,
+  fn1 extends Fn<[GetOutputType<fn0>]> | unset = unset,
+  fn2 extends Fn<[GetOutputType<fn1>]> | unset = unset,
+  fn3 extends Fn<[GetOutputType<fn2>]> | unset = unset,
+  fn4 extends Fn<[GetOutputType<fn3>]> | unset = unset,
+  fn5 extends Fn<[GetOutputType<fn4>]> | unset = unset,
+  fn6 extends Fn<[GetOutputType<fn5>]> | unset = unset,
+  fn7 extends Fn<[GetOutputType<fn6>]> | unset = unset,
+  fn8 extends Fn<[GetOutputType<fn7>]> | unset = unset,
+  fn9 extends Fn<[GetOutputType<fn8>]> | unset = unset,
+  fn10 extends Fn<[GetOutputType<fn9>]> | unset = unset,
+  fn11 extends Fn<[GetOutputType<fn10>]> | unset = unset,
+  fn12 extends Fn<[GetOutputType<fn11>]> | unset = unset,
+  fn13 extends Fn<[GetOutputType<fn12>]> | unset = unset
+> = Piped<
+  Extract<
+    ExcludeUnset<
+      [fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7, fn8, fn9, fn10, fn11, fn12, fn13]
+    >,
+    Fn[]
+  >
+>;
+
 export type Apply<fn extends Fn, args extends unknown[]> = (fn & {
   args: args;
 })["return"];
@@ -73,18 +119,22 @@ export type $<
 })["return"];
 
 type Args<fn extends Fn> = fn["args"];
+
 type Arg0<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[0],
   fn["inputTypes"][0]
 >;
+
 type Arg1<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[1],
   fn["inputTypes"][1]
 >;
+
 type Arg2<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[2],
   fn["inputTypes"][2]
 >;
+
 type Arg3<fn extends Fn> = Extract<
   Extract<fn["args"], unknown[]>[3],
   fn["inputTypes"][3]
@@ -272,3 +322,31 @@ type Test<T extends string> = $<Prepend, "1", T>;
 type t18 = Test<"10">;
 //    ^? 110
 type test18 = Expect<Equal<t18, "110">>;
+
+type Sum = $<Reduce<number>, Add, 0>;
+
+type TransformNumber = Pipe<
+  $<Add, 1>,
+  $<Mul, 3>,
+  ToString,
+  $<Prepend, "1">,
+  ToNumber
+>;
+
+type Composed = Pipe<
+  $<Map<number>, $<Add, 1>>,
+  $<Map<number>, TransformNumber>,
+  Sum,
+  ToString,
+  $<Prepend, "1">,
+  ToNumber,
+  $<Mul, 10>,
+  $<Div, _, 2>,
+  ToString,
+  $<Prepend, _, "10">,
+  ToNumber
+>;
+
+type t19 = $<Composed, [1, 2, 3, 4]>;
+//   ^?
+type test19 = Expect<Equal<t19, 5010>>;
