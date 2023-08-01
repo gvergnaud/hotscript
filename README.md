@@ -123,6 +123,47 @@ type res5 = Pipe<
   ]
 >;
 ```
+### Make querySelector typesafe
+
+[Run this as a TypeScript Playground](https://www.typescriptlang.org/play?#code/JYWwDg9gTgLgBAKjgQwM5wBJwGZQiOAcgAsIZUBjKYMGQgKHoBMBTCgG2ShZwFcA7CjGAR+cAI68WUAJ4BlFuzYxoAHgAqcFgA8YLfk3SoY1fgHMAfAApUi5dABccdQEonAUSUh9MAGJ4QBSUhNXULOAAfOH5ednZGYH49KGxkCh51agIdPQN0DAA6XzEAb3o4CrhuGF4ofgdyyphiYFQAbQAiLjMABg6AXS1dfUM4AAMAEhLE7Gk4AAVuADcAXzgAGimZuYA5HJWxuAB+RorCiY0s9fGpxZZVzZK93QPwhsq4ZtbO7r7BnJG6Em034sygC2WK2uW1Bu32hxOH3Ol1A12BdweU2eMFecHeTRa7S6UF6AyGuVGwO24IxKwcrSsMLBcE8KxcTLmACUWMYDsdTpgChdMqibiVaVNWVNubyxm8BV8ib8yQC8mLqRD7nSAO7EaQsRkg5ms9lGrk8nEIgXIkUgNG3SGS9graUW3H4iqKn4kv7kwHq2Hg1mG4ymMxsjngmWW-lIoUou1iqUlaPuhWE72k-7DNVUwMs51tKahxLh-qRuCpq1x4VXJPO12y+UfL3ErP0FaMGAyMA8TwsbxJfz4IL2KAacIAXkF8xoLA01zaAtt62tBTkJlLqHXYHYwBgqkIRAsq7j6l4u55BQAMmgYKfKoUN2Ht3Jd-vD+tCCe1+fL9v1AgABVfgRH4B8znXTdzFfd8Dw6BwOkiOAOk6ZCOgKJCog6ABiDofzPC8lG3ABBA8egIx8CgAWWQGAKGIVQlw+ONaPo4gCgAdX3RiAGsWBkCBsEwdRqOvftBxgdRkDMHZkG8WiwGuQoAHkACMACtlG3ABxFgD0KAB9ZTRPErwfGk2T5JYRSLEoljBTYhiuJ41RkH4GQTLEiSfAsAV+j8gLGHoChRGMKoeR6OBp0kaR5DsEIoCsDoEA6FwAG56AAeiyliAD0TlC-hwu4VAAEZookKRZFHRLkrANLMpy-LCrC+BSoAJkq2KaoSlQko6JhgCWAoODQVA5O8Rrstyj4CpCtqItQABmbrqvi4J+uSoaljgcJkGm5q5ta4r2p5AAWNa4tqraOjANo6JMfpDtmyp5qKkqeQAViu3rNugbbhrgMACj0XQUDaYhuGwSdCBwwhnoymaWoW06loANl+jax2SnDgCYF6UY+s7UAAdixm6AcG4aHpgJ6HGINArDAPa4FDUQzBcQnjtRz7UAADgpvqqfpVArB22mnuuMAuaRo63pOvmAE4hf+gaJceqB+mlyWtYZpmWfCdnzFlprXoqd7FtKsqopi9bKfVoG3kZsXkFZ0WrDU64KBcWXkZ54L6CAA)
+```ts
+import * as H from 'hotscript'
+
+declare function querySelector<T extends string>(selector: T): ElementFromSelector<T> | null
+
+interface Trim extends H.Fn {
+    return:
+    this["arg0"] extends `${infer Prev} ,${infer Next}` ?
+    H.$<Trim, `${Prev},${Next}`> :
+    this["arg0"] extends `${infer Prev}, ${infer Next}` ?
+    H.$<Trim, `${Prev},${Next}`> :
+    this["arg0"] extends `${infer Prev}:is(${infer El})${infer Rest}` ?
+    H.$<Trim, `${Prev}${El}${Rest}`> :
+    this["arg0"] extends `${infer Prev}:where(${infer El})${infer Rest}` ?
+    H.$<Trim, `${Prev}${El}${Rest}`> :
+    this["arg0"] extends `${infer El}(${string})${infer Rest}` ?
+    H.$<Trim, `${El}${Rest}`> :
+    this["arg0"] extends `${infer El}[${string}]${infer Rest}` ?
+    H.$<Trim, `${El}${Rest}`> :
+    this["arg0"]
+}
+
+type ElementFromSelector<T> = H.Pipe<T, [
+    Trim,
+    H.Strings.Split<' '>,
+    H.Tuples.Last,
+    H.Strings.Split<','>,
+    H.Tuples.ToUnion,
+    H.Strings.Split<":" | "[" | "." | "#">,
+    H.Tuples.At<0>,
+    H.Match<[
+        H.Match.With<keyof HTMLElementTagNameMap, H.Objects.Get<H._, HTMLElementTagNameMap>>,
+        H.Match.With<any, HTMLElement>
+    ]>
+]>
+```
+![image](https://github.com/gvergnaud/hotscript/assets/633115/d75fe58e-e677-4ead-9cd2-b82a32d0cec7)
+
 
 ## API
 
