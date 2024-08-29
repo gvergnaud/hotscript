@@ -64,12 +64,16 @@ namespace Tuple {
   export type Last<xs> = xs extends [...any, infer last] ? last : never;
 }
 
-type ApplyLeftToRight<x extends any[], fns> = fns extends [
+type ApplyLeftToRight<args extends any[], fns> = fns extends [
   infer fn extends Fn,
   ...infer restFns
 ]
-  ? ApplyLeftToRight<[Apply<fn, x>], restFns>
-  : x[0];
+  ? Apply<fn, args> extends infer output
+    ? output extends $.Error<any>
+      ? output
+      : ApplyLeftToRight<[output], restFns>
+    : never
+  : args[0];
 
 interface Piped<fns extends Fn[]> extends Fn {
   name: "$.pipe";
@@ -151,6 +155,12 @@ namespace $ {
       ]
     >
   >;
+
+  const brand = Symbol.for("@hotscript/brand");
+
+  export interface Error<msg> {
+    [brand]: "@hotscript/error";
+  }
 }
 
 export type $<
